@@ -1,0 +1,236 @@
+ body {
+     background-color: #000000;
+     color: red;
+ }
+ li {
+     line-height: 165%;
+ }
+ div.DATE {
+     position:absolute;
+     bottom: 8%;
+     right:4%;
+ }
+ div.Healthbar {
+     width:100%;
+     border-style:solid;
+     border-radius: 2.1vh;
+ }
+ div.Healthbar.ally {
+     position:absolute;
+     float:right;
+     height:2.1vh;
+     line-height: 2.1vh;
+     font-size: 50%;
+     font-family: sans-serif;
+     width:35%;
+     right:65%;
+     margin-top: 3.5%;
+ }
+ div.Healthtrack {
+     text-align: center;
+     width:100%;
+     height:100%;
+     border-radius: 1vh;
+     background-color: springgreen;
+ }
+ header.Playername {
+     color: red;
+     font-size: 330%;
+     font-family: "tight pixel",serif;
+ }
+ button.THEBUTTON {
+     background-color: #00FF00;
+     color: red;
+     font-family: "tight pixel",serif;
+     font-size: 280%;
+     border:none;
+ }
+ div.Options {
+     display:none;
+     position:absolute;
+     height:100%;
+     width:40%;
+     top:0;
+     right:30%;
+     background-color: black;
+     border: solid darkmagenta;
+ }
+ button.Options {
+     font-family: "tight pixel",serif;
+     font-size: 220%;
+     border: solid darkmagenta;
+     background-color: black;
+     color:white;
+
+ }
+ div.Eholder {
+     display:inline-block;
+     margin-right: 1.5%;
+ }
+ ul.allies {
+     font-family: "tight pixel",serif;
+     font-size: 190%;
+     margin:0;
+     padding: 0;
+     list-style-type: none;
+ }
+ ul.Msg {
+     width:100%;
+     margin:0;
+     padding: 0;
+     list-style-type: none;
+ }
+ button.Mercs {
+     border-color: lightskyblue;
+     background-color: black;
+     font-family: "tight pixel",serif;
+     font-size: 170%;
+     color: white;
+     width: 100%;
+     text-align: left;
+ }
+ div.Upgrades {
+     position:absolute;
+     right:1%;
+     top:1.3%;
+     min-height: 9%;
+     max-width: 22%;
+ }
+ button.Upgrade {
+     width: 9vh;
+     height: 9vh;
+     background-size: 9vh 9vh;
+     background-repeat: no-repeat;
+ }
+ div.inventoryicon {
+     width: 5%;
+     height: 100%;
+     background-repeat: no-repeat;
+     background-size: 100%;
+     border: solid darkred;
+ }
+ button.class1 {
+     background-color: black;
+     color: white;
+     font-family: "tight pixel",serif;
+     font-size: 215%;
+     border: solid maroon;
+ }
+ button.class2 {
+     background-color: black;
+     color: white;
+     font-family: "tight pixel",serif;
+     font-size: 215%;
+     border: solid orangered;
+ }
+ div.tooltip {
+     background-color:black;
+     max-width:50vh;
+     position:absolute;
+     font-family: "tight pixel",serif;
+     color: white;
+     border: solid chartreuse;
+     display: none;
+ }
+ div.tooltip.Enemy {
+     font-size: 170%;
+     position:absolute;
+     bottom:16.2%;
+     right:100%;
+     width:50%;
+ }
+ button.class1.tooltiputil {
+     font-size: 120%;
+     border-color: green;
+ }
+ div.tooltip.units {
+     position:absolute;
+     display:none;
+     float:right;
+     right:80%;
+     font-size: 170%;
+     min-width:100%;
+ }
+ div.tooltip.upgrades {
+     display:none;
+     top:1.5%;
+     right:23.03%;
+     min-width:22%;
+     font-size: 160%;
+ }
+ div.tooltip.inventory {
+     display:none;
+     width: 100%;
+     background-color: black;
+     font-size: 170%;
+     position:absolute;
+     float:top;
+     margin-top: 0.32%;
+ }
+ button.class1.portal {
+     border-color: rebeccapurple;
+ }
+ div.tooltip.blacksmith {
+     background-color: black;
+     font-size: 170%;
+     width:30%;
+     position:absolute;
+ }
+ div.tooltip.buildings {
+     min-width:25%;
+     margin-left:24.7%;
+     background-color: black;
+     font-size: 160%;
+     float:left;
+ }
+ button.blacksmith {
+     height: 100%;
+     width: 4%;
+     border-color: saddlebrown;
+     background-color: darkgrey;
+     background-size: 100%;
+     background-repeat: no-repeat;
+ }
+ button.buildings {
+     border-color: lightskyblue;
+     background-color: black;
+     font-family: "tight pixel",serif;
+     font-size: 160%;
+     color: white;
+     width: 100%;
+     text-align: right;
+ }
+ img.Entity.wobbling {
+    animation: wobble 0.6s;
+    animation-iteration-count: infinite; 
+ }
+ img.Entity.dead {
+     animation: dead 0.8s;
+     animation-iteration-count: infinite;
+ }
+@keyframes wobble {
+    0% { transform: translate(3px, 3px) rotate(0deg); }
+    10% { transform: translate(-3px, -6px) rotate(-3deg); }
+    20% { transform: translate(-9px, 0px) rotate(3deg); }
+    30% { transform: translate(9px, 6px) rotate(0deg); }
+    40% { transform: translate(3px, -3px) rotate(3deg); }
+    50% { transform: translate(-3px, 6px) rotate(-3deg); }
+    60% { transform: translate(-8px, 4px) rotate(0deg); }
+    70% { transform: translate(9px, 3px) rotate(-4deg); }
+    80% { transform: translate(-3px, -3px) rotate(4deg); }
+    90% { transform: translate(3px, 6px) rotate(0deg); }
+    100% { transform: translate(3px, -6px) rotate(-5deg); }
+}
+ @keyframes dead {
+     0% { transform: translate(4px, 20px) rotate(0deg); }
+     10% { transform: translate(8px, 40px) rotate(14deg); }
+     20% { transform: translate(12px, 60px) rotate(28deg); }
+     30% { transform: translate(16px, 80px) rotate(42deg); }
+     40% { transform: translate(20px, 100px) rotate(56deg); }
+     50% { transform: translate(24px, 120px) rotate(70deg); }
+     60% { transform: translate(28px, 140px) rotate(84deg); }
+     70% { transform: translate(32px, 160px) rotate(98deg); }
+     80% { transform: translate(36px, 180px) rotate(112deg); }
+     90% { transform: translate(40px, 200px) rotate(126deg); }
+     100% { transform: translate(44px, 220px) rotate(140deg); }
+ }

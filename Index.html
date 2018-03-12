@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="gamelib.js"></script>
+<script src="game.js"></script>
+        <html lang="en">
+        <head>
+            <title>''</title>
+            <meta http-equiv="content-type" content = "text/html;charset = UTF-8"/>
+            <meta name = "Author" content = "Tom Do"/>
+            <link rel="stylesheet" href="styles.css">
+            <style type="text/css">
+            </style>
+        </head>
+        <body onbeforeunload="//savegame()">
+        <input type = "text" name = "Name" size = "20" id ="namegetter2" placeholder="Enter Name:" onKeyDown="if(event.keyCode === 13) {game()}"><br/>
+        <div id = "everything" style = "display: none">
+		<div style = "position:absolute;top:1.4%;left:32%;width:35%;">
+            <button class = "class1" onclick = "$('#playerpanel').toggle();toggleplusminus(this)" style = "width:100%;">Your Description -</button>
+			<div id ="playerpanel">
+				<header id = "Playername" class = "Playername"></header><br>
+				<div id = "Player" style = "width:43%;height:43%;float:left;"><img class = "Entity" id = "Playerpic" style = "height:100%;width:100%" src="player.png"/></div>
+                <div id = "Pstats" style = "float:left;height:31vh;width:57%;display:block">
+                </div>
+				<div id = "Pdescription" style = "width:100%;margin-bottom:1%;">You are currently the most generic object the common man can imagine, a sphere
+				with a constant gradient from opposite shades, you don't even get the privilege of a legitimate color. generic color, generic shape.
+				You are NOT special yet...
+				</div>
+				<div id = "plevel" style = "margin-bottom:2%;"></div>
+				<div id = "phealth" class = "Healthbar" style = margin-bottom:2%;><div id = "phealthtrack" class = "Healthtrack"></div></div>
+				<div id = "pxp" ></div>
+			</div>
+            <button class = "class1" onclick = "$('#enemypanel').toggle();toggleplusminus(this)" style = "position:absolute;width:100%;">Enemy Description -</button>
+			<br>
+            <div id = "enemypanel" style = "width:140%;">
+                <div id = "Enemy" style = "width:100%;margin-top: 1%"></div>
+                <div id = "Enemytooltip" style = "margin-top:1%;float:right;" class = "tooltip Enemy">
+                </div><br>
+			</div>
+		</div>
+        <div style="width:40%;position:absolute;top:1.3%">
+            <div style = "width:70%;float:left;" id = "theres">
+                <div id = "Bronze" style = "float:left;width:60%"></div><div id = "bps" style = "float:left"></div><br>
+                <div id = "Silver" style = "float:left;width:60%"></div><div id = "sps" style = "float:left"></div><br>
+                <div id = "Gold" style = "float:left;width:60%"></div><div id = "gps" style = "float:left"></div><br>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div id = "portal1" class = "portal1"></div>
+        <br>
+        <button class = "class1" style = "width:10%" onclick = "$('#buildings1').toggle();toggleplusminus(this)">Buildings -</button>
+        <div style = "">
+            <div id = "buildings1" class = "buildings" style = "width:25%;float:left;"></div>
+            <div id = "buildtooltip" class = "tooltip buildings"></div>
+        </div>
+        <br>
+        <div id = "Mercs" style = "position:absolute;right:0.6%;width:25%;">
+            <button id = "togmerc" onclick = "$('#merc1').toggle();toggleplusminus(this)" class = "class1" style = "float:right;width:60%;">Mercenary Guild -</button>
+            <div id = "merc1" style = "width:80%;float:right;">
+                <div id = "merc" style = "float:right;"></div>
+                <div id = "unittooltip" class = "tooltip units"></div>
+            </div>
+            <div style = "float:right;margin-top: 8%">
+                <button class = "class1" style = "float:right" onclick = "$('#allies1').toggle();toggleplusminus(this);$('#allyinfobut').toggle()">Allies -</button>
+                <div id = "allies1" style = "margin-top:20%">
+                    <ul id = "allies" class = "allies" style = "float:right">
+                    </ul>
+                </div>
+                <button class = "class1" style = "float:right;margin-top:10%" id = "allyinfobut" onclick = "$('#allyinfo').toggle()">Info</button>
+            </div>
+        </div>
+        <br><br><br><br><br><br><br><br>
+        <div id = "uptooltip" class = "tooltip upgrades"></div>
+        <button id = "Inventorybut" class = "class1" onclick = "$('#inventory').toggle();toggleplusminus(this)">Inventory -</button>
+        <div style = "height:11vh">
+            <div id = "inventory" style = "float:top;height:100%;"></div>
+            <div id = "invtooltip" class = "tooltip inventory">
+                <button id = "invsell" style = "display:none;"></button>
+            </div>
+        </div><br>
+        <button id = "THEBUTTON" class = "THEBUTTON" onclick = "if (isdead === false && reducecheatclick === false) {
+        fight(setattack, levelenemies[dungeon.val - 1], dungeon.val - 1, allies, false);
+        reducecheatclick = !reducecheatclick;
+        setTimeout(function() {reducecheatclick = !reducecheatclick;},40);
+        }">FIGHT</button>
+        <div id = "Upgrades" class = "Upgrades"></div>
+        <br>
+        <br>
+        <button id = "Blacksmithbut" style = "display:none" class = "class1" onclick = "$('#Blacksmithshop').toggle();toggleplusminus(this)">Blacksmith -</button>
+        <div id = "Blacksmithshop" style = "height:8.6vh;"></div>
+        <div id = "bltooltip" class = "tooltip blacksmith"></div>
+        <div id = "Events" class = ""></div>
+        <br>
+        <br>
+        <button id = "optionsbut" class = "class1" onclick = "$('#options').toggle();">Options</button>
+        <div id = "options" class = "Options">
+            <div style = "position:absolute;top:20%;left:1.5%">
+            <i>The game autosaves every 20 seconds... and every time the window is closed or refreshed!</i><br>
+            <!---<button id = "exportsave" onclick = "exportsave()" class = "Options">Export Save</button><br><br>
+            <button id = "importsave" onclick = "$('#importthesave').toggle();" class = "Options">Import Save</button><br>-->
+            <div id = "importthesave" style = "display:none;position:absolute;float:left;">
+                <textarea id = "entersave" placeholder= "Enter the text in the txt file of your exported save file here and then press
+    submit to load the save:" rows = "5" cols = "40"></textarea>
+                <button onclick = "importsave($('#entersave').val());$('#importthesave').toggle();" class = "class1">Submit</button>
+            </div><br>
+            <button onclick = "toggleonoff(this);wobbleon = !wobbleon" class = "Options">Animations ON</button>
+            </div>
+        </div>
+        <div id = "Market" class = ""></div>
+        <div id = "Bank" class = ""></div>
+        <div>
+            <div style = "float: left;width:15%;">
+                <button class = "class1" onclick = "$('#Msg').toggle();toggleplusminus(this)">Message Log -</button>
+                <ul id = "Msg" class = "Msg">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+        </div>
+        <div id = "allyinfo" style = "display:none;border: solid red;width:40%;bottom:10%;right:20%;position:absolute;background:black">
+            Number of Idle units are on the right, number of active units are on the left. Active units help in battle, Idle units passively
+            hunt for resources. Enemies will <i>in general</i> target your units before they target you. You will at least early on
+            use your units as meatshields. They are viable for beating higher level enemies. Especially bosses. <br><br>
+
+            Sometimes bringing a large amount of units with you can help your damage output substantially, sometimes even obliterating
+            the enemy before they can react and damage you, resulting in the typical Idle Game scenario of clicking without any consequences
+            as you take no damage.<br><br>
+            <button class = "class1" onclick = "$('#allyinfo').toggle();">close</button>
+        </div>
+        <div id = "Date" class = "DATE">
+            <script>
+                let startdate = new Date();
+                function dateset() {
+                    let date = new Date();
+                    let duration = Math.floor((date.getTime() - startdate.getTime()) /1000);
+                    let seconds = duration % 60;
+                    let theh = ' h ';
+                    let theM = ' m ';
+                    let minutes = Math.floor(duration / 60) % 60; if (minutes === 0) {minutes = '';theM = ''}
+                    let hours = Math.floor(duration / 3600); if (hours === 0) {hours = '';theh = ''}
+                    $('#Date')[0].innerHTML = hours + theh + minutes + theM + seconds + " s (session time)";
+                    setTimeout(dateset,100);
+                }
+                dateset();
+
+                function autosave() {
+                    savegame();
+                    setTimeout(autosave,20000);
+                }
+
+                loadgame();
+                autosave();
+
+            </script>
+        </div>
+        </div>
+        </body>
+        </html>
+        
+        
+        
