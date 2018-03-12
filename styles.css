@@ -179,6 +179,9 @@
  button.class1.portal {
      border-color: rebeccapurple;
  }
+ div.portal1 {
+     width:33%;
+ }
  div.tooltip.blacksmith {
      background-color: black;
      font-size: 170%;
