@@ -234,6 +234,9 @@ class Ally {
         return this._name;
     }
     set health(val) {
+        if (val < this.MHea) {
+            val = this.MHea;
+        }
         this._health = val;
         showidle();
     }
@@ -681,11 +684,14 @@ function refresh() {
     setTimeout(refresh,200);
 }
 
-function playerregen() {
+function regen() {
     if (isdead === false) {
         player.health += 1;
     }
-    setTimeout(playerregen, 2000);
+    allies.forEach(function(ally) {
+        ally.health += 1;
+    });
+    setTimeout(regen, 2000);
 }
 
 function continueprogress() {
@@ -696,7 +702,7 @@ function continueprogress() {
     idlestuff();
     $("#everything").show();
     refresh();
-    playerregen();
+    regen();
 }
 
 function game() {
@@ -722,7 +728,7 @@ function game() {
     $('#plevel')[0].innerHTML = "Level: " + currentlevel._val;
     $("#everything").show();
     refresh();
-    playerregen();
+    regen();
 }
 
 function train(x) {
