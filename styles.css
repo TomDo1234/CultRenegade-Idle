@@ -80,6 +80,15 @@
      padding: 0;
      list-style-type: none;
  }
+ div.Pstats {
+     float:left;
+     margin-left: 5%;
+     height:31vh;
+     width:52%;
+     display:inline-block;
+     font-size: 180%;
+     font-family: "tight pixel",serif;
+ }
  button.Mercs {
      border-color: lightskyblue;
      background-color: black;
