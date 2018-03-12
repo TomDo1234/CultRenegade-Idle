@@ -570,7 +570,7 @@ function checkpersec() {
     let sps = 0;
     let gps = 0;
     allies.forEach(function(a) {
-        let b = a.IQuantity * a.farm[0] - resources[0].mod;
+        let b = a.IQuantity * a.farm[0];
         let s = a.IQuantity * a.farm[1];
         let g = a.IQuantity * a.farm[2];
         bps += b; sps += s; gps += g;
@@ -578,6 +578,12 @@ function checkpersec() {
     $("#bps")[0].innerText = parseFloat(bps.toFixed(4)).toString() + "/s";
     $("#sps")[0].innerText = parseFloat(sps.toFixed(4)).toString() + "/s";
     $("#gps")[0].innerText = parseFloat(gps.toFixed(4)).toString() + "/s";
+}
+
+function playerstats() {
+    let stats = $('#Pstats');
+    stats[0].innerHTML = "Attack: \xa0" + player.strength + "<br><br>" + "Health: \xa0" + player.health + "<br><br>"
+        + "Armor: \xa0" + player.armor + "<br><br>" + "Speed: \xa0" + player.speed;
 }
 
 function idlestuff() {
@@ -681,6 +687,7 @@ function inventory() {
 function refresh() {
     checkforevents();
     checkpersec();
+    playerstats();
     setTimeout(refresh,200);
 }
 
