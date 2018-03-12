@@ -1071,7 +1071,7 @@ let setattack = "Stab";
 document.title = title;
 
 let playerbronze = {
-        _val : 5000,
+        _val : 0,
         _mod : 0,
         set val(value) {
             this._val = value + this.mod;
