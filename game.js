@@ -234,7 +234,7 @@ class Ally {
         return this._name;
     }
     set health(val) {
-        if (val < this.MHea) {
+        if (val > this.MHea) {
             val = this.MHea;
         }
         this._health = val;
