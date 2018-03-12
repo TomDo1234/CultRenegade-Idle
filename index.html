@@ -11,7 +11,7 @@
             <style type="text/css">
             </style>
         </head>
-        <body onbeforeunload="savegame()">
+        <body onbeforeunload="//savegame()">
         <input type = "text" name = "Name" size = "20" id ="namegetter2" placeholder="Enter Name:" onKeyDown="if(event.keyCode === 13) {game()}"><br/>
         <div id = "everything" style = "display: none">
 		<div style = "position:absolute;top:1.4%;left:32%;width:35%;">
@@ -96,7 +96,7 @@
         <button id = "optionsbut" class = "class1" onclick = "$('#options').toggle();">Options</button>
         <div id = "options" class = "Options">
             <div style = "position:absolute;top:20%;left:1.5%">
-            <i>The game autosaves every 20 seconds... and every time the window is closed or refreshed!</i><br>
+            <i>The game autosaves every 20 seconds</i><br>
             <!---<button id = "exportsave" onclick = "exportsave()" class = "Options">Export Save</button><br><br>
             <button id = "importsave" onclick = "$('#importthesave').toggle();" class = "Options">Import Save</button><br>-->
             <div id = "importthesave" style = "display:none;position:absolute;float:left;">
