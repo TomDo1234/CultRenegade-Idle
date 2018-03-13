@@ -582,8 +582,17 @@ function checkpersec() {
 
 function playerstats() {
     let stats = $('#Pstats');
-    stats[0].innerHTML = "Attack: \xa0" + player.strength + "<br><br>" + "Health: \xa0" + player.health + "<br><br>"
-        + "Armor: \xa0" + player.armor + "<br><br>" + "Speed: \xa0" + player.speed;
+    let theattack = player.strength;
+    let thehealth = player.health;
+    let thearmor = player.armor;
+    let thespeed = player.speed;
+    playerinventory.forEach(function(item) {
+       theattack += item.attack * item.EQuantity;
+       thearmor += item.defense * item.EQuantity;
+       thespeed += item.speed * item.EQuantity;
+    });
+    stats[0].innerHTML = "Attack: \xa0" + theattack + "<br><br>" + "Health: \xa0" + thehealth + "<br><br>"
+        + "Armor: \xa0" + thearmor + "<br><br>" + "Speed: \xa0" + thespeed;
 }
 
 function idlestuff() {
