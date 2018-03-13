@@ -24,7 +24,7 @@
      float:right;
      height:2.1vh;
      line-height: 2.1vh;
-     font-size: 50%;
+     font-size: 1.1vw;
      font-family: sans-serif;
      width:35%;
      right:65%;
@@ -39,14 +39,14 @@
  }
  header.Playername {
      color: red;
-     font-size: 330%;
+     font-size: 3.7vw;
      font-family: "tight pixel",serif;
  }
  button.THEBUTTON {
      background-color: #00FF00;
      color: red;
      font-family: "tight pixel",serif;
-     font-size: 280%;
+     font-size: 3vw;
      border:none;
  }
  div.Options {
@@ -61,7 +61,7 @@
  }
  button.Options {
      font-family: "tight pixel",serif;
-     font-size: 220%;
+     font-size: 2.4vw;
      border: solid darkmagenta;
      background-color: black;
      color:white;
@@ -73,7 +73,7 @@
  }
  ul.allies {
      font-family: "tight pixel",serif;
-     font-size: 190%;
+     font-size: 2vw;
      margin:0;
      padding: 0;
      list-style-type: none;
@@ -97,7 +97,7 @@
      border-color: lightskyblue;
      background-color: black;
      font-family: "tight pixel",serif;
-     font-size: 170%;
+     font-size: 2vw;
      color: white;
      width: 100%;
      text-align: left;
@@ -126,14 +126,14 @@
      background-color: black;
      color: white;
      font-family: "tight pixel",serif;
-     font-size: 215%;
+     font-size: 2.5vw;
      border: solid maroon;
  }
  button.class2 {
      background-color: black;
      color: white;
      font-family: "tight pixel",serif;
-     font-size: 215%;
+     font-size: 2.5vw;
      border: solid orangered;
  }
  div.tooltip {
@@ -146,14 +146,14 @@
      display: none;
  }
  div.tooltip.Enemy {
-     font-size: 170%;
+     font-size: 1.8vw;
      position:absolute;
      bottom:16.2%;
      right:100%;
      width:50%;
  }
  button.class1.tooltiputil {
-     font-size: 120%;
+     font-size: 2.2vw;
      border-color: green;
  }
  div.tooltip.units {
@@ -161,7 +161,7 @@
      display:none;
      float:right;
      right:80%;
-     font-size: 170%;
+     font-size: 1.8vw;
      min-width:100%;
  }
  div.tooltip.upgrades {
@@ -169,26 +169,27 @@
      top:1.5%;
      right:23.03%;
      min-width:22%;
-     font-size: 160%;
+     font-size: 1.8vw;
  }
  div.tooltip.inventory {
      display:none;
      width: 100%;
      background-color: black;
-     font-size: 170%;
+     font-size: 1.8vw;
      position:absolute;
      float:top;
      margin-top: 0.32%;
  }
  button.class1.portal {
      border-color: rebeccapurple;
+     font-size: 2vw; 
  }
  div.portal1 {
      width:33%;
  }
  div.tooltip.blacksmith {
      background-color: black;
-     font-size: 170%;
+     font-size: 1.8vw;
      width:30%;
      position:absolute;
  }
@@ -196,7 +197,7 @@
      min-width:25%;
      margin-left:24.7%;
      background-color: black;
-     font-size: 160%;
+     font-size: 1.8vw;
      float:left;
  }
  button.blacksmith {
@@ -211,7 +212,7 @@
      border-color: lightskyblue;
      background-color: black;
      font-family: "tight pixel",serif;
-     font-size: 160%;
+     font-size: 1.7vw;
      color: white;
      width: 100%;
      text-align: right;
