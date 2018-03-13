@@ -527,8 +527,8 @@ function showfoes() {
                 "<br>" + "Speed: " + enemy.speed;
             tooltip.show();
         };
-        image.onmouseout = function() { if (!tooltip[0].matches(':hover')) {tooltip.hide()}};
-        tooltip[0].onmouseout = function() { if (!tooltip[0].matches(':hover')) {tooltip.hide()}};
+        image.onmouseout = function() { if (!tooltip.is(':hover')) {tooltip.hide()}};
+        tooltip[0].onmouseout = function() { if (!tooltip.is(':hover')) {tooltip.hide()}};
         holder.appendChild(image);
         holder.appendChild(enemy.Healthbar);
         load(enemy);
@@ -687,8 +687,8 @@ function inventory() {
                 tooltip.append(sellbut);
             }
         };
-        thediv.onmouseout = function tooltipdisappear() { if (!tooltip.matches(':hover')) {tooltip.style.display = "none"}};
-        tooltip.onmouseout = function() { if (!tooltip.matches(':hover')) {tooltip.style.display = "none"}};
+        thediv.onmouseout = function tooltipdisappear() { if (!$(tooltip).is(':hover')) {tooltip.style.display = "none"}};
+        tooltip.onmouseout = function() { if (!$(tooltip).is(':hover')) {tooltip.style.display = "none"}};
         mlist.appendChild(thediv);
     });
 }
