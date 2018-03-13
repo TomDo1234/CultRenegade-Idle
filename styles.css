@@ -1,6 +1,6 @@
  @font-face {
    font-family: "tight pixel";
-   src: url(tight_pixel.ttf); 
+   src: url("tight_pixel.ttf"); 
  }
  body {
      background-color: #000000;
