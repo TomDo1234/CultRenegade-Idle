@@ -736,9 +736,8 @@ function abilities() {
             thebutton.classList.add("ability");
             thebutton.style.backgroundImage = "url(" + x.img + ")";
             thebutton.onmouseenter = function () {
-                tooltip.innerHTML = x._name + "<br><br>" + "Damage: " + x.damage + "<br>" +
-                    x.flavor.italics() + "<br><br>" +
-                    "Cost: " + x.mcost + " mana";
+                tooltip.innerHTML = x._name + "<br><br>" + "Damage: " + x.damage + "<br><br>" +
+                "Mana Cost: " + x.mcost + " mana" + "<br><br>" +  x.flavor.italics() + "<br><br>" + "Cost: " + x.Cost;
                 tooltip.style.display = "block";
             };
             thebutton.onmouseout = function () {
@@ -757,19 +756,19 @@ function abilities() {
 
 function spellshop() {
     let u = $('#Spellshopshop');
+    let tooltip = document.createElement("DIV");tooltip.classList.add("tooltip");tooltip.classList.add("spellshop");
     u.empty();
     if (theabilities.length > 0) {
         $('#Spellshopbut').show();
         theabilities.forEach(function (x) {
             let thebutton = document.createElement("BUTTON");
-            let tooltip = $("#sptooltip")[0];
             thebutton.id = x._name;
-            thebutton.classList.add("ability");
+            thebutton.classList.add("spellshop");
             thebutton.style.backgroundImage = "url(" + x.img + ")";
             thebutton.onmouseenter = function () {
-                tooltip.innerHTML = x._name + "<br><br>" + "Damage: " + x.damage + "<br>" +
-                    x.flavor.italics() + "<br><br>" +
-                    "Cost: " + x.mcost + " mana";
+                tooltip.innerHTML = x._name + "<br><br>" + "Damage: " + x.damage + "<br><br>" +
+                    "Mana Cost: " + x.mcost + " mana" + "<br><br>" +  x.flavor.italics() + "<br><br>" + "Cost: " +
+                    x.cost[0] + "/" + x.cost[1] + "/" + x.cost[2];
                 tooltip.style.display = "block";
             };
             thebutton.onmouseout = function () {
@@ -781,11 +780,14 @@ function spellshop() {
                 theabilities.splice(theabilities.indexOf(x),theabilities.indexOf(x) + 1);
             };
             u[0].appendChild(thebutton);
+            u.append(tooltip);
         });
     }
     else {
         $('#abilitiesbut').hide();
     }
+    let foo = theabilities.length > 5 ? 5 : theabilities.length;
+    tooltip.style.right = foo * 20 + "%";
 }
 
 function playerstats() {
@@ -818,6 +820,7 @@ function continueprogress() {
     showfoes();
     showbuildings();
     showupgrades();
+    spellshop();
     idlestuff();
     $("#everything").show();
     refresh();
@@ -837,6 +840,7 @@ function buyability(x) {
     }
     playerabilities.push(x);
     abilities();
+    spellshop();
     MsgLog(x._name + " was purchased");
 }
 
@@ -883,7 +887,7 @@ function train(x) {
 
 function buildingselection() {
     $('#buildselection').empty();
-    let thebuildings1 = [Blacksmith,MercenaryGuild,Spellshop];
+    let thebuildings1 = [MercenaryGuild,Blacksmith,Spellshop];
     thebuildings1.forEach(function(building) {
        if (building.Quantity > 0) {
            let thebutton = document.createElement("BUTTON");
@@ -932,11 +936,11 @@ function showMercenaries() {
 function blacksmith() {
     let u = $('#Blacksmithshop');
     u.empty();
+    let tooltip = document.createElement("DIV");tooltip.classList.add("tooltip");tooltip.classList.add("blacksmith");
     if (Blacksmith.Quantity > 0) {
         $('#Blacksmithbut').show();
         theblacksmith.forEach(function (x) {
             let thebutton = document.createElement("BUTTON");
-            let tooltip = $("#bltooltip")[0];
             thebutton.id = x._name;
             thebutton.classList.add("blacksmith");
             thebutton.style.backgroundImage = "url(" + x.img + ")";
@@ -955,11 +959,14 @@ function blacksmith() {
                 buyitem(x); // REMEMBER partial from python?
             };
             u[0].appendChild(thebutton);
+            u.append(tooltip);
         });
     }
     else {
         $('#Blacksmithbut').hide();
     }
+    let foo = theblacksmith.length > 5 ? 5 : theblacksmith.length;
+    tooltip.style.right = foo * 20 + "%";
 }
 
 function portal() {
@@ -1108,10 +1115,10 @@ function market() {
 
 function showupgrades() {
     let u = $("#Upgrades");
+    let tooltip = document.createElement("DIV");tooltip.classList.add("tooltip");tooltip.classList.add("upgrades");
     u.empty();
     canupgrade.forEach(function(x) {
         let thebutton = document.createElement("BUTTON");
-        let tooltip = $("#uptooltip")[0];
         thebutton.id = x.name;thebutton.className += " Upgrade";
         thebutton.style.backgroundImage = "url(" + x.iurl + ")";
         thebutton.onmouseenter = function() {
@@ -1124,7 +1131,10 @@ function showupgrades() {
             buyupgrade(x); // REMEMBER partial from python?
         };
         u.append(thebutton);
+        u.append(tooltip);
     });
+    let foo = canupgrade.length > 5 ? 5 : canupgrade.length;
+    tooltip.style.right = foo * 16 + "%";
 }
 
 
@@ -1167,8 +1177,8 @@ let attackmod = {
     }
 };
 
-let NormalFireball = new Ability(20,5,[5000,0,0],"A normal fire ball spell that damages a single target");
-let NormalFrost = new Ability(10,5,[5000,0,0],"A normal frost spell. Slows your enemies down temporarily");
+let NormalFireball = new Ability("Normal Fireball",5,[5000,0,0],20,"A normal fire ball spell that damages a single target");
+let NormalFrost = new Ability("Normal Frost",5,[5000,0,0],10,"A normal frost spell. Slows your enemies down temporarily");
 
 let theabilities = [NormalFireball,NormalFrost];
 
