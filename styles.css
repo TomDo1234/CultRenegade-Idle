@@ -127,6 +127,10 @@
      background-size: 100%;
      border: solid darkred;
  }
+ button.class1.buildselection {
+     float: right;
+     width: 100%;
+ }
  button.class1 {
      background-color: black;
      color: white;
@@ -207,6 +211,15 @@
      float:left;
  }
  button.blacksmith {
+     height: 100%;
+     width: 20%;
+     float:right;
+     border-color: saddlebrown;
+     background-color: darkgrey;
+     background-size: 100%;
+     background-repeat: no-repeat;
+ }
+ button.ability {
      height: 100%;
      width: 4%;
      border-color: saddlebrown;
