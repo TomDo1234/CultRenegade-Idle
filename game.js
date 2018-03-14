@@ -786,7 +786,8 @@ function spellshop() {
         });
     }
     else {
-        $('#abilitiesbut').hide();
+        $('#Spellshopbut').hide();
+        u[0].innerHTML = "Nothing more to sell from the Spell Shop... for now :) <br><br> Select another building to not let this text waste space!";
     }
     let foo = theabilities.length > 5 ? 5 : theabilities.length;
     tooltip.style.right = foo * 20 + "%";
