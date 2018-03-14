@@ -4,15 +4,14 @@
 <script src="game.js"></script>
         <html lang="en">
         <head>
-		    <!-- Global Site Tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script>
-	<script>
-	  window.dataLayer = window.dataLayer || [];
-	  function gtag(){dataLayer.push(arguments);}
-	  gtag('js', new Date());
-
-	  gtag('config', 'UA-115635325-1');
-	</script>	
+            <!-- Global Site Tag (gtag.js) - Google Analytics -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'UA-115635325-1');
+            </script>
             <title>''</title>
             <meta http-equiv="content-type" content = "text/html;charset = UTF-8"/>
             <meta name = "Author" content = "Tom Do"/>
@@ -28,8 +27,10 @@
 			<div id ="playerpanel">
 				<header id = "Playername" class = "Playername"></header><br>
 				<div id = "Player" style = "width:43%;height:43%;float:left;"><img class = "Entity" id = "Playerpic" style = "height:100%;width:100%" src="player.png"/></div>
-               <div id = "Pstats" class = "Pstats"></div>
-				<div id = "Pdescription" style = "width:100%;margin-bottom:1%;margin-top:44%">You are currently the most generic object the common man can imagine, a sphere
+                <div id = "Pstats" class = "Pstats"></div>
+                <button id = "abilitiesbut" class = "class1" style = "" onclick = "$('#Abilities').toggle();toggleplusminus(this)">Abilties +</button>
+				<div id = "Pdescription" style = "width:100%;margin-bottom:1%;margin-top:44%">
+                    You are currently the most generic object the common man can imagine, a sphere
 				with a constant gradient from opposite shades, you don't even get the privilege of a legitimate color. generic color, generic shape.
 				You are NOT special yet...
 				</div>
@@ -58,18 +59,31 @@
         <div id = "portal1" class = "portal1"></div>
         <br>
         <button class = "class1" style = "width:10%" onclick = "$('#buildings1').toggle();toggleplusminus(this)">Buildings -</button>
-        <div style = "">
+        <div style = "margin-bottom: 2%">
             <div id = "buildings1" class = "buildings" style = "width:25%;float:left;"></div>
             <div id = "buildtooltip" class = "tooltip buildings"></div>
         </div>
         <br>
-        <div id = "Mercs" style = "position:absolute;right:0.6%;width:25%;">
-            <button id = "togmerc" onclick = "$('#merc1').toggle();toggleplusminus(this)" class = "class1" style = "float:right;width:60%;">Mercenary Guild -</button>
-            <div id = "merc1" style = "width:80%;float:right;">
-                <div id = "merc" style = "float:right;"></div>
-                <div id = "unittooltip" class = "tooltip units"></div>
+        <div style = "position:absolute;right:0.6%;">
+        <button id = "buildselect" class = "class1 buildselect" onclick = "$('#buildselection').toggle();">Select Building to Use</button>
+        <div id = "buildselection"></div>
+        </div><br><br>
+        <div id = "buildingfuncs" style = "position:absolute;right:0.6%;width:25%;">
+            <div id = "MercenaryGuild" style = "display:none;">
+                <button id = "togmerc" onclick = "$('#merc1').toggle();toggleplusminus(this);buildingselection();" class = "class1" style = "float:right;width:60%;">Mercenary Guild -</button>
+                <div id = "merc1" style = "width:80%;float:right;">
+                    <div id = "merc" style = "float:right;"></div>
+                    <div id = "unittooltip" class = "tooltip units"></div>
+                </div>
             </div>
-            <div style = "float:right;margin-top: 8%">
+            <div id = "Blacksmith" style = "display:none;">
+                <button id = "Blacksmithbut" style = "float:right;width:60%" class = "class1" onclick = "$('#Blacksmithshop').toggle();toggleplusminus(this)">Blacksmith -</button>
+                <div id = "Blacksmithshop" style = "height:11vh;float:right;width:100%;"></div>
+                <div id = "bltooltip" class = "tooltip blacksmith"></div>
+            </div>
+        </div>
+            <br><br><br><br><br><br>
+            <div style = "float:right;margin-top: 8%;">
                 <button class = "class1" style = "float:right" onclick = "$('#allies1').toggle();toggleplusminus(this);$('#allyinfobut').toggle()">Allies -</button>
                 <div id = "allies1" style = "margin-top:20%">
                     <ul id = "allies" class = "allies" style = "float:right">
@@ -77,8 +91,8 @@
                 </div>
                 <button class = "class1" style = "float:right;margin-top:10%" id = "allyinfobut" onclick = "$('#allyinfo').toggle()">Info</button>
             </div>
-        </div>
-        <br><br><br><br><br><br><br><br>
+        <div id = "Abilities" class = "tooltip Abilities"></div>
+        <div id = "abtooltip" class = "tooltip Abilities"></div>
         <div id = "uptooltip" class = "tooltip upgrades"></div>
         <button id = "Inventorybut" class = "class1" onclick = "$('#inventory').toggle();toggleplusminus(this)">Inventory -</button>
         <div style = "height:11vh">
@@ -95,16 +109,13 @@
         <div id = "Upgrades" class = "Upgrades"></div>
         <br>
         <br>
-        <button id = "Blacksmithbut" style = "display:none" class = "class1" onclick = "$('#Blacksmithshop').toggle();toggleplusminus(this)">Blacksmith -</button>
-        <div id = "Blacksmithshop" style = "height:8.6vh;"></div>
-        <div id = "bltooltip" class = "tooltip blacksmith"></div>
         <div id = "Events" class = ""></div>
         <br>
         <br>
         <button id = "optionsbut" class = "class1" onclick = "$('#options').toggle();">Options</button>
         <div id = "options" class = "Options">
             <div style = "position:absolute;top:20%;left:1.5%">
-            <i>The game autosaves every 20 seconds</i><br>
+            <i>The game autosaves every 20 seconds... and every time the window is closed or refreshed!</i><br>
             <!---<button id = "exportsave" onclick = "exportsave()" class = "Options">Export Save</button><br><br>
             <button id = "importsave" onclick = "$('#importthesave').toggle();" class = "Options">Import Save</button><br>-->
             <div id = "importthesave" style = "display:none;position:absolute;float:left;">
