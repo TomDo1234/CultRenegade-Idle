@@ -135,6 +135,7 @@ class Building {
         this._Quantity = val;
         showbuildings();
         showMercenaries();
+        buildingselection();
     }
     get Quantity() {
         return this._Quantity;
@@ -401,6 +402,44 @@ class Upgrade {
 
 }
 
+class Ability {
+    constructor(Nam,MCost,Cost,dam,flavor = " ",img = "img/goblin1.png") {
+        this._name = Nam;
+        this._mcost = MCost;
+        this._cost = Cost;
+        this._damage = dam;
+        this.flavor = flavor;
+        this.img = img;
+    }
+    get mcost() {
+        return this._mcost;
+    }
+    set mcost(val) {
+        abilities();
+        this._mcost = val;
+    }
+    get cost() {
+        return this._cost;
+    }
+    set cost(val) {
+        abilities();
+        this._cost = val;
+    }
+    get damage() {
+        return this._damage;
+    }
+    set damage(val) {
+        abilities();
+        this._damage = val;
+    }
+    activateability() {
+        switch(this) {
+            case NormalFrost:
+                break;
+        }
+    }
+}
+
 function fight(attack,enemies,index,allies,idle = false) {
     let str = player._strength;
     let Order = [];
@@ -570,7 +609,7 @@ function checkpersec() {
     let sps = 0;
     let gps = 0;
     allies.forEach(function(a) {
-        let b = a.IQuantity * a.farm[0];
+        let b = a.IQuantity * a.farm[0] - resources[0].mod;
         let s = a.IQuantity * a.farm[1];
         let g = a.IQuantity * a.farm[2];
         bps += b; sps += s; gps += g;
@@ -578,21 +617,6 @@ function checkpersec() {
     $("#bps")[0].innerText = parseFloat(bps.toFixed(4)).toString() + "/s";
     $("#sps")[0].innerText = parseFloat(sps.toFixed(4)).toString() + "/s";
     $("#gps")[0].innerText = parseFloat(gps.toFixed(4)).toString() + "/s";
-}
-
-function playerstats() {
-    let stats = $('#Pstats');
-    let theattack = player.strength;
-    let thehealth = player.health;
-    let thearmor = player.armor;
-    let thespeed = player.speed;
-    playerinventory.forEach(function(item) {
-       theattack += item.attack * item.EQuantity;
-       thearmor += item.defense * item.EQuantity;
-       thespeed += item.speed * item.EQuantity;
-    });
-    stats[0].innerHTML = "Attack: \xa0" + theattack + "<br><br>" + "Health: \xa0" + thehealth + "<br><br>"
-        + "Armor: \xa0" + thearmor + "<br><br>" + "Speed: \xa0" + thespeed;
 }
 
 function idlestuff() {
@@ -687,7 +711,7 @@ function inventory() {
                 tooltip.append(sellbut);
             }
         };
-        thediv.onmouseout = function tooltipdisappear() { if (!$(tooltip).is(':hover')) {tooltip.style.display = "none"}};
+        thediv.onmouseout = function () { if (!$(tooltip).is(':hover')) {tooltip.style.display = "none"}};
         tooltip.onmouseout = function() { if (!$(tooltip).is(':hover')) {tooltip.style.display = "none"}};
         mlist.appendChild(thediv);
     });
@@ -700,12 +724,91 @@ function refresh() {
     setTimeout(refresh,200);
 }
 
+function abilities() {
+    let u = $('#Abilities');
+    u.empty();
+    if (playerabilities.length > 0) {
+        $('#abilitiesbut').show();
+        playerabilities.forEach(function (x) {
+            let thebutton = document.createElement("BUTTON");
+            let tooltip = $("#abtooltip")[0];
+            thebutton.id = x._name;
+            thebutton.classList.add("ability");
+            thebutton.style.backgroundImage = "url(" + x.img + ")";
+            thebutton.onmouseenter = function () {
+                tooltip.innerHTML = x._name + "<br><br>" + "Damage: " + x.damage + "<br>" +
+                    x.flavor.italics() + "<br><br>" +
+                    "Cost: " + x.mcost + " mana";
+                tooltip.style.display = "block";
+            };
+            thebutton.onmouseout = function () {
+                tooltip.style.display = "none"
+            };
+            thebutton.onclick = function () {
+                x.activateability(); // REMEMBER partial from python?
+            };
+            u[0].appendChild(thebutton);
+        });
+    }
+    else {
+        $('#abilitiesbut').hide();
+    }
+}
+
+function spellshop() {
+    let u = $('#Abilities');
+    u.empty();
+    if (theabilities.length > 0) {
+        $('#abilitiesbut').show();
+        theabilities.forEach(function (x) {
+            let thebutton = document.createElement("BUTTON");
+            let tooltip = $("#abtooltip")[0];
+            thebutton.id = x._name;
+            thebutton.classList.add("ability");
+            thebutton.style.backgroundImage = "url(" + x.img + ")";
+            thebutton.onmouseenter = function () {
+                tooltip.innerHTML = x._name + "<br><br>" + "Damage: " + x.damage + "<br>" +
+                    x.flavor.italics() + "<br><br>" +
+                    "Cost: " + x.mcost + " mana";
+                tooltip.style.display = "block";
+            };
+            thebutton.onmouseout = function () {
+                tooltip.style.display = "none"
+            };
+            thebutton.onclick = function () {
+                buyability(x); // REMEMBER partial from python?
+                thebutton.hide();
+                theabilities.splice(theabilities.indexOf(x),theabilities.indexOf(x) + 1);
+            };
+            u[0].appendChild(thebutton);
+        });
+    }
+    else {
+        $('#abilitiesbut').hide();
+    }
+}
+
+function playerstats() {
+    let stats = $('#Pstats');
+    let theattack = player.strength;
+    let thehealth = player.health;
+    let thearmor = player.armor;
+    let thespeed = player.speed;
+    playerinventory.forEach(function(item) {
+       theattack += item.attack * item.EQuantity;
+       thearmor += item.defense * item.EQuantity;
+       thespeed += item.speed * item.EQuantity;
+    });
+    stats[0].innerHTML = "Attack: \xa0" + theattack + "<br><br>" + "Health: \xa0" + thehealth + "<br><br>"
+        + "Armor: \xa0" + thearmor + "<br><br>" + "Speed: \xa0" + thespeed;
+}
+
 function regen() {
     if (isdead === false) {
         player.health += 1;
     }
     allies.forEach(function(ally) {
-        ally.health += 1;
+       ally.health += 1;
     });
     setTimeout(regen, 2000);
 }
@@ -719,6 +822,22 @@ function continueprogress() {
     $("#everything").show();
     refresh();
     regen();
+}
+
+function buyability(x) {
+    let thecost = x.cost;
+    for (let x = 0; x < resources.length; x++) {
+        if (resources[x].val - thecost[x] < 0) {
+            MsgLog("Not enough resources");
+            return;
+        }
+    }
+    for (let x = 0; x < resources.length; x++) {
+        resources[x].val -= thecost[x];
+    }
+    playerabilities.push(x);
+    abilities();
+    MsgLog(x._name + " was purchased");
 }
 
 function game() {
@@ -762,6 +881,29 @@ function train(x) {
     MsgLog("you have trained 1 " + x._name);
 }
 
+function buildingselection() {
+    $('#buildselection').empty();
+    let thebuildings1 = [Blacksmith,MercenaryGuild,Spellshop];
+    thebuildings1.forEach(function(building) {
+       if (building.Quantity > 0) {
+           let thebutton = document.createElement("BUTTON");
+           thebutton.classList.add("class1");thebutton.classList.add("buildselection");
+           thebutton.innerHTML = building.Nam;
+           $('#buildselection').append(thebutton);
+           document.getElementById('buildselection').appendChild(document.createElement("BR"));
+           thebutton.onclick = function() {
+               $('#' + building.Nam.replace(/\s/g,"")).show();
+               $('#buildselection').hide();
+               document.getElementById("buildselect").onclick = function() { //getElementbyId is to prevent the multiple instance jquery warning
+                   $('#buildselection').toggle();
+                   $('#' + building.Nam.replace(/\s/g,"")).hide();
+                   buildingselection();
+               }
+           }
+       }
+    });
+}
+
 function showMercenaries() {
     $('#merc').empty();
     if (MercenaryGuild.Quantity > 0) {
@@ -770,7 +912,7 @@ function showMercenaries() {
             let thebutton = document.createElement("BUTTON");thebutton.classList.add("Mercs");
             thebutton.innerHTML = unit._name;
             let tooltip = $('#unittooltip')[0];
-            thebutton.id = unit._name;thebutton.style.minHeight = "4.5vh";
+            thebutton.id = unit._name;
             thebutton.onmouseenter = function() {
                 tooltip.innerHTML = unit._name + "<br><br>" + "Attack: " + unit._strength + "<br>" + "Health: " + unit._MHea +
                     "<br>" + "Armor: " + unit._armor + "<br>" + "Speed: " + unit._speed
@@ -922,6 +1064,9 @@ function build(x,y = "b") {
         case Bank:
             bank();
             break;
+        case Spellshop:
+            spellshop();
+            break;
     }
     if (y === "b") {
         MsgLog("1 " + x.Nam + " built");
@@ -990,7 +1135,6 @@ function showbuildings() {
     let tooltip = $("#buildtooltip");
     canbuild.forEach(function(x) {
         let thebutton = document.createElement("BUTTON");thebutton.classList.add("buildings");
-        thebutton.id = x.Nam;
         thebutton.innerHTML = x.Nam + ": " + x.Quantity + "<br>" + "Cost: " + x.Cost[0]
             + "/" + x.Cost[1] + "/" + x.Cost[2];
         thebutton.onclick = function () {
@@ -1023,7 +1167,13 @@ let attackmod = {
     }
 };
 
+let NormalFireball = new Ability(20,5,[5000,0,0],"A normal fire ball spell that damages a single target");
+let NormalFrost = new Ability(10,5,[5000,0,0],"A normal frost spell. Slows your enemies down temporarily");
+
+let theabilities = [NormalFireball,NormalFrost];
+
 let playerinventory = [];
+let playerabilities = [];
 
 let MercenaryGuild = new Building([30,0,0],0,"Mercenary Guild","Mercenaries hunt during hunt for you during their spare time and" +
     " help you during battles. Most of them are Generic though... like those unnamed movie grunts");
@@ -1039,7 +1189,9 @@ let Blacksmith = new Building([300,0,0],0,"Blacksmith", "It is always better to 
 let Market = new Building([0,0,0],0,"Market","A place to sell your loot for a lower price... Which then gets sold again for the " +
     "actual price.");
 
-let buildings = [MercenaryGuild,Portal,Blacksmith];
+let Spellshop = new Building([4000,0,0],0,"Spell Shop","A place to buy spells... but at what cost is it to bridge the gap between the abnormal and the normal? O_O");
+
+let buildings = [MercenaryGuild,Portal,Blacksmith,Spellshop];
 
 let canbuild = [MercenaryGuild];
 let theblacksmith = [ReavingDecapitator,TheSafe];
@@ -1154,7 +1306,7 @@ let dungeon = {
 };
 let goblin = new Foe("Generic Goblin", 1, 1, 1, [playerbronze,1,1000],0,1,"","Genericgoblin1.png");
 let imp = new Foe("Generic Imp", 5, 2, 1, [playerbronze,2,1000],0,2,"","Genericimp1.png");
-let snake = new Foe("Generic Snake",30,5,7,[playerbronze,40,1000],3,20,"","genericsnake1.png");
+let snake = new Foe("Generic Snake",30,5,7,[playerbronze,40,1000],3,20,"","Genericsnake1.png");
 let goblin1 = new Foe("Killer Goblin Novice",100,10,3,[playerbronze,200,1000],7,120,"","goblin1.png");
 let boss1 = new Foe("Frosty Abomination Fourth Class",800,50,12,[plainuselesslocket,1,1000,playerbronze,40000,1000],0,5000
     ,"","boss1.png");
