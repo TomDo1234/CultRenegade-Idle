@@ -22,14 +22,13 @@
         <body onbeforeunload="//savegame()">
         <input type = "text" name = "Name" size = "20" id ="namegetter2" placeholder="Enter Name:" onKeyDown="if(event.keyCode === 13) {game()}"><br/>
         <div id = "everything" style = "display: none">
-		<div style = "position:absolute;top:1.4%;left:32%;width:35%;">
+		<div style = "position:absolute;top:1.4%;left:36%;width:35%;">
             <button class = "class1" onclick = "$('#playerpanel').toggle();toggleplusminus(this)" style = "width:100%;">Your Description -</button>
 			<div id ="playerpanel">
 				<header id = "Playername" class = "Playername"></header><br>
 				<div id = "Player" style = "width:43%;height:43%;float:left;"><img class = "Entity" id = "Playerpic" style = "height:100%;width:100%" src="player.png"/></div>
                 <div id = "Pstats" class = "Pstats"></div>
-                <button id = "abilitiesbut" class = "class1" style = "" onclick = "$('#Abilities').toggle();toggleplusminus(this)">Abilties +</button>
-				<div id = "Pdescription" style = "width:100%;margin-bottom:1%;margin-top:8%">
+				<div id = "Pdescription" style = "width:100%;margin-bottom:1%;margin-top:44%">
                     You are currently the most generic object the common man can imagine, a sphere
 				with a constant gradient from opposite shades, you don't even get the privilege of a legitimate color. generic color, generic shape.
 				You are NOT special yet...
@@ -97,8 +96,6 @@
                 </div>
                 <button class = "class1" style = "float:right;margin-top:10%" id = "allyinfobut" onclick = "$('#allyinfo').toggle()">Info</button>
             </div>
-        <div id = "Abilities" class = "tooltip Abilities"></div>
-        <div id = "abtooltip" class = "tooltip Abilities"></div>
         <button id = "Inventorybut" class = "class1" onclick = "$('#inventory').toggle();toggleplusminus(this)">Inventory -</button>
         <div style = "height:11vh">
             <div id = "inventory" style = "float:top;height:100%;"></div>
@@ -114,7 +111,6 @@
         <div id = "Upgrades" class = "Upgrades"></div>
         <div id = "Events" class = "">WORK IN PROGRESS (SORRY I AM SLOWLY UPDATING, <br> it looks a bit messy now)</div>
         <br>
-        <br>
         <button id = "optionsbut" class = "class1" onclick = "$('#options').toggle();">Options</button>
         <div id = "options" class = "Options">
             <div style = "position:absolute;top:20%;left:1.5%">
@@ -128,6 +124,10 @@
             </div><br>
             <button onclick = "toggleonoff(this);wobbleon = !wobbleon" class = "Options">Animations ON</button>
             </div>
+        </div>
+        <div style = "position:absolute;left:15%;bottom:-0.5%;width:20%;height:20%;">
+            <button id = "abilitiesbut" class = "class1" style = "" onclick = "$('#Abilities').toggle();toggleplusminus(this)">Abilties +</button>
+            <div id = "Abilities" class = "Abilities"></div>
         </div>
         <div id = "Market" class = ""></div>
         <div id = "Bank" class = ""></div>
