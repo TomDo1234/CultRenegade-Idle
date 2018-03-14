@@ -78,13 +78,14 @@
             </div>
             <div id = "Blacksmith" style = "display:none;">
                 <button id = "Blacksmithbut" style = "float:right;width:60%" class = "class1" onclick = "$('#Blacksmithshop').toggle();toggleplusminus(this)">Blacksmith -</button>
-                <div id = "Blacksmithshop" style = "height:11vh;float:right;width:100%;"></div>
-                <div id = "bltooltip" class = "tooltip blacksmith"></div>
+                <div style = "height:11vh;float:right;width:100%;">
+                    <div id = "Blacksmithshop" style = "float:right;height:100%;width:100%;"></div>
+                </div>
             </div>
             <div id = "SpellShop" style = "display:none;">
                 <button id = "Spellshopbut" style = "float:right;width:60%" class = "class1" onclick = "$('#Spellshopshop').toggle();toggleplusminus(this)">Spell Shop -</button>
                 <div id = "Spellshopshop" style = "height:11vh;float:right;width:100%;"></div>
-                <div id = "sptooltip" class = "tooltip blacksmith"></div>
+                <div id = "sptooltip" class = "tooltip spellshop"></div>
             </div>
         </div>
             <br><br><br><br><br><br>
@@ -98,7 +99,6 @@
             </div>
         <div id = "Abilities" class = "tooltip Abilities"></div>
         <div id = "abtooltip" class = "tooltip Abilities"></div>
-        <div id = "uptooltip" class = "tooltip upgrades"></div>
         <button id = "Inventorybut" class = "class1" onclick = "$('#inventory').toggle();toggleplusminus(this)">Inventory -</button>
         <div style = "height:11vh">
             <div id = "inventory" style = "float:top;height:100%;"></div>
@@ -112,9 +112,7 @@
         setTimeout(function() {reducecheatclick = !reducecheatclick;},40);
         }">FIGHT</button>
         <div id = "Upgrades" class = "Upgrades"></div>
-        <br>
-        <br>
-        <div id = "Events" class = ""></div>
+        <div id = "Events" class = "">WORK IN PROGRESS (SORRY I AM SLOWLY UPDATING, <br> it looks a bit messy now)</div>
         <br>
         <br>
         <button id = "optionsbut" class = "class1" onclick = "$('#options').toggle();">Options</button>
