@@ -756,13 +756,13 @@ function abilities() {
 }
 
 function spellshop() {
-    let u = $('#Abilities');
+    let u = $('#Spellshopshop');
     u.empty();
     if (theabilities.length > 0) {
-        $('#abilitiesbut').show();
+        $('#Spellshopbut').show();
         theabilities.forEach(function (x) {
             let thebutton = document.createElement("BUTTON");
-            let tooltip = $("#abtooltip")[0];
+            let tooltip = $("#sptooltip")[0];
             thebutton.id = x._name;
             thebutton.classList.add("ability");
             thebutton.style.backgroundImage = "url(" + x.img + ")";
