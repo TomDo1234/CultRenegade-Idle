@@ -153,6 +153,7 @@
      color: white;
      border: solid chartreuse;
      display: none;
+     padding-bottom:1%;
      z-index: 1;
  }
  div.tooltip.Enemy {
@@ -161,6 +162,21 @@
      bottom:16.2%;
      right:100%;
      width:50%;
+ }
+ div.Abilities {
+    position:absolute;
+    height:100%;
+    width: 100%;
+ }
+ div.tooltip.Abilities {
+     position:absolute;
+     float:left;
+ }
+ button.ability {
+     width:25%;
+     height:50%;
+     float:left;
+     position:absolute;
  }
  button.class1.tooltiputil {
      font-size: 1.2vw;
