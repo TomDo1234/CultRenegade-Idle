@@ -22,13 +22,13 @@
  div.Healthbar.ally {
      position:absolute;
      float:right;
-     height:2.1vh;
+     height:2vh;
      line-height: 2.1vh;
      font-size: 1.1vw;
      font-family: sans-serif;
-     width:35%;
-     right:65%;
-     margin-top: 3.5%;
+     margin-top: 0.3%;
+     width:8%;
+     right:18%;
  }
  div.Healthtrack {
      text-align: center;
@@ -221,7 +221,7 @@
  }
  button.ability {
      height: 100%;
-     width: 4%;
+     width: 20%;
      border-color: saddlebrown;
      background-color: darkgrey;
      background-size: 100%;
