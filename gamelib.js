@@ -186,8 +186,10 @@ function levelbuildings() {
             return [MercenaryGuild,Portal];
         case 3:
             return [MercenaryGuild,Portal,Blacksmith];
+        case 4:
+            return [MercenaryGuild,Portal,Blacksmith,Spellshop];
         default:
-            return [MercenaryGuild,Portal,Blacksmith];
+            return [MercenaryGuild,Portal,Blacksmith,Spellshop];
     }
 }
 
