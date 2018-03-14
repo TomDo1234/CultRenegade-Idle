@@ -153,6 +153,7 @@
      color: white;
      border: solid chartreuse;
      display: none;
+     z-index: 1;
  }
  div.tooltip.Enemy {
      font-size: 1.1vw;
@@ -171,14 +172,18 @@
      float:right;
      right:80%;
      font-size: 1.1vw;
-     z-index: 1;
-     min-width:100%;
+     width:100%;
+ }
+ div.tooltip.spellshop {
+     width:100%;
+     float:right;
  }
  div.tooltip.upgrades {
+     position:absolute;
      display:none;
      top:1.5%;
      right:23.03%;
-     min-width:22%;
+     width:100%;
      font-size: 1.1vw;
  }
  div.tooltip.inventory {
@@ -198,9 +203,11 @@
      width:33%;
  }
  div.tooltip.blacksmith {
+     float:right;
      background-color: black;
      font-size: 1.1vw;
-     width:30%;
+     width:100%;
+     right:100%;
      position:absolute;
  }
  div.tooltip.buildings {
@@ -219,9 +226,10 @@
      background-size: 100%;
      background-repeat: no-repeat;
  }
- button.ability {
+ button.spellshop {
      height: 100%;
      width: 20%;
+     float:right;
      border-color: saddlebrown;
      background-color: darkgrey;
      background-size: 100%;
