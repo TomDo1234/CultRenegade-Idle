@@ -727,17 +727,17 @@ function refresh() {
 function abilities() {
     let u = $('#Abilities');
     u.empty();
+    let tooltip = document.createElement("DIV");tooltip.classList.add("tooltip");tooltip.classList.add("Abilities");
     if (playerabilities.length > 0) {
         $('#abilitiesbut').show();
         playerabilities.forEach(function (x) {
             let thebutton = document.createElement("BUTTON");
-            let tooltip = $("#abtooltip")[0];
             thebutton.id = x._name;
             thebutton.classList.add("ability");
             thebutton.style.backgroundImage = "url(" + x.img + ")";
             thebutton.onmouseenter = function () {
                 tooltip.innerHTML = x._name + "<br><br>" + "Damage: " + x.damage + "<br><br>" +
-                "Mana Cost: " + x.mcost + " mana" + "<br><br>" +  x.flavor.italics() + "<br><br>" + "Cost: " + x.Cost;
+                "Mana Cost: " + x.mcost + " mana" + "<br><br>" +  x.flavor.italics();
                 tooltip.style.display = "block";
             };
             thebutton.onmouseout = function () {
@@ -747,11 +747,14 @@ function abilities() {
                 x.activateability(); // REMEMBER partial from python?
             };
             u[0].appendChild(thebutton);
+            u.append(tooltip);
         });
     }
     else {
         $('#abilitiesbut').hide();
     }
+    let foo = playerabilities.length > 5 ? 5 : playerabilities.length;
+    tooltip.style.left = foo * 25 + "%";
 }
 
 function spellshop() {
@@ -776,8 +779,7 @@ function spellshop() {
             };
             thebutton.onclick = function () {
                 buyability(x); // REMEMBER partial from python?
-                thebutton.hide();
-                theabilities.splice(theabilities.indexOf(x),theabilities.indexOf(x) + 1);
+                $(thebutton).remove();
             };
             u[0].appendChild(thebutton);
             u.append(tooltip);
@@ -839,6 +841,7 @@ function buyability(x) {
         resources[x].val -= thecost[x];
     }
     playerabilities.push(x);
+    theabilities.splice(theabilities.indexOf(x),theabilities.indexOf(x) + 1);
     abilities();
     spellshop();
     MsgLog(x._name + " was purchased");
