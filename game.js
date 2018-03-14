@@ -1050,7 +1050,7 @@ let up1 = new Upgrade("Fundamental Skin Science",[75,0,0],"img/skinscience1.png"
     "enviromnent for 399 seconds. <br><br> +1 Bronze for every kill, even the idle kills");
 
 let up2 = new Upgrade("Blood Spear Fishing",[300,0,0],"img/bloodspearfishing1.png",
-    "Out of the approximately 2791741.5 species of fish (Yes... there is are several half-fishes), thousands of them are attracted" +
+    "Out of the approximately 2791741.5 species of fish (Yes... there are several half-fishes), thousands of them are attracted" +
     " to blood. Blood is good bait but it can be dangerous to have carnivorous animals know where you are." +
     " 'Blood Spear Fishing' is like a fishing-martial-art that makes using Blood safe in fishing. <br><br> Doubles Spearman Idle Revenue");
 
