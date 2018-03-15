@@ -101,8 +101,10 @@ class Player {
                 this._speed += statboost[2];
             }
             pxp.innerText = this.xp + "/" + this.Mxp;
+            if (currentlevel.val === 5) { //may need to be more efficient... but for now it is fast enough...
+                pxp.innerText = "Max Level!";
+            }
         }
-        else {pxp.innerText = "Max Level!";}
     }
     get xp() {
         return this._xp;
