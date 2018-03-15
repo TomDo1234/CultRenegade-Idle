@@ -8,6 +8,13 @@ class Player {
         this._xp = xp;
         this._MHea = MHea;
         this._Mxp = Mxp;
+        this._mana = 10;
+    }
+    set mana(val) {
+        this._mana = val;
+    }
+    get mana() {
+        return this._mana;
     }
     set name(val) {
         this._name = val;
@@ -210,7 +217,6 @@ class Item {
 }
 
 class Ally {
-
     constructor(Nam,Hea,Str,Spe,Arm,Cost,MHea,Qua,Idle,farm,flavor) {
         this._name = Nam;
         this._health = Hea;
@@ -433,9 +439,30 @@ class Ability {
         this._damage = val;
     }
     activateability() {
+        let enemies = levelenemies[dungeon.val - 1];
+        let enemypics = $("#Enemy");
         switch(this) {
-            case NormalFrost:
+            case NormalFireball:
+                levelenemies[dungeon.val - 1][0].health -= this.damage;
+                MsgLog("You threw a Normal Fireball at " + enemies[0]._name + "<br>");
+                wobble(enemypics[0].children[0].children[0],enemies[0].health);
                 break;
+        }
+        enemies.forEach(function(e) {
+            if (e.health <= 0) {
+                e.Loot();
+                player.xp += e.xpr;
+                MsgLog("1 " + e._name + " died");
+                wobble(enemypics[0].children[enemies.indexOf(e)].children[0],e.health);
+                enemies.splice(enemies.indexOf(e),enemies.indexOf(e)+1);
+                setTimeout(showfoes,500);
+            }
+        });
+        if (enemies.length === 0) {
+            for (let x = 0; x < ogenemies[dungeon.val - 1].length; x++) {
+                let cope = clone(ogenemies[dungeon.val - 1][x]);
+                enemies.push(cope);
+            }
         }
     }
 }
@@ -744,7 +771,13 @@ function abilities() {
                 tooltip.style.display = "none"
             };
             thebutton.onclick = function () {
-                x.activateability(); // REMEMBER partial from python?
+                if (player.mana < x.mcost) {
+                    MsgLog("Not enough mana...");
+                }
+                else {
+                    player.mana -= x.mcost;
+                    x.activateability(); // REMEMBER partial from python?
+                }
             };
             u[0].appendChild(thebutton);
             u.append(tooltip);
@@ -1181,7 +1214,7 @@ let attackmod = {
     }
 };
 
-let NormalFireball = new Ability("Normal Fireball",5,[5000,0,0],20,"A normal fire ball spell that damages a single target");
+let NormalFireball = new Ability("Normal Fireball",5,[5000,0,0],20,"A normal fire ball spell that damages a single target","img/normalfireball.png");
 let NormalFrost = new Ability("Normal Frost",5,[5000,0,0],10,"A normal frost spell. Slows your enemies down temporarily");
 
 let theabilities = [NormalFireball,NormalFrost];
