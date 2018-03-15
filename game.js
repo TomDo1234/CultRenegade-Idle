@@ -1226,7 +1226,7 @@ let attackmod = {
 };
 
 let NormalFireball = new Ability("Normal Fireball",5,[5000,0,0],20,"A normal fire ball spell that damages a single target","img/normalfireball.png");
-let NormalFrost = new Ability("Normal Frost",5,[5000,0,0],10,"A normal frost spell. Slows your enemies down temporarily");
+let NormalFrost = new Ability("Normal Frost",5,[5000,0,0],10,"A normal frost spell. Slows your enemies down temporarily","img/normalfrost.png");
 
 let theabilities = [NormalFireball,NormalFrost];
 
