@@ -37,9 +37,6 @@
      border-radius: 1vh;
      background-color: springgreen;
  }
- div.Abilities {
-     display: none;
- }
  div.Pstats {
      float:left;
      margin-left: 5%;
@@ -164,6 +161,7 @@
      width:50%;
  }
  div.Abilities {
+    display: none;
     position:absolute;
     height:100%;
     width: 100%;
@@ -177,6 +175,9 @@
      height:50%;
      float:left;
      position:absolute;
+     background: no-repeat black;
+     background-size: 100%;
+     border-color: dodgerblue;
  }
  button.class1.tooltiputil {
      font-size: 1.2vw;
@@ -238,18 +239,16 @@
      width: 20%;
      float:right;
      border-color: saddlebrown;
-     background-color: darkgrey;
+     background: no-repeat darkgrey;
      background-size: 100%;
-     background-repeat: no-repeat;
  }
  button.spellshop {
      height: 100%;
      width: 20%;
      float:right;
-     border-color: saddlebrown;
-     background-color: darkgrey;
+     border-color: dodgerblue;
+     background:no-repeat black;
      background-size: 100%;
-     background-repeat: no-repeat;
  }
  button.buildings {
      border-color: lightskyblue;
