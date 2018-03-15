@@ -9,9 +9,19 @@ class Player {
         this._MHea = MHea;
         this._Mxp = Mxp;
         this._mana = 10;
+        this._Mmana = 10;
     }
     set mana(val) {
+        if (val > this._Mmana) {
+            val = this._Mmana;
+        }
+        if (val <= 0) {
+            val = 0;
+        }
         this._mana = val;
+        let phealthtrack = $("#pmanatrack")[0];
+        phealthtrack.innerText = val + "/" + this._Mmana;
+        phealthtrack.style.width = Math.floor(val / this._Mmana * 100).toString() + "%";
     }
     get mana() {
         return this._mana;
@@ -610,7 +620,7 @@ function showidle() {
             let thetext = document.createElement('DIV');
             let a = ally.AQuantity;
             let b = ally.IQuantity;
-            thetext.innerText = a.toString() + "\xa0\xa0\xa0" + ally._name + "\xa0\xa0\xa0" + b.toString();
+            thetext.innerText = a.toString() + "\xa0\xa0" + ally._name + "\xa0\xa0" + b.toString();
             thetext.style.cssFloat = "right";
             holder.appendChild(ally.Healthbar);holder.appendChild(thetext);
             list[0].insertBefore(holder, list.firstChild);
@@ -623,7 +633,7 @@ function showidle() {
                 let val = Number(slider.value);
                 ally.IQuantity = val;
                 ally.AQuantity = Number(slider.max) - val;
-                thetext.innerText = ally.AQuantity + "\xa0\xa0\xa0" + ally._name + "\xa0\xa0\xa0" + ally.IQuantity;
+                thetext.innerText = ally.AQuantity + "\xa0\xa0" + ally._name + "\xa0\xa0" + ally.IQuantity;
             };
             list[0].insertBefore(slider, list.lastChild);
             load(ally);
@@ -844,6 +854,7 @@ function playerstats() {
 function regen() {
     if (isdead === false) {
         player.health += 1;
+        player.mana += 1;
     }
     allies.forEach(function(ally) {
        ally.health += 1;
@@ -1332,6 +1343,9 @@ let playerbronze = {
             portal();
             showbuildings();
             showupgrades();
+            if (value === 4) {
+
+            }
         },
         get val() {
             return this._val;
