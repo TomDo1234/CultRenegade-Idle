@@ -14,6 +14,19 @@
      bottom: 8%;
      right:4%;
  }
+ div.Manabar {
+     width:100%;
+     border: solid red;
+     border-radius: 2.1vh;
+     color:white;
+ }
+ div.Manatrack {
+     text-align: center;
+     width:100%;
+     height:100%;
+     border-radius: 1vh;
+     background-color: blue;
+ }
  div.Healthbar {
      width:100%;
      border-style:solid;
