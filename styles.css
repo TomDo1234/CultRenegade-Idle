@@ -174,10 +174,11 @@
      width:50%;
  }
  div.Abilities {
-    display: none;
-    position:absolute;
-    height:100%;
-    width: 100%;
+     display: none;
+     position:absolute;
+     height:100%;
+     width: 100%;
+     margin-top: 9.5%;
  }
  div.tooltip.Abilities {
      position:absolute;
@@ -187,7 +188,6 @@
      width:25%;
      height:50%;
      float:left;
-     position:absolute;
      background: no-repeat black;
      background-size: 100%;
      border-color: dodgerblue;
