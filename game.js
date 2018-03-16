@@ -483,9 +483,6 @@ class Ability {
             }
         }
     }
-    toJSON() {
-        return {_name: this._name};
-    }
 }
 
 function fight(attack,enemies,index,allies,idle = false) {
@@ -873,8 +870,8 @@ function continueprogress() {
     showfoes();
     showbuildings();
     showupgrades();
-    spellshop();
     idlestuff();
+    spellshop();
     $("#everything").show();
     refresh();
     regen();
@@ -1493,6 +1490,7 @@ function loadgame() {
         portal();
         inventory();
         abilities();
+        spellshop();
         if (currentlevel.val >= 4) {
             $('#pmana').show();
         }
