@@ -579,7 +579,7 @@ function fight(attack,enemies,index,allies,idle = false) {
 
 function MsgLog(msg) {
     let list = $('#Msg')[0];
-    let holder = document.createElement('li');
+    let holder = document.createElement('li');holder.classList.add("Msg");
     holder.innerHTML = msg;
     $(holder).hide();
     list.insertBefore(holder, list.firstChild);
@@ -1350,6 +1350,7 @@ let playerbronze = {
                 pmanatrack.innerText = player._mana + "/" + player._Mmana;
                 pmanatrack.style.width = Math.floor(player._mana / player._Mmana * 100).toString() + "%";
                 $('#pmana').show();
+                MsgLog("Magic seeps into you as you get more powerful... You start to realize the presence of a higher unknown")
             }
         },
         get val() {
