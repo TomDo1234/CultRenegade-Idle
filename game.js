@@ -1196,12 +1196,17 @@ function showbuildings() {
     let tooltip = $("#buildtooltip");
     canbuild.forEach(function(x) {
         let thebutton = document.createElement("BUTTON");thebutton.classList.add("buildings");
-        thebutton.innerHTML = x.Nam + ": " + x.Quantity + "<br>" + "Cost: " + x.Cost[0]
-            + "/" + x.Cost[1] + "/" + x.Cost[2];
-        thebutton.onclick = function () {
-            build(x); // REMEMBER partial from python?
-        };
-        thebutton.onmouseenter = function() {
+        if (x.Quantity < 1) {
+            thebutton.innerHTML = x.Nam + ": " + x.Quantity + "<br>" + "Cost: " + x.Cost[0]
+                + "/" + x.Cost[1] + "/" + x.Cost[2];
+            thebutton.onclick = function () {
+                build(x); // REMEMBER partial from python?
+            };
+        }
+        else {
+            thebutton.innerHTML = x.Nam + ": " + "Max" + "<br><br>";
+        }
+        thebutton.onmouseenter = function () {
             tooltip[0].innerText = x.flavor;
             tooltip.show();
         };
