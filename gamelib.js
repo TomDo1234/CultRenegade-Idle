@@ -295,3 +295,10 @@ function xptolevelup(x) {
     }
 }
 
+function debuff(type,x,duration,y) {
+    switch(type) {
+        case "speed":
+            x.speed -= y;
+            setTimeout(function(){x.speed += y},duration);
+    }
+}
