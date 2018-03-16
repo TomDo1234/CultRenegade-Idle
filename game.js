@@ -19,9 +19,9 @@ class Player {
             val = 0;
         }
         this._mana = val;
-        let phealthtrack = $("#pmanatrack")[0];
-        phealthtrack.innerText = val + "/" + this._Mmana;
-        phealthtrack.style.width = Math.floor(val / this._Mmana * 100).toString() + "%";
+        let pmanatrack = $("#pmanatrack")[0];
+        pmanatrack.innerText = val + "/" + this._Mmana;
+        pmanatrack.style.width = Math.floor(val / this._Mmana * 100).toString() + "%";
     }
     get mana() {
         return this._mana;
@@ -1345,8 +1345,11 @@ let playerbronze = {
             portal();
             showbuildings();
             showupgrades();
-            if (value === 4) {
-
+            if (this._val === 4) {
+                let pmanatrack = $("#pmanatrack")[0];
+                pmanatrack.innerText = player._mana + "/" + player._Mmana;
+                pmanatrack.style.width = Math.floor(player._mana / player._Mmana * 100).toString() + "%";
+                $('#pmana').show();
             }
         },
         get val() {
