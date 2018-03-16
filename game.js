@@ -455,8 +455,14 @@ class Ability {
         let enemypics = $("#Enemy");
         switch(this) {
             case NormalFireball:
-                levelenemies[dungeon.val - 1][0].health -= this.damage;
-                MsgLog("You threw a Normal Fireball at " + enemies[0]._name + "<br>");
+                enemies[0].health -= this.damage;
+                MsgLog("You threw a Normal Fireball at a" + enemies[0]._name + "<br>");
+                wobble(enemypics[0].children[0].children[0],enemies[0].health);
+                break;
+            case NormalFrost:
+                enemies[0].health -= this.damage;
+                debuff("speed",enemies[0],3000,this.damage);
+                MsgLog("You cast Normal Frost on a" + enemies[0]._name + "<br>");
                 wobble(enemypics[0].children[0].children[0],enemies[0].health);
                 break;
         }
@@ -476,6 +482,9 @@ class Ability {
                 enemies.push(cope);
             }
         }
+    }
+    toJSON() {
+        return {_name: this._name};
     }
 }
 
@@ -767,38 +776,33 @@ function abilities() {
     let u = $('#Abilities');
     u.empty();
     let tooltip = document.createElement("DIV");tooltip.classList.add("tooltip");tooltip.classList.add("Abilities");
-    if (playerabilities.length > 0) {
-        $('#abilitiesbut').show();
-        playerabilities.forEach(function (x) {
-            let thebutton = document.createElement("BUTTON");
-            thebutton.id = x._name;
-            thebutton.classList.add("ability");
-            thebutton.style.backgroundImage = "url(" + x.img + ")";
-            thebutton.onmouseenter = function () {
-                tooltip.innerHTML = x._name + "<br><br>" + "Damage: " + x.damage + "<br><br>" +
+    $('#abilitiesbut').show();
+    playerabilities.forEach(function (x) {
+        let thebutton = document.createElement("BUTTON");
+        thebutton.id = x._name;
+        thebutton.classList.add("ability");
+        thebutton.style.backgroundImage = "url(" + x.img + ")";
+        thebutton.onmouseenter = function () {
+            tooltip.innerHTML = x._name + "<br><br>" + "Damage: " + x.damage + "<br><br>" +
                 "Mana Cost: " + x.mcost + " mana" + "<br><br>" +  x.flavor.italics();
-                tooltip.style.display = "block";
-            };
-            thebutton.onmouseout = function () {
-                tooltip.style.display = "none"
-            };
-            thebutton.onclick = function () {
-                if (player.mana < x.mcost) {
-                    MsgLog("Not enough mana...");
-                }
-                else {
-                    player.mana -= x.mcost;
-                    x.activateability(); // REMEMBER partial from python?
-                }
-            };
-            u[0].appendChild(thebutton);
-            u.append(tooltip);
-        });
-    }
-    else {
-        $('#abilitiesbut').hide();
-    }
-    let foo = playerabilities.length > 5 ? 5 : playerabilities.length;
+            tooltip.style.display = "block";
+        };
+        thebutton.onmouseout = function () {
+            tooltip.style.display = "none"
+        };
+        thebutton.onclick = function () {
+            if (player.mana < x.mcost) {
+                MsgLog("Not enough mana...");
+            }
+            else {
+                player.mana -= x.mcost;
+                x.activateability(); // REMEMBER partial from python?
+            }
+        };
+        u[0].appendChild(thebutton);
+        u.append(tooltip);
+    });
+    let foo = playerabilities.length > 4 ? 4 : playerabilities.length;
     tooltip.style.left = foo * 25 + "%";
 }
 
@@ -806,9 +810,9 @@ function spellshop() {
     let u = $('#Spellshopshop');
     let tooltip = document.createElement("DIV");tooltip.classList.add("tooltip");tooltip.classList.add("spellshop");
     u.empty();
-    if (theabilities.length > 0) {
+    if (canabilities.length > 0) {
         $('#Spellshopbut').show();
-        theabilities.forEach(function (x) {
+        canabilities.forEach(function (x) {
             let thebutton = document.createElement("BUTTON");
             thebutton.id = x._name;
             thebutton.classList.add("spellshop");
@@ -834,7 +838,7 @@ function spellshop() {
         $('#Spellshopbut').hide();
         u[0].innerHTML = "Nothing more to sell from the Spell Shop... for now :) <br><br> Select another building to not let this text waste space!";
     }
-    let foo = theabilities.length > 5 ? 5 : theabilities.length;
+    let foo = canabilities.length > 5 ? 5 : canabilities.length;
     tooltip.style.right = foo * 20 + "%";
 }
 
@@ -888,7 +892,7 @@ function buyability(x) {
         resources[x].val -= thecost[x];
     }
     playerabilities.push(x);
-    theabilities.splice(theabilities.indexOf(x),theabilities.indexOf(x) + 1);
+    canabilities.splice(canabilities.indexOf(x),canabilities.indexOf(x) + 1);
     abilities();
     spellshop();
     MsgLog(x._name + " was purchased");
@@ -1231,6 +1235,7 @@ let NormalFireball = new Ability("Normal Fireball",5,[5000,0,0],20,"A normal fir
 let NormalFrost = new Ability("Normal Frost",5,[5000,0,0],10,"A normal frost spell. Slows your enemies down temporarily","img/normalfrost.png");
 
 let theabilities = [NormalFireball,NormalFrost];
+let canabilities = [NormalFireball,NormalFrost];
 
 let playerinventory = [];
 let playerabilities = [];
@@ -1393,11 +1398,15 @@ function savegame() {
     });
     localStorage.setItem("canupgrade",JSON.stringify(canupgrade));
     localStorage.setItem("upgraded",JSON.stringify(upgraded));
+    localStorage.setItem("canabilities",JSON.stringify(canabilities));
+    localStorage.setItem("playerabilities",JSON.stringify(playerabilities));
     localStorage.setItem("Saved?","{true}");
     localStorage.setItem("allies",JSON.stringify(allies));
     localStorage.setItem("buildings",JSON.stringify(buildings));
     localStorage.setItem("playerinventory",JSON.stringify(playerinventory));
     localStorage.setItem("player",JSON.stringify(player));
+    console.log(canabilities);
+    console.log("Game Saved! (game autosaves every 20 seconds)");
 }
 
 function loadgame() {
@@ -1417,7 +1426,7 @@ function loadgame() {
             count += 1;
         });
         canupgrade = [];playerinventory = [];
-        upgraded = [];
+        upgraded = [];playerabilities = [];canabilities = [];
         JSON.parse(localStorage.getItem("canupgrade")).forEach(function (y) {
             upgrades.forEach(function (ups) {
                 if (ups.name === y.name) {
@@ -1429,6 +1438,20 @@ function loadgame() {
             upgrades.forEach(function (ups) {
                 if (ups.name === y.name) {
                     upgraded.push(ups);
+                }
+            });
+        });
+        JSON.parse(localStorage.getItem("canabilities")).forEach(function (y) {
+            theabilities.forEach(function (ups) {
+                if (ups._name === y._name) {
+                    canabilities.push(ups);
+                }
+            });
+        });
+        JSON.parse(localStorage.getItem("playerabilities")).forEach(function (y) {
+            theabilities.forEach(function (ups) {
+                if (ups._name === y._name) {
+                    playerabilities.push(ups);
                 }
             });
         });
@@ -1469,6 +1492,10 @@ function loadgame() {
         blacksmith();
         portal();
         inventory();
+        abilities();
+        if (currentlevel.val >= 4) {
+            $('#pmana').show();
+        }
     }
 }
 
