@@ -1035,7 +1035,7 @@ function blacksmith() {
 
 function portal() {
     if (Portal.Quantity > 0) {
-        for (let x = 0; x < currentlevel.val && x < 5; x++) {
+        for (let x = 0; x < currentlevel.val && x < maxlevel; x++) {
             let thebutton = document.getElementById("D " + x);
             if (thebutton === null) {
                 let button = document.createElement("BUTTON");
@@ -1375,6 +1375,17 @@ let playerbronze = {
                 $('#pmana').show();
                 MsgLog("Magic seeps into you as you get more powerful... You start to realize the presence of a higher unknown")
             }
+            else if (this._val === 6) {
+                let infobut = document.createElement("BUTTON");infobut.innerHTML = "WARNING PLEASE CLICK HERE TO READ!!!";infobut.classList.add("class2");
+                $('#Events').append(infobut);
+                infobut.onclick = function() {
+                    $('#eventinfo').toggle();$(infobut).remove();
+                    $('#theactualinfo')[0].innerHTML = "You are now above level 5, Enemies in dungeons higher than 5 are no longer passive..."
+                    + "They WILL fight you whether you like it or not. DO NOT enter dungeons above 5 without being prepared. However, it is safe"
+                    + "To place spell traps in dungeons 5 and higher and then leave to another dungeon. It is unlikely that the magic of a level 6"
+                    + "can cause remote harm to enemies with high Magic Resistance (Which is more common the higher the dungeon)."
+                }
+            }
         },
         get val() {
             return this._val;
@@ -1400,8 +1411,15 @@ let snake = new Foe("Generic Snake",30,5,7,[playerbronze,40,1000],3,20,"","Gener
 let goblin1 = new Foe("Killer Goblin Novice",100,10,3,[playerbronze,200,1000],7,120,"","goblin1.png");
 let boss1 = new Foe("Frosty Abomination Fourth Class",800,50,12,[plainuselesslocket,1,1000,playerbronze,40000,1000],0,2000
     ,"","boss1.png");
+let blueimp = new Foe("Blue Imp",700,21,5,[playerbronze,5000,1000],4,1500,"");
+let Witch = new Foe("Regular Witch",500,44,4,[playerbronze,14000,1000],0,4700,"");
+let Poisonoussnake = new Foe("Poisonous Snake",1000,19,10,[playerbronze,50000,1000],9000,"");
+let murdererreaver = new Foe("Murderer Reaver",3000,50,12,[playerbronze,1,1000],13,15000,"");
+let treasurechest1 = new Foe("Treasure Chest (Basic)",5000,0,0,[playersilver,1,1000],10,0,"");
+let Flamewitch1 = new Foe("Flame Witch",2000,100,3,[playerbronze,5000,1000],0,99999,"");
 
-let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,goblin1],[boss1]];
+let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,goblin1],[boss1],[blueimp,blueimp],[Witch],
+    [Poisonoussnake,Poisonoussnake,Poisonoussnake],[murdererreaver,Witch,Witch,Poisonoussnake,treasurechest1],[Flamewitch1]];
 let levelenemies = a2clone(ogenemies);
 
 let timertrap = new Array(levelenemies.length).fill([]);
