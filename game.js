@@ -1257,8 +1257,9 @@ let attackmod = {
 
 let NormalFireball = new Ability("Normal Fireball",5,[5000,0,0],20,"A normal fire ball spell that damages a single target","img/normalfireball.png");
 let NormalFrost = new Ability("Normal Frost",5,[5000,0,0],10,"A normal frost spell. Slows your enemies down temporarily","img/normalfrost.png");
-let Basicarcanetrap = new Ability("Basic Arcane Trap",10,[5000,0,0],4,"A Basic Trap that automatically damages and collects loot from enemies, cast multiple times to intensify it.");
-let Removetrap = new Ability("Remove Trap",1,[500,0,0],0,"Removes the most magical trap you set in the current dungeon.");
+let Basicarcanetrap = new Ability("Basic Arcane Trap",10,[5000,0,0],4,"A Basic Trap that automatically damages and collects loot from enemies, cast multiple times to intensify it.",
+    "basicarcanetrap.png");
+let Removetrap = new Ability("Remove Trap",1,[500,0,0],0,"Removes the most magical trap you set in the current dungeon.","removetrap.png");
 
 let theabilities = [NormalFireball,NormalFrost,Basicarcanetrap,Removetrap];
 let canabilities = [NormalFireball,NormalFrost,Basicarcanetrap,Removetrap];
