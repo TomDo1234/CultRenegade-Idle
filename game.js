@@ -910,8 +910,8 @@ function buyability(x) {
     for (let x = 0; x < resources.length; x++) {
         resources[x].val -= thecost[x];
     }
+    canabilities.splice(canabilities.indexOf(x),1);
     playerabilities.push(x);
-    canabilities.splice(canabilities.indexOf(x),canabilities.indexOf(x) + 1);
     abilities();
     spellshop();
     MsgLog(x._name + " was purchased");
