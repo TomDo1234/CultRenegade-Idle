@@ -95,7 +95,7 @@ class Player {
                 currentlevel.val += 1;
                 this._xp = 0;
                 this.Mxp = xptolevelup(currentlevel.val + 1);//+1 is there to make function give level requirement for levelling to x
-                let statboost = levelup(currentlevel.val);console.log(this.Mxp);
+                let statboost = levelup(currentlevel.val);
                 this.MHea += statboost[0];
                 this._strength += statboost[1];
                 this._speed += statboost[2];
@@ -499,7 +499,7 @@ class Ability {
     }
 }
 
-function fight(attack,enemies,index,allies,idle = false) {
+function fight(attack,enemies,index,allies) {
     let str = player._strength;
     let Order = [];
     let theallies = [];
@@ -515,12 +515,10 @@ function fight(attack,enemies,index,allies,idle = false) {
             theallies.push(x);
         }
     });
-    if (idle === false) {
-        Order.push(player);
-        enemies.forEach(function(x) {
-            Order.push(x);
-        });
-    }
+    Order.push(player);
+    enemies.forEach(function(x) {
+        Order.push(x);
+    });
     Order.sort(function(a, b) {
         return b._speed - a._speed;
     });
@@ -550,7 +548,7 @@ function fight(attack,enemies,index,allies,idle = false) {
 
                 break;
             case "Ally":
-                let whosattackingnum = (idle === false) ? Order[x].AQuantity : Order[x].IQuantity;
+                let whosattackingnum = Order[x].AQuantity;
                 enemies[0].health -= (Order[x].strength - enemies[0].armor) * whosattackingnum;
                 break;
             case "Foe":
@@ -558,7 +556,7 @@ function fight(attack,enemies,index,allies,idle = false) {
                     if (!(Order[x].strength  - theallies[0].armor <= 0)) {
                         theallies[0].health -= Order[x].strength  - theallies[0].armor;
                     }
-                    if (theallies[0].health <= 0 && idle === false) {
+                    if (theallies[0].health <= 0) {
                         if (theallies[0].AQuantity > 0) {
                             theallies[0].AQuantity -= 1;
                         }
@@ -570,7 +568,7 @@ function fight(attack,enemies,index,allies,idle = false) {
                         player.health -= Order[x].strength - player.armor - totalbonusdefense;
                         wobble($("#Playerpic")[0],player.health);
                     }
-                    if (player.health <= 0 && idle === false) {
+                    if (player.health <= 0) {
                         return;
                     }
                 }
@@ -884,10 +882,21 @@ function continueprogress() {
     showbuildings();
     showupgrades();
     idlestuff();
+    autofight();
     spellshop();
     $("#everything").show();
     refresh();
     regen();
+}
+
+function autofight() {
+    if (dungeon.val > 5 && autofightenabled) {
+        fight(setattack, levelenemies[dungeon.val - 1], dungeon.val - 1, allies);
+        if (isdead === true) {
+            dungeon.val = 1;
+        }
+    }
+    setTimeout(autofight,1000);
 }
 
 function buyability(x) {
@@ -922,7 +931,7 @@ function game() {
     inputfield.remove();
     showfoes();
     showbuildings();inventory();
-    showupgrades();
+    showupgrades();autofight();
     idlestuff();
     $("#pxp")[0].innerText = player._xp + "/" + player._Mxp;
     $('#Bronze')[0].innerText = "Bronze: " + Math.floor(playerbronze._val);
@@ -1315,6 +1324,7 @@ let player = new Player("PoopHead!",5,1,1,1,0,5,50);
 let isdead = false;
 let wobbleon = true;
 let maxlevel = 10;
+let autofightenabled = true;
 
 let title = "RPG IDLE OF DOOM";
 let setattack = "Stab";
@@ -1383,7 +1393,8 @@ let playerbronze = {
                     $('#theactualinfo')[0].innerHTML = "You are now above level 5, Enemies in dungeons higher than 5 are no longer passive..."
                     + "They WILL fight you whether you like it or not. DO NOT enter dungeons above 5 without being prepared. However, it is safe"
                     + "To place spell traps in dungeons 5 and higher and then leave to another dungeon. It is unlikely that the magic of a level 6"
-                    + "can cause remote harm to enemies with high Magic Resistance (Which is more common the higher the dungeon)."
+                    + "can cause remote harm to enemies with high Magic Resistance (Which is more common the higher the dungeon)." + "<br><br>"
+                    + "If you die, don't worry. You will be teleported back to dungeon 1!"
                 }
             }
         },
@@ -1411,9 +1422,9 @@ let snake = new Foe("Generic Snake",30,5,7,[playerbronze,40,1000],3,20,"","Gener
 let goblin1 = new Foe("Killer Goblin Novice",100,10,3,[playerbronze,200,1000],7,120,"","goblin1.png");
 let boss1 = new Foe("Frosty Abomination Fourth Class",800,50,12,[plainuselesslocket,1,1000,playerbronze,40000,1000],0,2000
     ,"","boss1.png");
-let blueimp = new Foe("Blue Imp",700,21,5,[playerbronze,5000,1000],4,1500,"");
-let Witch = new Foe("Regular Witch",500,44,4,[playerbronze,14000,1000],0,4700,"");
-let Poisonoussnake = new Foe("Poisonous Snake",1000,19,10,[playerbronze,50000,1000],9000,"");
+let blueimp = new Foe("Blue Imp",700,21,5,[playerbronze,5000,1000],4,1500,"","blueimp1.png");
+let Witch = new Foe("Regular Witch",500,44,4,[playerbronze,14000,1000],0,4700,"","regularwitch.png");
+let Poisonoussnake = new Foe("Poisonous Snake",1000,19,10,[playerbronze,50000,1000],9000,"",);
 let murdererreaver = new Foe("Murderer Reaver",3000,50,12,[playerbronze,1,1000],13,15000,"");
 let treasurechest1 = new Foe("Treasure Chest (Basic)",5000,0,0,[playersilver,1,1000],10,0,"");
 let Flamewitch1 = new Foe("Flame Witch",2000,100,3,[playerbronze,5000,1000],0,99999,"");
