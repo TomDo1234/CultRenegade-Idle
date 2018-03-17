@@ -89,19 +89,19 @@ class Player {
     }
     set xp(val) {
         let pxp = $("#pxp")[0];
-        if (currentlevel.val < 5) {
+        if (currentlevel.val < maxlevel) {
             this._xp = val;
             if (val >= this._Mxp) {
                 currentlevel.val += 1;
                 this._xp = 0;
                 this.Mxp = xptolevelup(currentlevel.val + 1);//+1 is there to make function give level requirement for levelling to x
-                let statboost = levelup(currentlevel.val);
+                let statboost = levelup(currentlevel.val);console.log(this.Mxp);
                 this.MHea += statboost[0];
                 this._strength += statboost[1];
                 this._speed += statboost[2];
             }
             pxp.innerText = this.xp + "/" + this.Mxp;
-            if (currentlevel.val === 5) { //may need to be more efficient... but for now it is fast enough...
+            if (currentlevel.val === maxlevel) { //may need to be more efficient... but for now it is fast enough...
                 pxp.innerText = "Max Level!";
             }
         }
@@ -120,7 +120,7 @@ class Player {
     }
     set Mxp(val) {
         let pxp = $("#pxp")[0];
-        if (currentlevel.val < 5) {
+        if (currentlevel.val < maxlevel) {
             this._Mxp = val;
             pxp.innerText = this._xp + "/" + this._Mxp;
         }
@@ -428,6 +428,7 @@ class Ability {
         this._damage = dam;
         this.flavor = flavor;
         this.img = img;
+        this.trapnum = [0,0,0,0,0];
     }
     get mcost() {
         return this._mcost;
@@ -464,6 +465,19 @@ class Ability {
                 debuff("speed",enemies[0],3000,this.damage);
                 MsgLog("You cast Normal Frost on a" + enemies[0]._name + "<br>");
                 wobble(enemypics[0].children[0].children[0],enemies[0].health);
+                break;
+            case Basicarcanetrap:
+                if (this.trapnum[dungeon.val - 1] === 0) {
+                    MsgLog("You set a Basic Arcane Trap in this Dungeon (lasts for 1 hour)");
+                }
+                else {
+                    MsgLog("You intensify the Basic Arcane Trap in this dungeon");
+                }
+                spelltrap(3600000,this.damage,15,dungeon.val - 1,Basicarcanetrap);
+                break;
+            case Removetrap:
+                removetrap(Basicarcanetrap,15);
+                MsgLog("Trap Removed");
                 break;
         }
         enemies.forEach(function(e) {
@@ -842,7 +856,6 @@ function spellshop() {
 function playerstats() {
     let stats = $('#Pstats');
     let theattack = player.strength;
-    let thehealth = player.health;
     let thearmor = player.armor;
     let thespeed = player.speed;
     playerinventory.forEach(function(item) {
@@ -850,7 +863,7 @@ function playerstats() {
        thearmor += item.defense * item.EQuantity;
        thespeed += item.speed * item.EQuantity;
     });
-    stats[0].innerHTML = "Attack: \xa0" + theattack + "<br><br>" + "Health: \xa0" + thehealth + "<br><br>"
+    stats[0].innerHTML = "Attack: \xa0" + theattack + "<br><br>"
         + "Armor: \xa0" + thearmor + "<br><br>" + "Speed: \xa0" + thespeed;
 }
 
@@ -1235,9 +1248,11 @@ let attackmod = {
 
 let NormalFireball = new Ability("Normal Fireball",5,[5000,0,0],20,"A normal fire ball spell that damages a single target","img/normalfireball.png");
 let NormalFrost = new Ability("Normal Frost",5,[5000,0,0],10,"A normal frost spell. Slows your enemies down temporarily","img/normalfrost.png");
+let Basicarcanetrap = new Ability("Basic Arcane Trap",10,[5000,0,0],4,"A Basic Trap that automatically damages and collects loot from enemies, cast multiple times to intensify it.");
+let Removetrap = new Ability("Remove Trap",1,[500,0,0],0,"Removes the most magical trap you set in the current dungeon.");
 
-let theabilities = [NormalFireball,NormalFrost];
-let canabilities = [NormalFireball,NormalFrost];
+let theabilities = [NormalFireball,NormalFrost,Basicarcanetrap,Removetrap];
+let canabilities = [NormalFireball,NormalFrost,Basicarcanetrap,Removetrap];
 
 let playerinventory = [];
 let playerabilities = [];
@@ -1299,6 +1314,7 @@ let cantrain = [GenericSpearman,GenericSwordsman,GenericKnight];
 let player = new Player("PoopHead!",5,1,1,1,0,5,50);
 let isdead = false;
 let wobbleon = true;
+let maxlevel = 10;
 
 let title = "RPG IDLE OF DOOM";
 let setattack = "Stab";
@@ -1382,12 +1398,13 @@ let goblin = new Foe("Generic Goblin", 1, 1, 1, [playerbronze,1,1000],0,1,"","Ge
 let imp = new Foe("Generic Imp", 5, 2, 1, [playerbronze,2,1000],0,2,"","Genericimp1.png");
 let snake = new Foe("Generic Snake",30,5,7,[playerbronze,40,1000],3,20,"","Genericsnake1.png");
 let goblin1 = new Foe("Killer Goblin Novice",100,10,3,[playerbronze,200,1000],7,120,"","goblin1.png");
-let boss1 = new Foe("Frosty Abomination Fourth Class",800,50,12,[plainuselesslocket,1,1000,playerbronze,40000,1000],0,5000
+let boss1 = new Foe("Frosty Abomination Fourth Class",800,50,12,[plainuselesslocket,1,1000,playerbronze,40000,1000],0,2000
     ,"","boss1.png");
 
 let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,goblin1],[boss1]];
 let levelenemies = a2clone(ogenemies);
 
+let timertrap = new Array(levelenemies.length).fill([]);
 
 let gamestats = [playerbronze,playersilver,playergold,currentlevel,dungeon,attackmod];
 
@@ -1407,7 +1424,6 @@ function savegame() {
     localStorage.setItem("buildings",JSON.stringify(buildings));
     localStorage.setItem("playerinventory",JSON.stringify(playerinventory));
     localStorage.setItem("player",JSON.stringify(player));
-    console.log(canabilities);
     console.log("Game Saved! (game autosaves every 20 seconds)");
 }
 
