@@ -476,8 +476,13 @@ class Ability {
                 spelltrap(3600000,this.damage,15,dungeon.val - 1,Basicarcanetrap);
                 break;
             case Removetrap:
-                removetrap(Basicarcanetrap,15);
-                MsgLog("Trap Removed");
+                if (this.trapnum[dungeon.val - 1] !== 0) {
+                    removetrap(Basicarcanetrap, 15);
+                    MsgLog("Trap Removed");
+                }
+                else {
+                    MsgLog("You have set no traps on this location");
+                }
                 break;
         }
         enemies.forEach(function(e) {
