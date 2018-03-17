@@ -273,6 +273,16 @@ function levelup(x) {
             return [2,2,0];
         case 5:
             return [5,3,0];
+        case 6:
+            return [5,1,1];
+        case 7:
+            return [10,6,0];
+        case 8:
+            return [11,4,0];
+        case 9:
+            return [14,9,1];
+        case 10:
+            return [25,10,1];
         default:
             return [2,2,0];
     }
@@ -287,9 +297,15 @@ function xptolevelup(x) {
         case 5:
             return 922;
         case 6:
-            return 2000;
+            return 10000;
         case 7:
-            return 10001;
+            return 100001;
+        case 8:
+            return 500002;
+        case 9:
+            return 1999999;
+        case 10:
+            return 4444444;
         default:
             return 42;
     }
@@ -301,4 +317,45 @@ function debuff(type,x,duration,y) {
             x.speed -= y;
             setTimeout(function(){x.speed += y},duration);
     }
+}
+
+function spelltrap(duration,damage,costadd,number,spell) {
+    function thedamage() {
+        let enemies = levelenemies[number];
+        enemies[0].health -= damage * spell.trapnum[number];
+        let enemypics = $("#Enemy");
+        if (dungeon.val - 1 === number) {wobble(enemypics[0].children[0].children[0],enemies[0].health)}
+        enemies.forEach(function(e) {
+            if (e.health <= 0) {
+                e.Loot();
+                player.xp += e.xpr;
+                MsgLog("1 " + e._name + " died");
+                if (dungeon.val - 1 === number) {wobble(enemypics[0].children[enemies.indexOf(e)].children[0],e.health)}
+                enemies.splice(enemies.indexOf(e),enemies.indexOf(e)+1);
+                setTimeout(showfoes,500);
+            }
+        });
+        if (enemies.length === 0) {
+            for (let x = 0; x < ogenemies[number].length; x++) {
+                let cope = clone(ogenemies[number][x]);
+                enemies.push(cope);
+            }
+        }
+        if (spell.trapnum[number] > 0) {
+            setTimeout(thedamage,1000);
+        }
+    }
+    spell._mcost += costadd;
+    spell.trapnum[number] += 1;
+    if (spell.trapnum[number] - 1 === 0) {
+        thedamage();
+    }
+    timertrap[number].push(setTimeout(function() {spell._mcost -= costadd;spell.trapnum[number] -= 1},duration));
+}
+
+function removetrap(spell,costminus) {
+    spell._mcost -= costminus;
+    spell.trapnum[dungeon.val - 1] -= 1;
+    clearTimeout(timertrap[dungeon.val - 1].pop());
+    //line above is interesting... this removes last element of timertrap and clears the timer there at the same time!
 }
