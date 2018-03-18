@@ -359,3 +359,18 @@ function removetrap(spell,costminus) {
     clearTimeout(timertrap[dungeon.val - 1].pop());
     //line above is interesting... this removes last element of timertrap and clears the timer there at the same time!
 }
+
+function poison(thing,dam,dur) {
+    let count = 0;
+    function poisoning() {
+        if (count <= dur/100) {
+            count += 1;
+            thing.health -= dam;
+            if (thing === player && thing.health === 0) {
+                dungeon.val = 1;
+            }
+            setTimeout(poisoning,100);
+        }
+    }
+    poisoning();
+}
