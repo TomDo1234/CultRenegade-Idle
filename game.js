@@ -1430,7 +1430,7 @@ let boss1 = new Foe("Frosty Abomination Fourth Class",800,50,12,[plainuselessloc
     ,"","boss1.png");
 let blueimp = new Foe("Blue Imp",700,21,5,[playerbronze,5000,1000],4,1500,"","blueimp1.png");
 let Witch = new Foe("Regular Witch",500,44,4,[playerbronze,14000,1000],0,4700,"","regularwitch.png");
-let Poisonoussnake = new Foe("Poisonous Snake",1000,19,10,[playerbronze,50000,1000],9000,"",);
+let Poisonoussnake = new Foe("Poisonous Snake",1000,19,10,[playerbronze,50000,1000],9000,"");
 let murdererreaver = new Foe("Murderer Reaver",3000,50,12,[playerbronze,1,1000],13,15000,"");
 let treasurechest1 = new Foe("Treasure Chest (Basic)",5000,0,0,[playersilver,1,1000],10,0,"");
 let Flamewitch1 = new Foe("Flame Witch",2000,100,3,[playerbronze,5000,1000],0,99999,"");
