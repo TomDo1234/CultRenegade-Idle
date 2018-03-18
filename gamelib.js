@@ -272,19 +272,19 @@ function levelup(x) {
         case 4:
             return [2,2,0];
         case 5:
-            return [5,3,0];
+            return [5,3,0,10];
         case 6:
-            return [5,1,1];
+            return [5,1,1,20];
         case 7:
-            return [10,6,0];
+            return [10,6,0,20];
         case 8:
-            return [11,4,0];
+            return [11,4,0,20];
         case 9:
-            return [14,9,1];
+            return [14,9,1,25];
         case 10:
-            return [25,10,1];
+            return [25,10,1,35];
         default:
-            return [2,2,0];
+            return [2,2,0,0];
     }
 }
 
