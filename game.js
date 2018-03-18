@@ -20,7 +20,7 @@ class Player {
         }
         this._mana = val;
         let pmanatrack = $("#pmanatrack")[0];
-        pmanatrack.innerText = val + "/" + this._Mmana;
+        pmanatrack.innerText = Math.round(val) + "/" + Math.round(this._Mmana);
         pmanatrack.style.width = Math.floor(val / this._Mmana * 100).toString() + "%";
     }
     get mana() {
@@ -42,7 +42,7 @@ class Player {
         }
         this._health = val;
         let phealthtrack = $("#phealthtrack")[0];
-        phealthtrack.innerText = val + "/" + this._MHea;
+        phealthtrack.innerText = Math.round(val) + "/" + Math.round(this._MHea);
         phealthtrack.style.width = Math.floor(val / this._MHea * 100).toString() + "%";
         if (val <= 0) {
             let count = 10;
@@ -405,6 +405,16 @@ class Foe {
         }
     }
 
+    activatespecial(damage) {
+        switch(this._name) {
+            case "Poisonous Snake":
+                if (damage > 0) {
+                    MsgLog("You have been poisoned by a Poisonous Snake!");
+                    poison(player,0.1,10000);
+                }
+        }
+    }
+
 }
 
 class Upgrade {
@@ -570,8 +580,10 @@ function fight(attack,enemies,index,allies) {
                     }
                 }
                 else {
+                    Order[x].activatespecial(Order[x].strength - player.armor - totalbonusdefense);
                     if (!(Order[x].strength  - player.armor - totalbonusdefense <= 0)) {
                         player.health -= Order[x].strength - player.armor - totalbonusdefense;
+
                         wobble($("#Playerpic")[0],player.health);
                     }
                     if (player.health <= 0) {
@@ -1390,7 +1402,7 @@ let playerbronze = {
             spellshop();
             if (this._val === 4) {
                 let pmanatrack = $("#pmanatrack")[0];
-                pmanatrack.innerText = player._mana + "/" + player._Mmana;
+                pmanatrack.innerText = Math.round(player._mana) + "/" + Math.round(player._Mmana);
                 pmanatrack.style.width = Math.floor(player._mana / player._Mmana * 100).toString() + "%";
                 $('#pmana').show();
                 MsgLog("Magic seeps into you as you get more powerful... You start to realize the presence of a higher unknown")
