@@ -421,7 +421,7 @@ class Upgrade {
 }
 
 class Ability {
-    constructor(Nam,MCost,Cost,dam,flavor = " ",img = "img/goblin1.png") {
+    constructor(Nam,MCost,Cost,dam,flavor = " ",lvl = 4,img = "img/goblin1.png") {
         this._name = Nam;
         this._mcost = MCost;
         this._cost = Cost;
@@ -429,6 +429,7 @@ class Ability {
         this.flavor = flavor;
         this.img = img;
         this.trapnum = [0,0,0,0,0];
+        this.level = lvl;
     }
     get mcost() {
         return this._mcost;
@@ -476,7 +477,7 @@ class Ability {
                 spelltrap(3600000,this.damage,15,dungeon.val - 1,Basicarcanetrap);
                 break;
             case Removetrap:
-                if (this.trapnum[dungeon.val - 1] !== 0) {
+                if (Basicarcanetrap.trapnum[dungeon.val - 1] !== 0) {
                     removetrap(Basicarcanetrap, 15);
                     MsgLog("Trap Removed");
                 }
@@ -827,25 +828,27 @@ function spellshop() {
     if (canabilities.length > 0) {
         $('#Spellshopbut').show();
         canabilities.forEach(function (x) {
-            let thebutton = document.createElement("BUTTON");
-            thebutton.id = x._name;
-            thebutton.classList.add("spellshop");
-            thebutton.style.backgroundImage = "url(" + x.img + ")";
-            thebutton.onmouseenter = function () {
-                tooltip.innerHTML = x._name + "<br><br>" + "Damage: " + x.damage + "<br><br>" +
-                    "Mana Cost: " + x.mcost + " mana" + "<br><br>" +  x.flavor.italics() + "<br><br>" + "Cost: " +
-                    x.cost[0] + "/" + x.cost[1] + "/" + x.cost[2];
-                tooltip.style.display = "block";
-            };
-            thebutton.onmouseout = function () {
-                tooltip.style.display = "none"
-            };
-            thebutton.onclick = function () {
-                buyability(x); // REMEMBER partial from python?
-                $(thebutton).remove();
-            };
-            u[0].appendChild(thebutton);
-            u.append(tooltip);
+            if (x.level <= currentlevel.val) {
+                let thebutton = document.createElement("BUTTON");
+                thebutton.id = x._name;
+                thebutton.classList.add("spellshop");
+                thebutton.style.backgroundImage = "url(" + x.img + ")";
+                thebutton.onmouseenter = function () {
+                    tooltip.innerHTML = x._name + "<br><br>" + "Damage: " + x.damage + "<br><br>" +
+                        "Mana Cost: " + x.mcost + " mana" + "<br><br>" + x.flavor.italics() + "<br><br>" + "Cost: " +
+                        x.cost[0] + "/" + x.cost[1] + "/" + x.cost[2];
+                    tooltip.style.display = "block";
+                };
+                thebutton.onmouseout = function () {
+                    tooltip.style.display = "none"
+                };
+                thebutton.onclick = function () {
+                    buyability(x); // REMEMBER partial from python?
+                    $(thebutton).remove();
+                };
+                u[0].appendChild(thebutton);
+                u.append(tooltip);
+            }
         });
     }
     else {
@@ -1260,11 +1263,11 @@ let attackmod = {
     }
 };
 
-let NormalFireball = new Ability("Normal Fireball",5,[5000,0,0],20,"A normal fire ball spell that damages a single target","img/normalfireball.png");
-let NormalFrost = new Ability("Normal Frost",5,[5000,0,0],10,"A normal frost spell. Slows your enemies down temporarily","img/normalfrost.png");
+let NormalFireball = new Ability("Normal Fireball",5,[5000,0,0],20,"A normal fire ball spell that damages a single target",4,"img/normalfireball.png");
+let NormalFrost = new Ability("Normal Frost",5,[5000,0,0],10,"A normal frost spell. Slows your enemies down temporarily",4,"img/normalfrost.png");
 let Basicarcanetrap = new Ability("Basic Arcane Trap",10,[5000,0,0],4,"A Basic Trap that automatically damages and collects loot from enemies, cast multiple times to intensify it.",
-    "img/basicarcanetrap.png");
-let Removetrap = new Ability("Remove Trap",1,[500,0,0],0,"Removes the most magical trap you set in the current dungeon.","img/removetrap.png");
+    6,"img/basicarcanetrap.png");
+let Removetrap = new Ability("Remove Trap",1,[500,0,0],0,"Removes the most magical trap you set in the current dungeon.",6,"img/removetrap.png");
 
 let theabilities = [NormalFireball,NormalFrost,Basicarcanetrap,Removetrap];
 let canabilities = [NormalFireball,NormalFrost,Basicarcanetrap,Removetrap];
@@ -1384,6 +1387,7 @@ let playerbronze = {
             portal();
             showbuildings();
             showupgrades();
+            spellshop();
             if (this._val === 4) {
                 let pmanatrack = $("#pmanatrack")[0];
                 pmanatrack.innerText = player._mana + "/" + player._Mmana;
@@ -1430,10 +1434,10 @@ let boss1 = new Foe("Frosty Abomination Fourth Class",800,50,12,[plainuselessloc
     ,"","boss1.png");
 let blueimp = new Foe("Blue Imp",700,21,5,[playerbronze,5000,1000],4,1500,"","blueimp1.png");
 let Witch = new Foe("Regular Witch",500,44,4,[playerbronze,14000,1000],0,4700,"","regularwitch.png");
-let Poisonoussnake = new Foe("Poisonous Snake",1000,19,10,[playerbronze,50000,1000],9000,"");
-let murdererreaver = new Foe("Murderer Reaver",3000,50,12,[playerbronze,1,1000],13,15000,"");
-let treasurechest1 = new Foe("Treasure Chest (Basic)",5000,0,0,[playersilver,1,1000],10,0,"");
-let Flamewitch1 = new Foe("Flame Witch",2000,100,3,[playerbronze,5000,1000],0,99999,"");
+let Poisonoussnake = new Foe("Poisonous Snake",1000,19,10,[playerbronze,50000,1000],6,9000,"","poisonoussnake.png");
+let murdererreaver = new Foe("Murderer Reaver",3000,50,12,[playerbronze,1,1000],13,15000,"","murdererreaver1.png");
+let treasurechest1 = new Foe("Treasure Chest (Basic)",5000,0,0,[playersilver,1,1000],10,0,"","treasurechest1.png");
+let Flamewitch1 = new Foe("Flame Witch",2000,100,3,[playersilver,5,1000,playerbronze,400000],0,99999,"","flamewitch.png");
 
 let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,goblin1],[boss1],[blueimp,blueimp],[Witch],
     [Poisonoussnake,Poisonoussnake,Poisonoussnake],[murdererreaver,Witch,Witch,Poisonoussnake,treasurechest1],[Flamewitch1]];
