@@ -98,7 +98,7 @@ class Player {
                 let statboost = levelup(currentlevel.val);
                 this.MHea += statboost[0];
                 this._strength += statboost[1];
-                this._speed += statboost[2];
+                this._speed += statboost[2]; if (currentlevel.val > 4) {this._Mmana += statboost[3]};
             }
             pxp.innerText = this.xp + "/" + this.Mxp;
             if (currentlevel.val === maxlevel) { //may need to be more efficient... but for now it is fast enough...
