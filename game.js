@@ -11,6 +11,15 @@ class Player {
         this._mana = 10;
         this._Mmana = 10;
     }
+    set Mmana(val) {
+        this._Mmana = val;
+        let pmanatrack = $("#pmanatrack")[0];
+        pmanatrack.innerText = Math.round(this._mana) + "/" + Math.round(val);
+        pmanatrack.style.width = Math.floor(this._mana / val * 100).toString() + "%";
+    }
+    get Mmana() {
+        return this._Mmana;
+    }
     set mana(val) {
         if (val > this._Mmana) {
             val = this._Mmana;
@@ -98,7 +107,7 @@ class Player {
                 let statboost = levelup(currentlevel.val);
                 this.MHea += statboost[0];
                 this._strength += statboost[1];
-                this._speed += statboost[2]; if (currentlevel.val > 4) {this._Mmana += statboost[3]};
+                this._speed += statboost[2]; if (currentlevel.val > 4) {this.Mmana += statboost[3]}
             }
             pxp.innerText = this.xp + "/" + this.Mxp;
             if (currentlevel.val === maxlevel) { //may need to be more efficient... but for now it is fast enough...
@@ -132,11 +141,12 @@ class Player {
 }
 
 class Building {
-    constructor(Cost,Quantity,Nam,flav = "TBA") {
+    constructor(Cost,Quantity,Nam,flav = "TBA",MQuantity = 1) {
         this._Cost = Cost;
         this._Quantity = Quantity;
         this.Nam = Nam;
         this.flavor = flav;
+        this.MQuantity = MQuantity;
     }
 
     set Cost(val) {
@@ -333,7 +343,7 @@ class Ally {
 
 class Foe {
 
-    constructor(Nam,Hea,Str,Spe,Loo,Arm,xpr,flav = "",img = "Genericgoblin1.png") {
+    constructor(Nam,Hea,Str,Spe,Loo,Arm,xpr,flav = "",img = "Genericgoblin1.png",spec = []) {
         this._name = Nam;
         this._health = Hea;
         this._strength = Str;
@@ -344,12 +354,13 @@ class Foe {
         this.flavor = flav;
         this._img = img;
         this._MHea = this._health;
+        this._spec = spec;
         this.Healthbar = document.createElement("DIV");this.Healthbar.classList.add("Healthbar");
         this.Healthbartrack = document.createElement("DIV");this.Healthbartrack.classList.add("Healthtrack");
     }
 
     toJSON() {
-        return {name: this._name,health:this._health,strength:this._strength,speed:this._speed,loot:this.loot};
+        return {name: this._name,health:this._health,strength:this._strength,speed:this._speed,loot:this.loot,spec:this._spec};
     }
 
     set health(val) {
@@ -405,14 +416,22 @@ class Foe {
         }
     }
 
-    activatespecial(damage) {
-        switch(this._name) {
-            case "Poisonous Snake":
-                if (damage > 0) {
-                    MsgLog("You have been poisoned by a Poisonous Snake!");
-                    poison(player,0.1,10000);
-                }
-        }
+    activatespecial(damage,target) {
+        let z = this; // to prevent the undefined thing.
+        this._spec.forEach(function(spec) {
+           switch(spec[0]) {
+               case "Poison":
+                   if (damage > 0) {
+                       MsgLog("You have been poisoned by a Poisonous Snake!");
+                       poison(target,spec[1],spec[2]);
+                   }
+                   break;
+               case "Lifesteal":
+                   let damage2 = damage < 0 ? 0 : damage;
+                   z.health += damage2;
+                   break;
+           }
+        });
     }
 
 }
@@ -432,7 +451,7 @@ class Upgrade {
 
 class Ability {
     constructor(Nam,MCost,Cost,dam,flavor = " ",lvl = 4,img = "img/goblin1.png") {
-        this._name = Nam;
+        this.name = Nam;
         this._mcost = MCost;
         this._cost = Cost;
         this._damage = dam;
@@ -440,6 +459,9 @@ class Ability {
         this.img = img;
         this.trapnum = [0,0,0,0,0];
         this.level = lvl;
+    }
+    toJSON() {
+        return {name: this.name};
     }
     get mcost() {
         return this._mcost;
@@ -569,6 +591,7 @@ function fight(attack,enemies,index,allies) {
                 break;
             case "Foe":
                 if (theallies.length > 0) {
+                    Order[x].activatespecial(Order[x].strength - theallies[0].armor,theallies[0]);
                     if (!(Order[x].strength  - theallies[0].armor <= 0)) {
                         theallies[0].health -= Order[x].strength  - theallies[0].armor;
                     }
@@ -580,7 +603,7 @@ function fight(attack,enemies,index,allies) {
                     }
                 }
                 else {
-                    Order[x].activatespecial(Order[x].strength - player.armor - totalbonusdefense);
+                    Order[x].activatespecial(Order[x].strength - player.armor - totalbonusdefense,player);
                     if (!(Order[x].strength  - player.armor - totalbonusdefense <= 0)) {
                         player.health -= Order[x].strength - player.armor - totalbonusdefense;
 
@@ -684,7 +707,7 @@ function checkpersec() {
     let sps = 0;
     let gps = 0;
     allies.forEach(function(a) {
-        let b = a.IQuantity * a.farm[0] - resources[0].mod;
+        let b = a.IQuantity * a.farm[0];
         let s = a.IQuantity * a.farm[1];
         let g = a.IQuantity * a.farm[2];
         bps += b; sps += s; gps += g;
@@ -699,10 +722,10 @@ function idlestuff() {
     let sps = 0;
     let gps = 0;
     allies.forEach(function(a) {
-        let b = a.IQuantity * a.farm[0] - resources[0].mod;
+        let b = a.IQuantity * a.farm[0];
         let s = a.IQuantity * a.farm[1];
         let g = a.IQuantity * a.farm[2];
-        resources[0].val += b;
+        resources[0].val += b - resources[0].mod;
         resources[1].val += s;
         resources[2].val += g;
         bps += b; sps += s; gps += g;
@@ -806,11 +829,11 @@ function abilities() {
     $('#abilitiesbut').show();
     playerabilities.forEach(function (x) {
         let thebutton = document.createElement("BUTTON");
-        thebutton.id = x._name;
+        thebutton.id = x.name;
         thebutton.classList.add("ability");
         thebutton.style.backgroundImage = "url(" + x.img + ")";
         thebutton.onmouseenter = function () {
-            tooltip.innerHTML = x._name + "<br><br>" + "Damage: " + x.damage + "<br><br>" +
+            tooltip.innerHTML = x.name + "<br><br>" + "Damage: " + x.damage + "<br><br>" +
                 "Mana Cost: " + x.mcost + " mana" + "<br><br>" +  x.flavor.italics();
             tooltip.style.display = "block";
         };
@@ -826,7 +849,7 @@ function abilities() {
                 x.activateability(); // REMEMBER partial from python?
             }
         };
-        u[0].appendChild(thebutton);
+        u.append(thebutton);
         u.append(tooltip);
     });
     let foo = playerabilities.length > 4 ? 4 : playerabilities.length;
@@ -842,11 +865,11 @@ function spellshop() {
         canabilities.forEach(function (x) {
             if (x.level <= currentlevel.val) {
                 let thebutton = document.createElement("BUTTON");
-                thebutton.id = x._name;
+                thebutton.id = x.name;
                 thebutton.classList.add("spellshop");
                 thebutton.style.backgroundImage = "url(" + x.img + ")";
                 thebutton.onmouseenter = function () {
-                    tooltip.innerHTML = x._name + "<br><br>" + "Damage: " + x.damage + "<br><br>" +
+                    tooltip.innerHTML = x.name + "<br><br>" + "Damage: " + x.damage + "<br><br>" +
                         "Mana Cost: " + x.mcost + " mana" + "<br><br>" + x.flavor.italics() + "<br><br>" + "Cost: " +
                         x.cost[0] + "/" + x.cost[1] + "/" + x.cost[2];
                     tooltip.style.display = "block";
@@ -858,7 +881,7 @@ function spellshop() {
                     buyability(x); // REMEMBER partial from python?
                     $(thebutton).remove();
                 };
-                u[0].appendChild(thebutton);
+                u.append(thebutton);
                 u.append(tooltip);
             }
         });
@@ -934,7 +957,7 @@ function buyability(x) {
     playerabilities.push(x);
     abilities();
     spellshop();
-    MsgLog(x._name + " was purchased");
+    MsgLog(x.name + " was purchased");
 }
 
 function game() {
@@ -980,7 +1003,7 @@ function train(x) {
 
 function buildingselection() {
     $('#buildselection').empty();
-    let thebuildings1 = [MercenaryGuild,Blacksmith,Spellshop];
+    let thebuildings1 = [MercenaryGuild,Blacksmith,Spellshop,Bank];
     thebuildings1.forEach(function(building) {
        if (building.Quantity > 0) {
            let thebutton = document.createElement("BUTTON");
@@ -1051,7 +1074,7 @@ function blacksmith() {
             thebutton.onclick = function () {
                 buyitem(x); // REMEMBER partial from python?
             };
-            u[0].appendChild(thebutton);
+            u.append(thebutton);
             u.append(tooltip);
         });
     }
@@ -1084,7 +1107,7 @@ function portal() {
     }
 }
 
-function buyupgrade(x) {
+function buyupgrade(x,type = "normal") {
     let thecost = x.Cost;
     for (let x = 0; x < resources.length; x++) {
         if (resources[x].val - thecost[x] < 0) {
@@ -1105,11 +1128,21 @@ function buyupgrade(x) {
         case up3:
             attackmod.val += 1;
             break;
+        case bup1:
+            playersilver.val += 1;
+            break;
     }
-    canupgrade.splice(canupgrade.indexOf(x),1);
-    upgraded.push(x);
-    $("#uptooltip").hide();
-    showupgrades();
+    switch(type) {
+        case "normal":
+            canupgrade.splice(canupgrade.indexOf(x),1);
+            upgraded.push(x);
+            showupgrades();
+            break;
+        case "bank":
+            bankcanupgrade.splice(bankcanupgrade.indexOf(x),1);
+            bankupgraded.push(x);
+            bank();
+    }
     MsgLog(x.name + " upgrade purchased");
 }
 
@@ -1131,8 +1164,25 @@ function buyitem(x) {
 function bank() {
     let thebank = $("#Bank");
     thebank.empty();
-    let loan = document.createElement("BUTTON"); //In progress
-    loan.innerText = "Recieve a 1 silver loan";
+    let tooltip = document.createElement("DIV");tooltip.classList.add("tooltip");tooltip.classList.add("upgrades");
+    bankcanupgrade.forEach(function(x) {
+        let thebutton = document.createElement("BUTTON");
+        thebutton.id = x.name;thebutton.className += " Upgrade";
+        thebutton.style.backgroundImage = "url(" + x.iurl + ")";
+        thebutton.onmouseenter = function() {
+            tooltip.innerHTML = x.name + "<br><br>" + x.flavor.italics() + "<br><br>" +
+                "Cost: " + x.Cost[0] + "/" + x.Cost[1] + "/" + x.Cost[2];
+            tooltip.style.display = "block";
+        };
+        thebutton.onmouseout = function() {tooltip.style.display = "none"};
+        thebutton.onclick = function () {
+            buyupgrade(x); // REMEMBER partial from python?
+        };
+        thebank.append(thebutton);
+        thebank.append(tooltip);
+    });
+    let foo = bankcanupgrade.length > 5 ? 5 : bankcanupgrade.length;
+    tooltip.style.right = foo * 16 + "%";
 }
 
 function build(x,y = "b") {
@@ -1149,6 +1199,7 @@ function build(x,y = "b") {
     x.Quantity += 1;
     switch(x) {
         case MercenaryGuild:
+            levelMercs();
             showMercenaries();
             break;
         case Portal:
@@ -1178,7 +1229,7 @@ function build(x,y = "b") {
 
 function sell(x) {
     for (let y = 0; y < 3; y++) {
-        resources[y].val += Math.ceil(x.Value[y]/4);
+        resources[y].val += Math.ceil(x.Value[y]/4) - resources[y].mod;
     }
     if (x.EQuantity === 0) {
         x.UEQuantity -= 1;
@@ -1238,7 +1289,7 @@ function showbuildings() {
     let tooltip = $("#buildtooltip");
     canbuild.forEach(function(x) {
         let thebutton = document.createElement("BUTTON");thebutton.classList.add("buildings");
-        if (x.Quantity < 1) {
+        if (x.Quantity < x.MQuantity) {
             thebutton.innerHTML = x.Nam + ": " + x.Quantity + "<br>" + "Cost: " + x.Cost[0]
                 + "/" + x.Cost[1] + "/" + x.Cost[2];
             thebutton.onclick = function () {
@@ -1246,7 +1297,7 @@ function showbuildings() {
             };
         }
         else {
-            thebutton.innerHTML = x.Nam + ": " + "Max" + "<br><br>";
+            thebutton.innerHTML = x.Nam + ": " + x.Quantity + "<br>" + "Max Quantity";
         }
         thebutton.onmouseenter = function () {
             tooltip[0].innerText = x.flavor;
@@ -1288,7 +1339,7 @@ let playerinventory = [];
 let playerabilities = [];
 
 let MercenaryGuild = new Building([30,0,0],0,"Mercenary Guild","Mercenaries hunt during hunt for you during their spare time and" +
-    " help you during battles. Most of them are Generic though... like those unnamed movie grunts");
+    " help you during battles. Most of them are Generic though... like those unnamed movie grunts",2);
 
 let Portal = new Building([100,0,0],0,"Portal","Travel to other places. The more you have the more types of places you can go, the " +
     "higher level you are the places of the acquired types you can go. \n\n CAUTION - Don't get 4 of these");
@@ -1324,9 +1375,16 @@ let up3 = new Upgrade("Whetfish Ichthyology",[2000,0,0],"img/whetfishichthyology
     ", hence its name which is derived from the 'whetstone' (And yes... the picture in the icon is an annotated" +
     " Diagram of the fish). <br><br> +1 Attack for all Weapons");
 
+let bup1 = new Upgrade("A Welcome Bundle",[0,0,0],"img/whetfishichthyology1.png","A One-only gift for first time visitors to the Bank! (Click to " +
+    "recieve gift of one silver");
+
 let canupgrade = [up1];
 let upgraded = [];
 let upgrades = [up1,up2,up3];
+
+let bankcanupgrade = [bup1];
+let bankupgraded = [];
+let bankupgrades = [up1];
 
 let GenericSpearman = new Ally ("Generic Spearman",1,1,1,1,[20,0,0],1,0,0,[0.2,0,0],"A plain old spearman, payed to aid " +
     "you in direct or combat or hunt for treasure during free time.");
@@ -1337,7 +1395,16 @@ let GenericSwordsman = new Ally ("Generic Swordsman",22,9,3,3,[200,0,0],22,0,0,[
 let GenericKnight = new Ally ("Generic Knight",200,18,3,7,[2000,0,0],200,0,0,[22,0,0],"Knights, elite killers among the common men. " +
     "Trained to kill,raised to kill, pretty much born to kill.");
 
-let allies = [GenericSpearman,GenericSwordsman,GenericKnight];
+let trainedbear = new Ally ("Trained Bear",1000,18,5,13,[15000,0,0],1000,0,0,[100,0,0],"Bears are many times stronger than a regular human." +
+    " TRAINED bears are many times stronger than trained humans. When humans aren't enough, you can use bears.");
+
+let reanimatedcorpse = new Ally ("Reanimated Corpse",2000,18,9,0,[90000,0,0],2000,0,0,[800,0,0],"A corpse reanimated by a novice necromancer," +
+    "It has high speed regeneration and due to dark magic has increased strength to the point where it can destroy concrete castle walls in one hit.");
+
+let giant = new Ally ("Giant",10000,18,1,25,[2000000,0,0],10000,0,0,[7700,0,0],"Knights, elite killers among the common men. " +
+    "Trained to kill,raised to kill, pretty much born to kill.");
+
+let allies = [GenericSpearman,GenericSwordsman,GenericKnight,trainedbear,reanimatedcorpse,giant];
 
 let cantrain = [GenericSpearman,GenericSwordsman,GenericKnight];
 
@@ -1371,22 +1438,36 @@ let playerbronze = {
     },
     playersilver = {
         _val : 0,
+        _mod : 0,
         set val(value) {
             this._val = value;
             $('#Silver')[0].innerText = "Silver: " + Math.floor(this._val);
         },
         get val() {
             return this._val;
+        },
+        set mod(value) {
+            this._mod = value;
+        },
+        get mod() {
+            return this._mod;
         }
     },
     playergold = {
         _val : 0,
+        _mod : 0,
         set val(value) {
             this._val = value;
             $('#Gold')[0].innerText = "Gold: " + Math.floor(this._val);
         },
         get val() {
             return this._val;
+        },
+        set mod(value) {
+            this._mod = value;
+        },
+        get mod() {
+            return this._mod;
         }
     },
     currentlevel = {
@@ -1446,8 +1527,8 @@ let boss1 = new Foe("Frosty Abomination Fourth Class",800,50,12,[plainuselessloc
     ,"","boss1.png");
 let blueimp = new Foe("Blue Imp",700,21,5,[playerbronze,5000,1000],4,1500,"","blueimp1.png");
 let Witch = new Foe("Regular Witch",500,44,4,[playerbronze,14000,1000],0,4700,"","regularwitch.png");
-let Poisonoussnake = new Foe("Poisonous Snake",1000,19,10,[playerbronze,50000,1000],6,9000,"","poisonoussnake.png");
-let murdererreaver = new Foe("Murderer Reaver",3000,50,12,[playerbronze,1,1000],13,15000,"","murdererreaver1.png");
+let Poisonoussnake = new Foe("Poisonous Snake",1000,19,10,[playerbronze,50000,1000],6,9000,"","poisonoussnake.png",[["Poison",0.1,10000]]);
+let murdererreaver = new Foe("Murderer Reaver",3000,50,12,[playerbronze,1,1000],13,15000,"","murdererreaver1.png",[["Lifesteal"]]);
 let treasurechest1 = new Foe("Treasure Chest (Basic)",5000,0,0,[playersilver,1,1000],10,0,"","treasurechest1.png");
 let Flamewitch1 = new Foe("Flame Witch",2000,100,3,[playersilver,5,1000,playerbronze,400000],0,99999,"","flamewitch.png");
 
@@ -1468,9 +1549,12 @@ function savegame() {
     });
     localStorage.setItem("canupgrade",JSON.stringify(canupgrade));
     localStorage.setItem("upgraded",JSON.stringify(upgraded));
+    localStorage.setItem("bankcanupgrade",JSON.stringify(bankcanupgrade));
+    localStorage.setItem("bankupgraded",JSON.stringify(bankupgraded));
     localStorage.setItem("canabilities",JSON.stringify(canabilities));
     localStorage.setItem("playerabilities",JSON.stringify(playerabilities));
     localStorage.setItem("Saved?","{true}");
+    localStorage.setItem("cantrain",JSON.stringify(cantrain));
     localStorage.setItem("allies",JSON.stringify(allies));
     localStorage.setItem("buildings",JSON.stringify(buildings));
     localStorage.setItem("playerinventory",JSON.stringify(playerinventory));
@@ -1496,34 +1580,17 @@ function loadgame() {
         });
         canupgrade = [];playerinventory = [];
         upgraded = [];playerabilities = [];canabilities = [];
-        JSON.parse(localStorage.getItem("canupgrade")).forEach(function (y) {
-            upgrades.forEach(function (ups) {
-                if (ups.name === y.name) {
-                    canupgrade.push(ups);
-                }
+        let thearrays = ["canupgrade",canupgrade,upgrades,"upgraded",upgraded,upgrades,"canabilities",canabilities,theabilities,
+            "playerabilities",playerabilities,theabilities,"bankcanupgrade",bankcanupgrade,bankupgrades,"bankupgraded",bankupgraded,bankupgrades];
+        for (let index = 0;index < thearrays.length; index += 3) {
+            JSON.parse(localStorage.getItem(thearrays[index])).forEach(function (x) {
+                thearrays[index + 2].forEach(function (y) {
+                    if (y.name === x.name) {
+                        thearrays[index + 1].push(y);
+                    }
+                });
             });
-        });
-        JSON.parse(localStorage.getItem("upgraded")).forEach(function (y) {
-            upgrades.forEach(function (ups) {
-                if (ups.name === y.name) {
-                    upgraded.push(ups);
-                }
-            });
-        });
-        JSON.parse(localStorage.getItem("canabilities")).forEach(function (y) {
-            theabilities.forEach(function (ups) {
-                if (ups._name === y._name) {
-                    canabilities.push(ups);
-                }
-            });
-        });
-        JSON.parse(localStorage.getItem("playerabilities")).forEach(function (y) {
-            theabilities.forEach(function (ups) {
-                if (ups._name === y._name) {
-                    playerabilities.push(ups);
-                }
-            });
-        });
+        }
         let classobjs = [playerinventory];
         let classobjnames = ["playerinventory"];
         for (let x = 0; x < classobjs.length ; x ++ ) {
@@ -1550,6 +1617,14 @@ function loadgame() {
                 });
             }
         }
+        cantrain = [];
+        allies.forEach(function(unit){
+           JSON.parse(localStorage.getItem("cantrain")).forEach(function(unit2){
+                if (unit._name === unit2._name) {
+                    cantrain.push(unit);
+                }
+           });
+        });
         let pobj = JSON.parse(localStorage.getItem("player"));
         Object.getOwnPropertyNames(Object.getPrototypeOf(player)).forEach(function (attr) {
             if (attr !== "constructor") {
@@ -1560,9 +1635,12 @@ function loadgame() {
         showupgrades();
         blacksmith();
         portal();
-        inventory();
-        abilities();
         spellshop();
+        $(function() { // when document is ready, $(document).ready() is deprecated now -_-
+            inventory();
+            abilities();
+            showMercenaries();
+        });
         if (currentlevel.val >= 4) {
             $('#pmana').show();
         }
