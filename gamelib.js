@@ -16,7 +16,7 @@ function clone(obj) {
 function load(x) {
     let healthtrack = x.Healthbartrack;
     x.Healthbar.appendChild(healthtrack);
-    healthtrack.innerHTML =  x.health + "/" + x.MHea;
+    healthtrack.innerHTML =  Math.round(x.health) + "/" + Math.round(x.MHea);
     healthtrack.style.width = Math.floor(x.health / x.MHea * 100).toString() + "%";
 }
 
@@ -286,6 +286,17 @@ function levelup(x) {
         default:
             return [2,2,0,0];
     }
+}
+
+function levelMercs() {
+    let array = [];
+    switch(MercenaryGuild.Quantity) {
+        case 2:
+            array = [trainedbear,reanimatedcorpse,giant];
+    }
+    array.forEach(function(unit) {
+       cantrain.push(unit);
+    });
 }
 
 function xptolevelup(x) {
