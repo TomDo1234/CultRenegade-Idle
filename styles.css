@@ -10,9 +10,8 @@
      line-height: 165%;
  }
  div.DATE {
-     position:absolute;
-     bottom: 8%;
-     right:4%;
+     float:right;
+     margin-top:30%;
  }
  div.Manabar {
      width:100%;
@@ -123,6 +122,13 @@
      height: 9%;
      width: 28%;
  }
+ div.Bank {
+     position:absolute;
+     right:1%;
+     top:1.3%;
+     height: 9%;
+     width: 28%;
+ }
  button.Upgrade {
      float:right;
      width: 16%;
@@ -182,11 +188,12 @@
      width: 20%;
  }
  div.tooltip.Abilities {
+     display:none;
      position:absolute;
      float:left;
      width:80%;
+     height:auto;
      font-size: 1.1vw;
-     height: 100%;
      margin-top: 0;
  }
  button.ability {
