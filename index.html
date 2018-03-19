@@ -87,6 +87,8 @@
                 <div id = "Spellshopshop" style = "height:11vh;float:right;width:100%;"></div>
                 <div id = "sptooltip" class = "tooltip spellshop"></div>
             </div>
+            <div id = "Bank" class = "Bank">
+            </div>
         </div>
             <br><br><br><br><br><br>
             <div style = "float:right;margin-top: 8%;">
@@ -96,6 +98,32 @@
                     </ul>
                 </div>
                 <button class = "class1" style = "float:right;margin-top:10%" id = "allyinfobut" onclick = "$('#allyinfo').toggle()">Info</button>
+                <div id = "Date" class = "DATE">
+                    <script>
+                        let startdate = new Date();
+                        function dateset() {
+                            let date = new Date();
+                            let duration = Math.floor((date.getTime() - startdate.getTime()) /1000);
+                            let seconds = duration % 60;
+                            let theh = ' h ';
+                            let theM = ' m ';
+                            let minutes = Math.floor(duration / 60) % 60; if (minutes === 0) {minutes = '';theM = ''}
+                            let hours = Math.floor(duration / 3600); if (hours === 0) {hours = '';theh = ''}
+                            $('#Date')[0].innerHTML = hours + theh + minutes + theM + seconds + " s (session time)";
+                            setTimeout(dateset,100);
+                        }
+                        dateset();
+
+                        function autosave() {
+                            savegame();
+                            setTimeout(autosave,20000);
+                        }
+
+                        loadgame();
+                        autosave();
+
+                    </script>
+                </div>
             </div>
         <button id = "Inventorybut" class = "class1" onclick = "$('#inventory').toggle();toggleplusminus(this)">Inventory -</button>
         <div style = "height:11vh">
@@ -144,6 +172,7 @@
                         <li>18/03/2018 - remove trap and basic arcane trap are now unlocked at level 6 not level 4</li>
                         <li>18/03/2018 - art for dungeons 8 - 10 added</li>
                         <li>18/03/2018 - Poison added, Poisonous Snakes now actually poison you. Mana increases as you level up</li>
+                        <li>19/03/2018 - Lifesteal added, Murderer Reavers do life steal. status debuffed are applied to allies now</li>
                     </ul>
                 </div>
             </div>
@@ -154,7 +183,6 @@
             </div>
         </div>
         <div id = "Market" class = ""></div>
-        <div id = "Bank" class = ""></div>
         <div>
             <div style = "float: left;width:15%;">
                 <button class = "class1" onclick = "$('#Msg').toggle();toggleplusminus(this)">Message Log -</button>
@@ -181,32 +209,6 @@
             the enemy before they can react and damage you, resulting in the typical Idle Game scenario of clicking without any consequences
             as you take no damage.<br><br>
             <button class = "class1" onclick = "$('#allyinfo').toggle();">close</button>
-        </div>
-        <div id = "Date" class = "DATE">
-            <script>
-                let startdate = new Date();
-                function dateset() {
-                    let date = new Date();
-                    let duration = Math.floor((date.getTime() - startdate.getTime()) /1000);
-                    let seconds = duration % 60;
-                    let theh = ' h ';
-                    let theM = ' m ';
-                    let minutes = Math.floor(duration / 60) % 60; if (minutes === 0) {minutes = '';theM = ''}
-                    let hours = Math.floor(duration / 3600); if (hours === 0) {hours = '';theh = ''}
-                    $('#Date')[0].innerHTML = hours + theh + minutes + theM + seconds + " s (session time)";
-                    setTimeout(dateset,100);
-                }
-                dateset();
-
-                function autosave() {
-                    savegame();
-                    setTimeout(autosave,20000);
-                }
-
-                loadgame();
-                autosave();
-
-            </script>
         </div>
         </div>
         </body>
