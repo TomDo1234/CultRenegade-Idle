@@ -377,11 +377,31 @@ function poison(thing,dam,dur) {
         if (count <= dur/100) {
             count += 1;
             thing.health -= dam;
-            if (thing === player && thing.health === 0) {
+            if (player.health <= 0) {
                 dungeon.val = 1;
             }
             setTimeout(poisoning,100);
         }
     }
     poisoning();
+}
+
+function flame(things,dam,dur) {
+    let count = 0;
+    function flaming() {
+        if (count <= dur/500) {
+            count += 1;
+            things.forEach(function(thing) {
+                thing.health -= dam;
+                if (player.health <= 0) {
+                    dungeon.val = 1;
+                }
+                if (thing.health <= 0) {
+                    things.splice(things.indexOf(thing),1);
+                }
+            });
+            setTimeout(flaming,500);
+        }
+    }
+    flaming();
 }
