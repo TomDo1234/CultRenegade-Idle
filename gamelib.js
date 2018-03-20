@@ -356,7 +356,7 @@ function spelltrap(duration,damage,costadd,number,spell) {
             setTimeout(thedamage,1000);
         }
     }
-    spell._mcost += costadd;
+    spell.mcost += costadd;
     spell.trapnum[number] += 1;
     if (spell.trapnum[number] - 1 === 0) {
         thedamage();
