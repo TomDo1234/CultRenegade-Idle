@@ -209,7 +209,7 @@ class Item {
         }
         this._UEQuantity = val;
         if (val + this.EQuantity <= 0) {
-            playerinventory.splice(playerinventory.indexOf(this),playerinventory.indexOf(this) + 1);
+            playerinventory.splice(playerinventory.indexOf(this),1);
         }
         inventory();
         if (Market.Quantity > 0) {
@@ -264,6 +264,12 @@ class Ally {
     }
     set health(val) {
         if (val > this.MHea) {
+            val = this.MHea;
+        }
+        if (val <= 0) {
+            if (this.AQuantity > 0) {
+                this.AQuantity -= 1;
+            }
             val = this.MHea;
         }
         this._health = val;
@@ -416,7 +422,7 @@ class Foe {
         }
     }
 
-    activatespecial(damage,target) {
+    activatespecial(damage,target,theallies) {
         let z = this; // to prevent the undefined thing.
         this._spec.forEach(function(spec) {
            switch(spec[0]) {
@@ -427,8 +433,14 @@ class Foe {
                    }
                    break;
                case "Lifesteal":
-                   let damage2 = damage < 0 ? 0 : damage;
-                   z.health += damage2;
+                   if (damage > 0) {
+                       z.health += damage;
+                   }
+                   break;
+               case "Flame":
+                   if (spec[1] === "all") {
+                       flame([player].concat(theallies),spec[2],spec[3]);
+                   }
                    break;
            }
         });
@@ -591,19 +603,13 @@ function fight(attack,enemies,index,allies) {
                 break;
             case "Foe":
                 if (theallies.length > 0) {
-                    Order[x].activatespecial(Order[x].strength - theallies[0].armor,theallies[0]);
+                    Order[x].activatespecial(Order[x].strength - theallies[0].armor,theallies[0],theallies);
                     if (!(Order[x].strength  - theallies[0].armor <= 0)) {
                         theallies[0].health -= Order[x].strength  - theallies[0].armor;
                     }
-                    if (theallies[0].health <= 0) {
-                        if (theallies[0].AQuantity > 0) {
-                            theallies[0].AQuantity -= 1;
-                        }
-                        theallies[0].health = theallies[0].MHea;
-                    }
                 }
                 else {
-                    Order[x].activatespecial(Order[x].strength - player.armor - totalbonusdefense,player);
+                    Order[x].activatespecial(Order[x].strength - player.armor - totalbonusdefense,player,theallies);
                     if (!(Order[x].strength  - player.armor - totalbonusdefense <= 0)) {
                         player.health -= Order[x].strength - player.armor - totalbonusdefense;
 
@@ -809,8 +815,8 @@ function inventory() {
                 tooltip.append(sellbut);
             }
         };
-        thediv.onmouseout = function () { if (!$(tooltip).is(':hover')) {tooltip.style.display = "none"}};
-        tooltip.onmouseout = function() { if (!$(tooltip).is(':hover')) {tooltip.style.display = "none"}};
+        thediv.onmouseout = function () { setTimeout(function(){if (!$(tooltip).is(':hover')) {tooltip.style.display = "none"}},100)};
+        tooltip.onmouseout = function() { setTimeout(function(){if (!$(tooltip).is(':hover')) {tooltip.style.display = "none"}},100)};
         mlist.appendChild(thediv);
     });
 }
@@ -1530,7 +1536,7 @@ let Witch = new Foe("Regular Witch",500,44,4,[playerbronze,14000,1000],0,4700,""
 let Poisonoussnake = new Foe("Poisonous Snake",1000,19,10,[playerbronze,50000,1000],6,9000,"","poisonoussnake.png",[["Poison",0.1,10000]]);
 let murdererreaver = new Foe("Murderer Reaver",3000,50,12,[playerbronze,1,1000],13,15000,"","murdererreaver1.png",[["Lifesteal"]]);
 let treasurechest1 = new Foe("Treasure Chest (Basic)",5000,0,0,[playersilver,1,1000],10,0,"","treasurechest1.png");
-let Flamewitch1 = new Foe("Flame Witch",2000,100,3,[playersilver,5,1000,playerbronze,400000],0,99999,"","flamewitch.png");
+let Flamewitch1 = new Foe("Flame Witch",2000,100,3,[playersilver,5,1000,playerbronze,400000],0,99999,"","flamewitch.png",[["Flame","all",4,50000]]);
 
 let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,goblin1],[boss1],[blueimp,blueimp],[Witch],
     [Poisonoussnake,Poisonoussnake,Poisonoussnake],[murdererreaver,Witch,Witch,Poisonoussnake,treasurechest1],[Flamewitch1]];
