@@ -139,6 +139,7 @@
  div.inventoryicon {
      width: 5%;
      height: 100%;
+     z-index:1;
      background-repeat: no-repeat;
      background-size: 100%;
      border: solid darkred;
