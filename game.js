@@ -479,8 +479,8 @@ class Ability {
         return this._mcost;
     }
     set mcost(val) {
-        abilities();
         this._mcost = val;
+        abilities();
     }
     get cost() {
         return this._cost;
@@ -866,6 +866,8 @@ function abilities() {
                 player.mana -= x.mcost;
                 x.activateability(); // REMEMBER partial from python?
             }
+            tooltip.innerHTML = x.name + "<br><br>" + "Damage: " + x.damage + "<br><br>" +
+                "Mana Cost: " + x.mcost + " mana" + "<br><br>" +  x.flavor.italics(); //updates mcost for traps
         };
         u.append(thebutton);
         u.append(tooltip);
@@ -1372,7 +1374,7 @@ let Market = new Building([0,0,0],0,"Market","A place to sell your loot for a lo
 
 let Spellshop = new Building([4000,0,0],0,"Spell Shop","A place to buy spells... but at what cost is it to bridge the gap between the abnormal and the normal? O_O");
 
-let buildings = [MercenaryGuild,Portal,Blacksmith,Spellshop];
+let buildings = [MercenaryGuild,Portal,Blacksmith,Spellshop,Market,Bank];
 
 let canbuild = [MercenaryGuild];
 let theblacksmith = [ReavingDecapitator,TheSafe];
@@ -1541,7 +1543,7 @@ let goblin = new Foe("Generic Goblin", 1, 1, 1, [playerbronze,1,1000],0,1,"","Ge
 let imp = new Foe("Generic Imp", 5, 2, 1, [playerbronze,2,1000],0,2,"","Genericimp1.png");
 let snake = new Foe("Generic Snake",30,5,7,[playerbronze,40,1000],3,20,"","Genericsnake1.png");
 let goblin1 = new Foe("Killer Goblin Novice",100,10,3,[playerbronze,200,1000],7,120,"","goblin1.png");
-let boss1 = new Foe("Frosty Abomination Fourth Class",800,50,12,[plainuselesslocket,1,1000,playerbronze,40000,1000],0,2000
+let boss1 = new Foe("Frosty Abomination Fourth Class",800,50,12,[plainuselesslocket,1,1000,playerbronze,2000,1000],0,2000
     ,"","boss1.png");
 let blueimp = new Foe("Blue Imp",700,21,5,[playerbronze,5000,1000],4,1500,"","blueimp1.png");
 let Witch = new Foe("Regular Witch",500,44,4,[playerbronze,14000,1000],0,4700,"","regularwitch.png");
