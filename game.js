@@ -774,7 +774,7 @@ function inventory() {
         let sellbut = document.createElement("BUTTON");sellbut.classList.add("class1");sellbut.classList.add("tooltiputil");
         let equipbut = document.createElement("BUTTON");equipbut.classList.add("class1");equipbut.classList.add("tooltiputil");
         thediv.style.backgroundImage = "url(" + x.img +")";
-        thediv.id = x._name;thediv.style.display = "inline-block";
+        thediv.id = x._name;
         thediv.onmouseenter = function tooltipappear() {
             tooltip.innerHTML = "";
             tooltip.style.display = "block";
@@ -814,11 +814,23 @@ function inventory() {
                 };
                 tooltip.append(sellbut);
             }
+        }; // code below needs setTimeout because of f***** mozilla firefox -_-
+        thediv.onmouseout = function () {
+            setTimeout(function(){
+                if ((!$(tooltip).is(':hover') && !fod.is(':hover')) || $('#ihatefirefox').is(':hover')) {tooltip.style.display = "none"}
+                },10)
         };
-        thediv.onmouseout = function () { setTimeout(function(){if (!$(tooltip).is(':hover')) {tooltip.style.display = "none"}},100)};
-        tooltip.onmouseout = function() { setTimeout(function(){if (!$(tooltip).is(':hover')) {tooltip.style.display = "none"}},100)};
+        tooltip.onmouseout = function() {
+            setTimeout(function(){
+                if ((!$(tooltip).is(':hover') && !fod.is(':hover')) || $('#ihatefirefox').is(':hover')) {tooltip.style.display = "none"}
+                },10)
+        };
         mlist.appendChild(thediv);
     });
+    let fod2 = document.createElement("DIV");fod2.id = "ihatefirefox";
+    fod2.classList.add("inventoryicon");fod2.style.width = 100 - playerinventory.length * 16 + "%";
+    fod2.style.borderStyle = "none";
+    fod.append(fod2);
 }
 
 function refresh() {
