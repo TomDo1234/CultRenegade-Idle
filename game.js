@@ -1401,13 +1401,13 @@ let GenericSwordsman = new Ally ("Generic Swordsman",22,9,3,3,[200,0,0],22,0,0,[
 let GenericKnight = new Ally ("Generic Knight",200,18,3,7,[2000,0,0],200,0,0,[22,0,0],"Knights, elite killers among the common men. " +
     "Trained to kill,raised to kill, pretty much born to kill.");
 
-let trainedbear = new Ally ("Trained Bear",1000,18,5,13,[15000,0,0],1000,0,0,[100,0,0],"Bears are many times stronger than a regular human." +
+let trainedbear = new Ally ("Trained Bear",1000,30,5,13,[15000,0,0],1000,0,0,[100,0,0],"Bears are many times stronger than a regular human." +
     " TRAINED bears are many times stronger than trained humans. When humans aren't enough, you can use bears.");
 
-let reanimatedcorpse = new Ally ("Reanimated Corpse",2000,18,9,0,[90000,0,0],2000,0,0,[800,0,0],"A corpse reanimated by a novice necromancer," +
+let reanimatedcorpse = new Ally ("Reanimated Corpse",2000,45,9,0,[90000,0,0],2000,0,0,[800,0,0],"A corpse reanimated by a novice necromancer," +
     "It has high speed regeneration and due to dark magic has increased strength to the point where it can destroy concrete castle walls in one hit.");
 
-let giant = new Ally ("Giant",10000,18,1,25,[2000000,0,0],10000,0,0,[7700,0,0],"Knights, elite killers among the common men. " +
+let giant = new Ally ("Giant",10000,88,1,25,[2000000,0,0],10000,0,0,[7700,0,0],"Knights, elite killers among the common men. " +
     "Trained to kill,raised to kill, pretty much born to kill.");
 
 let allies = [GenericSpearman,GenericSwordsman,GenericKnight,trainedbear,reanimatedcorpse,giant];
