@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Upgrades>
+    <Upgrade>
+        <name>Fundamental Skin Science</name>
+        <flavor>
+            The skin of any organism can be transmuted into bronze by soaking it with water and then wringing it in a 41-43 degrees celcius
+            enviromnent for 399 seconds.<![CDATA[<br/>]]><![CDATA[<br/>]]>
+            +1 Bronze for every kill, even the idle kills
+        </flavor>
+    </Upgrade>
+    <Upgrade>
+        <name>Blood Spear Fishing</name>
+        <flavor>
+            Out of the approximately 2791741.5 species of fish (Yes... there are several half-fishes), thousands of them are attracted
+            to blood. Blood is good bait but it can be dangerous to have carnivorous animals know where you are.
+            Blood Spear Fishing' is like a fishing-martial-art that makes using Blood safe in fishing. <![CDATA[<br/>]]><![CDATA[<br/>]]>
+            Doubles Spearman Idle Revenue
+        </flavor>
+    </Upgrade>
+    <Upgrade>
+        <name>Whetfish Ichthyology</name>
+        <flavor>
+            The Whetfish is a very common species, many can find it... few can use it. The magical scales and saliva of the fish can either
+            harden solids or empower other magical sources. As you can already tell it is used to make weapons stronger
+            ,hence its name which is derived from the 'whetstone' (And yes... the picture in the icon is an annotated
+            Diagram of the fish). <![CDATA[<br/>]]><![CDATA[<br/>]]>
+            +1 Attack for all Weapons
+        </flavor>
+    </Upgrade>
+    <Upgrade>
+        <name>Blood Spear Fishing II</name>
+        <flavor>
+            More training means more skill, more skill allows more blood, more blood means more fish. <![CDATA[<br/>]]><![CDATA[<br/>]]>
+            Doubles Spearman Idle Revenue
+        </flavor>
+    </Upgrade>
+    <Upgrade>
+        <name>Swordsman Tracking</name>
+        <flavor>
+            Unlike Knights, Generic Swordsman are not trained how to track game. They are instead trained for armed combat. Coming from mediocre
+            comes with the restriction of only having the liberty of learning one trade. In this case direct combat. <![CDATA[<br/>]]><![CDATA[<br/>]]>
+            Doubles Swordsman Idle Revenue
+        </flavor>
+    </Upgrade>
+    <Upgrade>
+        <name>Early Desensitization</name>
+        <flavor>
+            Knights are inherently sensitive to killing innocent creatures, this blatantly pointless world view prevents them from reaching
+            their full hunting potential. A decrease in hesistance and increase in production can be achieved the ridding of this mental barrier
+            is worked on. <![CDATA[<br/>]]> <![CDATA[<br/>]]>
+            Doubles Knight Idle Revenue
+        </flavor>
+    </Upgrade>
+    <Upgrade>
+        <name>Goblin Metallurgy</name>
+        <flavor>
+            The integration of Goblin Metallurgy in the armor of your own army can be useful. Remember... Good people learn from their mistakes,
+            great people learn from their enemies. <![CDATA[<br/>]]> <![CDATA[<br/>]]>
+            +1 Armor for your entire army
+        </flavor>
+    </Upgrade>
+    <Upgrade>
+        <name>Arcane Static Dampening</name>
+        <flavor>
+            I am gonna spare you the technical jargon. Basically "static" refers to how a trap is stationary, "Arcane" means it is an Arcane Trap
+            in question. (You don't have to know what Dampening is, just knows that it makes the spell more potent). <![CDATA[<br/>]]><![CDATA[<br/>]]>
+            Doubles Arcane Trap damage
+        </flavor>
+    </Upgrade>
+</Upgrades>
