@@ -1393,8 +1393,8 @@ let theblacksmith = [ReavingDecapitator,TheSafe];
 let up1 = new Upgrade("Fundamental Skin Science",[75,0,0],"img/skinscience1.png");
 let up2 = new Upgrade("Blood Spear Fishing",[300,0,0],"img/bloodspearfishing1.png");
 let up3 = new Upgrade("Whetfish Ichthyology",[2000,0,0],"img/whetfishichthyology1.png");
-let up4 = new Upgrade("Blood Spear Fishing II",[1500,0,0],"img/whetfishichthyology1.png");
-let up5 = new Upgrade("Swordsman Tracking",[4000,0,0],"img/whetfishichthyology1.png");
+let up4 = new Upgrade("Blood Spear Fishing II",[1500,0,0],"img/bloodspearfishing2.png");
+let up5 = new Upgrade("Swordsman Tracking",[4000,0,0],"img/swordsmantracking1.png");
 let up6 = new Upgrade("Early Desensitization",[12000,0,0],"img/whetfishichthyology1.png");
 let up7 = new Upgrade("Goblin Metallurgy",[10000,0,0],"img/whetfishichthyology1.png");
 let up8 = new Upgrade("Arcane Static Dampening",[10000,0,0],"img/whetfishichthyology1.png");
@@ -1506,7 +1506,7 @@ let playerbronze = {
         set val(value) {
             this._val = value;
             $('#plevel')[0].innerHTML = "Level: " + this._val;
-            canupgrade = levelupgrades();
+            canupgrade = unionarray(canupgrade,levelupgrades());
             canbuild = levelbuildings();
             portal();
             showbuildings();
