@@ -13,6 +13,26 @@ function clone(obj) {
     return newobj;
 }
 
+function flavoradd() {
+    $.ajax({
+        type: "GET",
+        url:'theflavor.xml',
+        dataType: "xml" ,
+        success: function (xml){
+            let theupgrade = $(xml).find("Upgrade");
+            theupgrade.each(function(){
+                let name = $(this).find('name').text();
+                let flavor = $(this).find('flavor').text();
+                upgrades.forEach(function(up) {
+                    if (up.name === name) {
+                        up.flavor = flavor;
+                    }
+                });
+            });
+        }
+    });
+}
+
 function load(x) {
     let healthtrack = x.Healthbartrack;
     x.Healthbar.appendChild(healthtrack);
@@ -205,8 +225,11 @@ function levelupgrades() {
         case 3:
             x = [up1,up2,up3];
             break;
+        case 4:
+            x = [up1,up2,up3,up5,up6,up7,up8];
+            break;
         default:
-            x = [up1,up2,up3];
+            x = upgrades;
     }
     return x.filter(function(y) {
         return upgraded.indexOf(y) === -1;
