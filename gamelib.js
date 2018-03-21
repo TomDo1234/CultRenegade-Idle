@@ -13,6 +13,13 @@ function clone(obj) {
     return newobj;
 }
 
+function unionarray(a,b) {
+    let c = a.filter(function(y) {
+        return b.indexOf(y) === -1;     //} // union of arrays
+    });
+    return b.concat(c);
+}
+
 function flavoradd() {
     $.ajax({
         type: "GET",
