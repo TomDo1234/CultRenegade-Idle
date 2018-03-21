@@ -449,7 +449,7 @@ class Foe {
 }
 
 class Upgrade {
-    constructor(Nam,Cost,iurl,flavor) {
+    constructor(Nam,Cost,iurl,flavor = "") {
         this.name = Nam;
         this.Cost = Cost;
         this.iurl = iurl;
@@ -995,7 +995,7 @@ function game() {
     showfoes();
     showbuildings();inventory();
     showupgrades();autofight();
-    idlestuff();
+    idlestuff();flavoradd();
     $("#pxp")[0].innerText = player._xp + "/" + player._Mxp;
     $('#Bronze')[0].innerText = "Bronze: " + Math.floor(playerbronze._val);
     $('#Silver')[0].innerText = "Silver: " + Math.floor(playersilver._val);
@@ -1144,9 +1144,19 @@ function buyupgrade(x,type = "normal") {
             break;
         case up2:
             GenericSpearman.Ibonus *= 2;
+            canupgrade.push(up4);
             break;
         case up3:
             attackmod.val += 1;
+            break;
+        case up4:
+            GenericSpearman.Ibonus *= 2;
+            break;
+        case up5:
+            GenericSwordsman.Ibonus *= 2;
+            break;
+        case up6:
+            GenericKnight.Ibonus *= 2;
             break;
         case bup1:
             playersilver.val += 1;
@@ -1297,7 +1307,7 @@ function showupgrades() {
         u.append(thebutton);
         u.append(tooltip);
     });
-    let foo = canupgrade.length > 5 ? 5 : canupgrade.length;
+    let foo = canupgrade.length > 6 ? 6 : canupgrade.length;
     tooltip.style.right = foo * 16 + "%";
 }
 
@@ -1380,27 +1390,21 @@ let canbuild = [MercenaryGuild];
 let theblacksmith = [ReavingDecapitator,TheSafe];
 
 
-let up1 = new Upgrade("Fundamental Skin Science",[75,0,0],"img/skinscience1.png",
-    "the skin of any organism can be transmuted into bronze by soaking it with water and then wringing it in a 41-43 degrees celcius " +
-    "enviromnent for 399 seconds. <br><br> +1 Bronze for every kill, even the idle kills");
-
-let up2 = new Upgrade("Blood Spear Fishing",[300,0,0],"img/bloodspearfishing1.png",
-    "Out of the approximately 2791741.5 species of fish (Yes... there are several half-fishes), thousands of them are attracted" +
-    " to blood. Blood is good bait but it can be dangerous to have carnivorous animals know where you are." +
-    " 'Blood Spear Fishing' is like a fishing-martial-art that makes using Blood safe in fishing. <br><br> Doubles Spearman Idle Revenue");
-
-let up3 = new Upgrade("Whetfish Ichthyology",[2000,0,0],"img/whetfishichthyology1.png",
-    "The Whetfish is a very common species, many can find it... few can use it. The magical scales and saliva of the fish can either " +
-    "harden solids or empower other magical sources. As you can already tell it is used to make weapons stronger" +
-    ", hence its name which is derived from the 'whetstone' (And yes... the picture in the icon is an annotated" +
-    " Diagram of the fish). <br><br> +1 Attack for all Weapons");
+let up1 = new Upgrade("Fundamental Skin Science",[75,0,0],"img/skinscience1.png");
+let up2 = new Upgrade("Blood Spear Fishing",[300,0,0],"img/bloodspearfishing1.png");
+let up3 = new Upgrade("Whetfish Ichthyology",[2000,0,0],"img/whetfishichthyology1.png");
+let up4 = new Upgrade("Blood Spear Fishing II",[1500,0,0],"img/whetfishichthyology1.png");
+let up5 = new Upgrade("Swordsman Tracking",[4000,0,0],"img/whetfishichthyology1.png");
+let up6 = new Upgrade("Early Desensitization",[12000,0,0],"img/whetfishichthyology1.png");
+let up7 = new Upgrade("Goblin Metallurgy",[10000,0,0],"img/whetfishichthyology1.png");
+let up8 = new Upgrade("Arcane Static Dampening",[10000,0,0],"img/whetfishichthyology1.png");
 
 let bup1 = new Upgrade("A Welcome Bundle",[0,0,0],"img/whetfishichthyology1.png","A One-only gift for first time visitors to the Bank! (Click to " +
     "recieve gift of one silver");
 
 let canupgrade = [up1];
 let upgraded = [];
-let upgrades = [up1,up2,up3];
+let upgrades = [up1,up2,up3,up4,up5,up6,up7,up8];
 
 let bankcanupgrade = [bup1];
 let bankupgraded = [];
@@ -1491,7 +1495,14 @@ let playerbronze = {
         }
     },
     currentlevel = {
+        _milestone : 0,
         _val : 1,
+        set milestone(val) {
+            this._milestone = val;
+        },
+        get milestone() {
+            return this._milestone;
+        },
         set val(value) {
             this._val = value;
             $('#plevel')[0].innerHTML = "Level: " + this._val;
@@ -1501,24 +1512,26 @@ let playerbronze = {
             showbuildings();
             showupgrades();
             spellshop();
-            if (this._val === 4) {
+            if (this._val === 4 && this.milestone < 1) {
                 let pmanatrack = $("#pmanatrack")[0];
                 pmanatrack.innerText = Math.round(player._mana) + "/" + Math.round(player._Mmana);
                 pmanatrack.style.width = Math.floor(player._mana / player._Mmana * 100).toString() + "%";
                 $('#pmana').show();
-                MsgLog("Magic seeps into you as you get more powerful... You start to realize the presence of a higher unknown")
+                MsgLog("Magic seeps into you as you get more powerful... You start to realize the presence of a higher unknown");
+                this.milestone += 1;
             }
-            else if (this._val === 6) {
+            else if (this._val === 6 && this.milestone < 2) {
                 let infobut = document.createElement("BUTTON");infobut.innerHTML = "WARNING PLEASE CLICK HERE TO READ!!!";infobut.classList.add("class2");
                 $('#Events').append(infobut);
                 infobut.onclick = function() {
                     $('#eventinfo').toggle();$(infobut).remove();
                     $('#theactualinfo')[0].innerHTML = "You are now above level 5, Enemies in dungeons higher than 5 are no longer passive..."
-                    + "They WILL fight you whether you like it or not. DO NOT enter dungeons above 5 without being prepared. However, it is safe"
-                    + "To place spell traps in dungeons 5 and higher and then leave to another dungeon. It is unlikely that the magic of a level 6"
-                    + "can cause remote harm to enemies with high Magic Resistance (Which is more common the higher the dungeon)." + "<br><br>"
-                    + "If you die, don't worry. You will be teleported back to dungeon 1!"
-                }
+                        + "They WILL fight you whether you like it or not. DO NOT enter dungeons above 5 without being prepared. However, it is safe"
+                        + "To place spell traps in dungeons 5 and higher and then leave to another dungeon. It is unlikely that the magic of a level 6"
+                        + "can cause remote harm to enemies with high Magic Resistance (Which is more common the higher the dungeon)." + "<br><br>"
+                        + "If you die, don't worry. You will be teleported back to dungeon 1!"
+                };
+                this.milestone += 1;
             }
         },
         get val() {
@@ -1652,14 +1665,15 @@ function loadgame() {
             }
         });
         player.health = pobj["_health"]; //since MHea is set after Hea, Hea might cap at the unmodified MHea.
-        showupgrades();
         blacksmith();
         portal();
         spellshop();
+        flavoradd();
         $(function() { // when document is ready, $(document).ready() is deprecated now -_-
             inventory();
             abilities();
             showMercenaries();
+            showupgrades();
         });
         if (currentlevel.val >= 4) {
             $('#pmana').show();
