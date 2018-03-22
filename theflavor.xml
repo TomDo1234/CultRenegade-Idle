@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<doc>
 <Upgrades>
     <Upgrade>
         <name>Fundamental Skin Science</name>
@@ -68,3 +69,75 @@
         </flavor>
     </Upgrade>
 </Upgrades>
+<Foes>
+    <Foe>
+        <name>Generic Goblin</name>
+        <flavor>
+            Generic Goblins are normally passive and weak. These guys are an ideal first enemy.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Generic Imp</name>
+        <flavor>
+            Generic Imps are far stronger than the average man, Fun Fact: A Generic Imp on average can benchpress 2.32 tonnes. However for all their
+            superior strength, they can be overcome by an organized number of hunters.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Generic Snake</name>
+        <flavor>
+            These Snakes have a sturdy carpace capable of withstanding sharp Iron weapons without a scratch. It is important to fight these creatures
+            using blunt force when you have low-grade equipment. As sharp weapons weapons of low-grade will do no harm to them.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Killer Goblin Novice</name>
+        <flavor>
+            These creatures survive through eating other weaker species of goblins. And sometimes cannibalism.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Frosty Abomination Fourth Class</name>
+        <flavor>
+            A cruel manifestation of arcane malevolence. Though this one is but a shade.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Blue Imp</name>
+        <flavor>
+            Blue Imps are stronger than their Generic counterparts. Their blue skin is as durable as diamond.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Regular Witch</name>
+        <flavor>
+            A practitioner of the Arcane, still dangerous even though only a novice.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Poisonous Snake</name>
+        <flavor>
+            These snakes have evolved to combat bigger enemies with their poisonous bite and their tough scales.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Murderer Reaver</name>
+        <flavor>
+            Reavers are the mangled and corrupt souls of the recently dead, Their most dangerous ability is their lifesteal capabilty.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Treasure Chest (Basic)</name>
+        <flavor>
+            A Treasure Chest! What could be inside?
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Flame Witch</name>
+        <flavor>
+            A Witch that specializes in fire magic, a very destructive element. Fire magic typically affects a large area and can deal a lot of damage
+            in the long run if left unchecked.
+        </flavor>
+    </Foe>
+</Foes>
+</doc>
