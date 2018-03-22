@@ -26,17 +26,23 @@ function flavoradd() {
         url:'theflavor.xml',
         dataType: "xml" ,
         success: function (xml){
-            let theupgrade = $(xml).find("Upgrade");
-            theupgrade.each(function(){
-                let name = $(this).find('name').text();
-                let flavor = $(this).find('flavor').text();
-                upgrades.forEach(function(up) {
-                    if (up.name === name) {
-                        up.flavor = flavor;
-                    }
+            let thearray = ["Upgrade",upgrades,"Foe",theenemies];
+            for (let index = 0;index < thearray.length; index += 2) {
+                $(xml).find(thearray[index]).each(function () {
+                    let name = $(this).find('name').text();
+                    let flavor = $(this).find('flavor').text();
+                    thearray[index + 1].forEach(function (obj) {
+                        if (obj.name === name) {
+                            obj.flavor = flavor;
+                        }
+                    });
                 });
-            });
+            }
         }
+    });
+    $(function() {
+        levelenemies = a2clone(ogenemies);
+        showfoes();
     });
 }
 
@@ -233,10 +239,13 @@ function levelupgrades() {
             x = [up1,up2,up3];
             break;
         case 4:
+            x = [up1,up2,up3,up5,up6,up7];
+            break;
+        case 6:
             x = [up1,up2,up3,up5,up6,up7,up8];
             break;
         default:
-            x = upgrades;
+            x = canupgrade;
     }
     return x.filter(function(y) {
         return upgraded.indexOf(y) === -1;
@@ -362,8 +371,9 @@ function debuff(type,x,duration,y) {
 
 function spelltrap(duration,damage,costadd,number,spell) {
     function thedamage() {
+        let finaldamage = damage + Ability.trapdamagebonus;
         let enemies = levelenemies[number];
-        enemies[0].health -= damage * spell.trapnum[number];
+        enemies[0].health -= finaldamage * spell.trapnum[number];
         let enemypics = $("#Enemy");
         if (dungeon.val - 1 === number) {wobble(enemypics[0].children[0].children[0],enemies[0].health)}
         enemies.forEach(function(e) {
