@@ -254,6 +254,7 @@ class Ally {
         this._Ibonus = 1;
         this.Healthbar = document.createElement("DIV");this.Healthbar.classList.add("Healthbar");this.Healthbar.classList.add("ally");
         this.Healthbartrack = document.createElement("DIV");this.Healthbartrack.classList.add("Healthtrack");
+        Ally.armorbonus = 0; // static variables, implemented perhaps inelegantly (cannot be accessed through instances
     }
 
     set name(val) {
@@ -294,7 +295,7 @@ class Ally {
         this._armor = val;
     }
     get armor() {
-        return this._armor;
+        return this._armor + Ally.armorbonus;
     }
     set Cost(val) {
         this._Cost = val;
@@ -367,6 +368,13 @@ class Foe {
 
     toJSON() {
         return {name: this._name,health:this._health,strength:this._strength,speed:this._speed,loot:this.loot,spec:this._spec};
+    }
+
+    set name(val) {
+        this._name = val;
+    }
+    get name() {
+        return this._name;
     }
 
     set health(val) {
@@ -462,7 +470,7 @@ class Upgrade {
 }
 
 class Ability {
-    constructor(Nam,MCost,Cost,dam,flavor = " ",lvl = 4,img = "img/goblin1.png") {
+    constructor(Nam,MCost,Cost,dam,flavor = " ",lvl = 4,img = "img/goblin1.png",type = "") {
         this.name = Nam;
         this._mcost = MCost;
         this._cost = Cost;
@@ -471,6 +479,8 @@ class Ability {
         this.img = img;
         this.trapnum = [0,0,0,0,0];
         this.level = lvl;
+        this.type = type;
+        Ability.trapdamagebonus = 0;
     }
     toJSON() {
         return {name: this.name};
@@ -667,7 +677,7 @@ function showfoes() {
         image.classList.add("Entity");
         image.onmouseenter = function() {
             tooltip[0].innerHTML = enemy._name + "<br><br>" + "Attack: " + enemy.strength + "<br>" + "Armor: " + enemy.armor +
-                "<br>" + "Speed: " + enemy.speed;
+                "<br>" + "Speed: " + enemy.speed + "<br><br>" + enemy.flavor;
             tooltip.show();
         };
         image.onmouseout = function() { if (!tooltip.is(':hover')) {tooltip.hide()}};
@@ -847,11 +857,12 @@ function abilities() {
     $('#abilitiesbut').show();
     playerabilities.forEach(function (x) {
         let thebutton = document.createElement("BUTTON");
+        let damagebonus = x.type === "trap" && Ability.trapdamagebonus > 0 ? " (+ " + Ability.trapdamagebonus + ")" : "";
         thebutton.id = x.name;
         thebutton.classList.add("ability");
         thebutton.style.backgroundImage = "url(" + x.img + ")";
         thebutton.onmouseenter = function () {
-            tooltip.innerHTML = x.name + "<br><br>" + "Damage: " + x.damage + "<br><br>" +
+            tooltip.innerHTML = x.name + "<br><br>" + "Damage: " + x.damage + damagebonus + "<br><br>" +
                 "Mana Cost: " + x.mcost + " mana" + "<br><br>" +  x.flavor.italics();
             tooltip.style.display = "block";
         };
@@ -991,11 +1002,10 @@ function game() {
     }
     MsgLog("Hello " + name + "!");
     player.name = name;//player.xp=500;player.xp=500;player.xp=500;player.strength=50000;player.speed=123;player.xp=50000;
-    inputfield.remove();
-    showfoes();
+    inputfield.remove();flavoradd(); // showfoes is in flavoradd
     showbuildings();inventory();
     showupgrades();autofight();
-    idlestuff();flavoradd();
+    idlestuff();
     $("#pxp")[0].innerText = player._xp + "/" + player._Mxp;
     $('#Bronze')[0].innerText = "Bronze: " + Math.floor(playerbronze._val);
     $('#Silver')[0].innerText = "Silver: " + Math.floor(playersilver._val);
@@ -1055,7 +1065,7 @@ function showMercenaries() {
             thebutton.id = unit._name;
             thebutton.onmouseenter = function() {
                 tooltip.innerHTML = unit._name + "<br><br>" + "Attack: " + unit._strength + "<br>" + "Health: " + unit._MHea +
-                    "<br>" + "Armor: " + unit._armor + "<br>" + "Speed: " + unit._speed
+                    "<br>" + "Armor: " + unit.armor + "<br>" + "Speed: " + unit._speed
                     + "<br><br>" + unit.flavor.italics() + "<br><br>" +
                     "Cost: " + unit.Cost[0] + "/" + unit.Cost[1] + "/" + unit.Cost[2];
                 tooltip.style.display = "block"
@@ -1158,6 +1168,12 @@ function buyupgrade(x,type = "normal") {
         case up6:
             GenericKnight.Ibonus *= 2;
             break;
+        case up7:
+            Ally.armorbonus += 1;
+            break;
+        case up8:
+            Ability.trapdamagebonus += 1;
+            break;
         case bup1:
             playersilver.val += 1;
             break;
@@ -1173,7 +1189,8 @@ function buyupgrade(x,type = "normal") {
             bankupgraded.push(x);
             bank();
     }
-    MsgLog(x.name + " upgrade purchased");
+    MsgLog(x.name + " upgrade purchased");abilities();//when Ability's static variables change;
+    showMercenaries();//when Ally static variables change;
 }
 
 function buyitem(x) {
@@ -1359,7 +1376,7 @@ let attackmod = {
 let NormalFireball = new Ability("Normal Fireball",5,[5000,0,0],20,"A normal fire ball spell that damages a single target",4,"img/normalfireball.png");
 let NormalFrost = new Ability("Normal Frost",5,[5000,0,0],10,"A normal frost spell. Slows your enemies down temporarily",4,"img/normalfrost.png");
 let Basicarcanetrap = new Ability("Basic Arcane Trap",10,[5000,0,0],4,"A Basic Trap that automatically damages and collects loot from enemies, cast multiple times to intensify it.",
-    6,"img/basicarcanetrap.png");
+    6,"img/basicarcanetrap.png","trap");
 let Removetrap = new Ability("Remove Trap",1,[500,0,0],0,"Removes the most magical trap you set in the current dungeon.",6,"img/removetrap.png");
 
 let theabilities = [NormalFireball,NormalFrost,Basicarcanetrap,Removetrap];
@@ -1374,7 +1391,7 @@ let MercenaryGuild = new Building([30,0,0],0,"Mercenary Guild","Mercenaries hunt
 let Portal = new Building([100,0,0],0,"Portal","Travel to other places. The more you have the more types of places you can go, the " +
     "higher level you are the places of the acquired types you can go. \n\n CAUTION - Don't get 4 of these");
 
-let Bank = new Building([0,0,0],0,"Bank","A safe place to store your money, at a price... (Is this an Oxymoron? Can't tell.)");
+let Bank = new Building([0,0,0],0,"Bank","A safe place to store your money, at a price... (Is this an Oxymoron? I am bad at linguistics.)");
 
 let Blacksmith = new Building([300,0,0],0,"Blacksmith", "It is always better to just make your own weapon. But some people are " +
     "just too lazy so they buy it for an increased price (How else does the Blacksmith profit?).");
@@ -1395,9 +1412,9 @@ let up2 = new Upgrade("Blood Spear Fishing",[300,0,0],"img/bloodspearfishing1.pn
 let up3 = new Upgrade("Whetfish Ichthyology",[2000,0,0],"img/whetfishichthyology1.png");
 let up4 = new Upgrade("Blood Spear Fishing II",[1500,0,0],"img/bloodspearfishing2.png");
 let up5 = new Upgrade("Swordsman Tracking",[4000,0,0],"img/swordsmantracking1.png");
-let up6 = new Upgrade("Early Desensitization",[12000,0,0],"img/whetfishichthyology1.png");
-let up7 = new Upgrade("Goblin Metallurgy",[10000,0,0],"img/whetfishichthyology1.png");
-let up8 = new Upgrade("Arcane Static Dampening",[10000,0,0],"img/whetfishichthyology1.png");
+let up6 = new Upgrade("Early Desensitization",[12000,0,0],"img/desensitization1.png");
+let up7 = new Upgrade("Goblin Metallurgy",[10000,0,0],"img/goblinmetallurgy1.png");
+let up8 = new Upgrade("Arcane Static Dampening",[10000,0,0],"img/ArcaneSD1.png");
 
 let bup1 = new Upgrade("A Welcome Bundle",[0,0,0],"img/whetfishichthyology1.png","A One-only gift for first time visitors to the Bank! (Click to " +
     "recieve gift of one silver");
@@ -1569,6 +1586,8 @@ let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,gobli
     [Poisonoussnake,Poisonoussnake,Poisonoussnake],[murdererreaver,Witch,Witch,Poisonoussnake,treasurechest1],[Flamewitch1]];
 let levelenemies = a2clone(ogenemies);
 
+let theenemies = [goblin,imp,snake,goblin1,boss1,blueimp,Witch,Poisonoussnake,murdererreaver,treasurechest1,Flamewitch1];
+
 let timertrap = new Array(levelenemies.length).fill([]);
 
 let gamestats = [playerbronze,playersilver,playergold,currentlevel,dungeon,attackmod];
@@ -1668,12 +1687,13 @@ function loadgame() {
         blacksmith();
         portal();
         spellshop();
-        flavoradd();
         $(function() { // when document is ready, $(document).ready() is deprecated now -_-
             inventory();
             abilities();
             showMercenaries();
             showupgrades();
+            flavoradd(); //showfoes() is in flavoradd();
+            setTimeout(flavoradd,50); //for some reason it has to be used twice \(-_-)/
         });
         if (currentlevel.val >= 4) {
             $('#pmana').show();
