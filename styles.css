@@ -179,9 +179,9 @@ div.tooltip {
 div.tooltip.Enemy {
     font-size: 1.1vw;
     position:absolute;
-    bottom:16.2%;
+    top:65%;
     right:100%;
-    width:50%;
+    width:60%;
 }
 div.Abilities {
     display: none;
