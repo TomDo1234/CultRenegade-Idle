@@ -263,6 +263,16 @@ function a2clone(array) {
     return a;
 }
 
+function countindungeon(name) {
+    let num = 0;
+    levelenemies[dungeon.val - 1].forEach(function(enem) {
+        if (enem.name === name) {
+            num += 1;
+        }
+    });
+    return num;
+}
+
 function toggleplusminus(x) {
     let y;
     if (x.innerHTML.charAt(x.innerHTML.length - 1) === "+") {
@@ -322,6 +332,16 @@ function levelup(x) {
             return [14,9,1,25];
         case 10:
             return [25,10,1,35];
+        case 11:
+            return [50,12,2,50];
+        case 12:
+            return [60,16,1,70];
+        case 13:
+            return [70,20,0,100];
+        case 14:
+            return [90,22,1,150];
+        case 15:
+            return [120,22,0,200];
         default:
             return [2,2,0,0];
     }
