@@ -184,7 +184,6 @@ div.tooltip.Enemy {
     width:60%;
 }
 div.Abilities {
-    display: none;
     position:absolute;
     height:20%;
     float:top;
@@ -243,10 +242,11 @@ div.tooltip.inventory {
 }
 button.class1.portal {
     border-color: rebeccapurple;
+    width:25%;
     font-size: 1.2vw;
 }
 div.portal1 {
-    width:33%;
+    width:35%;
 }
 div.tooltip.blacksmith {
     float:right;
