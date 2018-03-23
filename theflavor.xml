@@ -111,7 +111,7 @@
     <Foe>
         <name>Regular Witch</name>
         <flavor>
-            A practitioner of the Arcane, still dangerous even though only a novice.
+            A dabbler in the Arcane, still dangerous even though inexperienced.
         </flavor>
     </Foe>
     <Foe>
@@ -135,8 +135,53 @@
     <Foe>
         <name>Flame Witch</name>
         <flavor>
+            A Witch that dabbles specifically in fire magic, a very destructive element. Fire magic typically affects a large area and can deal a lot of damage
+            in the long run if left unchecked.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Dreadshroom</name>
+        <flavor>
+            A Basic skill of anyone who studies disease magic is to summon Dreadshrooms. Mushrooms that emit a deadly poison 5.2x more potent than
+            Botchulinum.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Fungalmancer</name>
+        <flavor>
+            Someone who indulges in a specific subset of Disease Magic, Fungalmancy. The ability to manipulate,create and spread disease-ridden fungi.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Novice Witch</name>
+        <flavor>
+            These witches are not mere dabblers. They are practitioners to the higher mysteries of the Arcane.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Chaotic Flesh</name>
+        <flavor>
             A Witch that specializes in fire magic, a very destructive element. Fire magic typically affects a large area and can deal a lot of damage
             in the long run if left unchecked.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Regular Deathspawn</name>
+        <flavor>
+            Spawns formed using the remains of the dead. created by Practioners of Death Magic.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Death Knight</name>
+        <flavor>
+            Servants of Necromancers, corpses imbued with Death Magic. Capable of manipulating and raising the dead themselves and leech life.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>The Petty Essence of Unknown</name>
+        <flavor>
+            The first Essence of the unknown, weak but deadly. It is intangible and has enough power to destroy a large island with ease.
+            Be careful when approaching this being.
         </flavor>
     </Foe>
 </Foes>
