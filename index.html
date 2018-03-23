@@ -4,14 +4,14 @@
 <script src="game.js"></script>
         <html lang="en">
         <head>
-            <!-- Global Site Tag (gtag.js) - Google Analytics -->
+	    	<!-- Global Site Tag (gtag.js) - Google Analytics -->
             <script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script>
             <script>
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
                 gtag('config', 'UA-115635325-1');
-            </script>		
+            </script>
             <title>''</title>
             <meta http-equiv="content-type" content = "text/html;charset = UTF-8"/>
             <meta name = "Author" content = "Tom Do"/>
@@ -92,12 +92,12 @@
         </div>
             <br><br><br><br><br><br>
             <div style = "float:right;margin-top: 8%;">
-                <button class = "class1" style = "float:right" onclick = "$('#allies1').toggle();toggleplusminus(this);$('#allyinfobut').toggle()">Allies -</button>
-                <div id = "allies1" style = "margin-top:20%">
+                <button class = "class1" id = "Alliesbut" style = "float:right;display:none;" onclick = "$('#allies1').toggle();toggleplusminus(this);$('#allyinfobut').toggle()">Allies -</button>
+                <div id = "allies1" style = "margin-top:20%;display:none;">
                     <ul id = "allies" class = "allies" style = "float:right">
                     </ul>
                 </div>
-                <button class = "class1" style = "float:right;margin-top:10%" id = "allyinfobut" onclick = "$('#allyinfo').toggle()">Info</button>
+                <button class = "class1" style = "float:right;margin-top:10%;display:none;" id = "allyinfobut" onclick = "$('#allyinfo').toggle()">Info</button>
                 <div id = "Date" class = "DATE">
                     <script>
                         let startdate = new Date();
@@ -125,12 +125,14 @@
                     </script>
                 </div>
             </div>
+        <div id = "Inventorytab" style = "display:none">
         <button id = "Inventorybut" class = "class1" onclick = "$('#inventory').toggle();toggleplusminus(this)">Inventory -</button>
         <div style = "height:11vh;">
             <div id = "inventory" style = "float:top;height:100%;width:35%;"></div>
             <div id = "invtooltip" class = "tooltip inventory">
                 <button id = "invsell" style = "display:none;"></button>
             </div>
+        </div>
         </div><br>
         <button id = "THEBUTTON" class = "THEBUTTON" onclick = "if (isdead === false && reducecheatclick === false) {
         fight(setattack, levelenemies[dungeon.val - 1], dungeon.val - 1, allies);
@@ -158,8 +160,8 @@
                 <button onclick = "toggleonoff(this);wobbleon = !wobbleon" class = "Options">Animations ON</button>
                 </div>
             </div>
-            <div style = "float:left;width:20%;height:20%;margin-left: 15.5%;">
-                <button id = "abilitiesbut" class = "class1" style = "position:absolute;float:top" onclick = "$('#Abilities').toggle();toggleplusminus(this)">Abilities +</button>
+            <div id = "Abilitytab" style = "float:left;width:20%;height:20%;margin-left: 15.5%;display:none">
+                <button id = "abilitiesbut" class = "class1" style = "position:absolute;float:top" onclick = "$('#Abilities').toggle();toggleplusminus(this)">Abilities -</button>
                 <div id = "Abilities" class = "Abilities"></div>
             </div>
             <div id = "thechangelog" class = "Options">
@@ -176,7 +178,10 @@
                         <li>20/03/2018 - Flame and AOE damage added, Flame witches now damage all allies and you at the same time whilst applying a stacking DOT</li>
                         <li>20/03/2018 - Firefox inventory tooltip bug fixed.</li>
                         <li>21/03/2018 - 5 more upgrades added. Upgrades art changed to pixel for consistency</li>
-			<li>22/03/2018 - Added Flavor text for enemies</li>
+                        <li>22/03/2018 - Added Flavor text for enemies</li>
+                        <li>23/03/2018 - Removed bug where multiple countdowns appear when you die</li>
+                        <li>23/03/2018 - Added 5 more dungeons, introducing enemies that can spawn other enemies.
+                            Introduced enemies that have high regen rate. Reanimated corpses now have a higher regen rate </li>
                     </ul>
                 </div>
             </div>
@@ -191,16 +196,16 @@
             <div style = "float: left;width:15%;">
                 <button class = "class1" onclick = "$('#Msg').toggle();toggleplusminus(this)">Message Log -</button>
                 <ul id = "Msg" class = "Msg">
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
-                    <li></li>
+                    <li><br></li>
+                    <li><br></li>
+                    <li><br></li> <!-- <br> is to force he screen to have a scroll on the side when it logs on -->
+                    <li><br></li>
+                    <li><br></li>
+                    <li><br></li>
+                    <li><br></li>
+                    <li><br></li>
+                    <li><br></li>
+                    <li><br></li>
                 </ul>
             </div>
         </div>
