@@ -55,7 +55,6 @@ class Player {
         phealthtrack.style.width = Math.floor(val / this._MHea * 100).toString() + "%";
         if (val <= 0) {
             let count = 10;
-            isdead = true;
             levelenemies[dungeon.val-1].forEach(function(enemy) {
                 enemy.health = enemy.MHea;
             });
@@ -71,8 +70,8 @@ class Player {
                 count -= 1;
                 setTimeout(revival,1000);
             }
-            MsgLog("YOU DIED");
-            revival();
+            if (isdead === false) {MsgLog("YOU DIED");revival()}
+            isdead = true;
         }
     }
     get health() {
@@ -147,12 +146,38 @@ class Building {
         this.Nam = Nam;
         this.flavor = flav;
         this.MQuantity = MQuantity;
+        this._firstbought = false;
     }
-
+    set firstbought(val) {
+        this._firstbought = val;
+        if (val === true) {
+            switch (this) {
+                case MercenaryGuild:
+                    $(function() {
+                        $('#Alliesbut').show();
+                        $('#allyinfobut').show();
+                        $('#allies1').show();
+                    });
+                    break;
+                case Spellshop:
+                    $(function() {
+                        $('#Abilitytab').show();
+                    });
+                    break;
+                case Blacksmith:
+                    $(function() {
+                        $('#Inventorytab').show();
+                    });
+                    break;
+            }
+        }
+    }
+    get firstbought() {
+        return this._firstbought;
+    }
     set Cost(val) {
         this._Cost = val;
         showbuildings();
-
     }
 
     get Cost() {
@@ -239,7 +264,7 @@ class Item {
 }
 
 class Ally {
-    constructor(Nam,Hea,Str,Spe,Arm,Cost,MHea,Qua,Idle,farm,flavor) {
+    constructor(Nam,Hea,Str,Spe,Arm,Cost,MHea,Qua,Idle,farm,flavor,regen = 1) {
         this._name = Nam;
         this._health = Hea;
         this._strength = Str;
@@ -252,6 +277,7 @@ class Ally {
         this._farm = farm;
         this.flavor = flavor;
         this._Ibonus = 1;
+        this._regen = regen;
         this.Healthbar = document.createElement("DIV");this.Healthbar.classList.add("Healthbar");this.Healthbar.classList.add("ally");
         this.Healthbartrack = document.createElement("DIV");this.Healthbartrack.classList.add("Healthtrack");
         Ally.armorbonus = 0; // static variables, implemented perhaps inelegantly (cannot be accessed through instances
@@ -350,7 +376,7 @@ class Ally {
 
 class Foe {
 
-    constructor(Nam,Hea,Str,Spe,Loo,Arm,xpr,flav = "",img = "Genericgoblin1.png",spec = []) {
+    constructor(Nam,Hea,Str,Spe,Loo,Arm,xpr,flav = "",img = "Genericgoblin1.png",spec = [],regen = 0) {
         this._name = Nam;
         this._health = Hea;
         this._strength = Str;
@@ -362,6 +388,7 @@ class Foe {
         this._img = img;
         this._MHea = this._health;
         this._spec = spec;
+        this._regen = regen;
         this.Healthbar = document.createElement("DIV");this.Healthbar.classList.add("Healthbar");
         this.Healthbartrack = document.createElement("DIV");this.Healthbartrack.classList.add("Healthtrack");
     }
@@ -430,8 +457,9 @@ class Foe {
         }
     }
 
-    activatespecial(damage,target,theallies) {
+    activatespecial(damage,target,theallies,time = fighttimer.val) {
         let z = this; // to prevent the undefined thing.
+        let thedungeon = levelenemies[dungeon.val - 1];
         this._spec.forEach(function(spec) {
            switch(spec[0]) {
                case "Poison":
@@ -450,6 +478,18 @@ class Foe {
                        flame([player].concat(theallies),spec[2],spec[3]);
                    }
                    break;
+               case "Spawn":
+                   if (time % spec[4] === 0) {
+                       let numofsummons = countindungeon(spec[1].name);
+                       let numofsummoners = countindungeon(z.name);
+                       for (let x = 0; x < spec[2]; x++) {
+                           if (numofsummons * numofsummoners < spec[3] * numofsummoners) {
+                               thedungeon.unshift(clone(spec[1]));
+                               MsgLog("A" + spec[1].name + "Has been summoned!");
+                           }
+                       }
+                       showfoes();
+                   }
            }
         });
     }
@@ -555,6 +595,7 @@ class Ability {
                 let cope = clone(ogenemies[dungeon.val - 1][x]);
                 enemies.push(cope);
             }
+            fighttimer.val = 0;
         }
     }
 }
@@ -647,9 +688,11 @@ function fight(attack,enemies,index,allies) {
                 let cope = clone(ogenemies[index][x]);
                 enemies.push(cope);
             }
+            fighttimer.val = 0;
             break;
         }
     }
+    fighttimer.val += 1;
 }
 
 function MsgLog(msg) {
@@ -945,7 +988,10 @@ function regen() {
         player.mana += 1;
     }
     allies.forEach(function(ally) {
-       ally.health += 1;
+       ally.health += ally._regen;
+    });
+    levelenemies[dungeon.val - 1].forEach(function(enem){
+       enem.health += enem._regen;
     });
     setTimeout(regen, 2000);
 }
@@ -1000,7 +1046,7 @@ function game() {
         name = "Poophead!";
         MsgLog("You didn't enter a name... 'Poophead!' it is!")
     }
-    MsgLog("Hello " + name + "!");
+    MsgLog("Hello " + name + "!");MsgLog("Click the 'FIGHT' Button to... (it's self explanatory)");
     player.name = name;//player.xp=500;player.xp=500;player.xp=500;player.strength=50000;player.speed=123;player.xp=50000;
     inputfield.remove();flavoradd(); // showfoes is in flavoradd
     showbuildings();inventory();
@@ -1243,7 +1289,7 @@ function build(x,y = "b") {
     for (let x = 0; x < resources.length; x++) {
         resources[x].val -= thecost[x];
     }
-    x.Quantity += 1;
+    x.Quantity += 1; if (x.firstbought === false) {x.firstbought = true};
     switch(x) {
         case MercenaryGuild:
             levelMercs();
@@ -1436,11 +1482,11 @@ let GenericSwordsman = new Ally ("Generic Swordsman",22,9,3,3,[200,0,0],22,0,0,[
 let GenericKnight = new Ally ("Generic Knight",200,18,3,7,[2000,0,0],200,0,0,[22,0,0],"Knights, elite killers among the common men. " +
     "Trained to kill,raised to kill, pretty much born to kill.");
 
-let trainedbear = new Ally ("Trained Bear",1000,30,5,13,[15000,0,0],1000,0,0,[100,0,0],"Bears are many times stronger than a regular human." +
-    " TRAINED bears are many times stronger than trained humans. When humans aren't enough, you can use bears.");
+let trainedbear = new Ally ("Trained Bear",1000,30,5,13,[15000,0,0],1000,0,0,[100,0,0],"Regular bears are many times stronger than a regular human." +
+    " TRAINED bears are many times stronger than regular bears. When humans aren't enough, you can use bears.");
 
 let reanimatedcorpse = new Ally ("Reanimated Corpse",2000,45,9,0,[90000,0,0],2000,0,0,[800,0,0],"A corpse reanimated by a novice necromancer," +
-    "It has high speed regeneration and due to dark magic has increased strength to the point where it can destroy concrete castle walls in one hit.");
+    "It has high speed regeneration and due to dark magic has increased strength to the point where it can destroy concrete castle walls in one hit.",50);
 
 let giant = new Ally ("Giant",10000,88,1,25,[2000000,0,0],10000,0,0,[7700,0,0],"Knights, elite killers among the common men. " +
     "Trained to kill,raised to kill, pretty much born to kill.");
@@ -1452,7 +1498,7 @@ let cantrain = [GenericSpearman,GenericSwordsman,GenericKnight];
 let player = new Player("PoopHead!",5,1,1,1,0,5,50);
 let isdead = false;
 let wobbleon = true;
-let maxlevel = 10;
+let maxlevel = 15;
 let autofightenabled = true;
 
 let title = "RPG IDLE OF DOOM";
@@ -1569,6 +1615,16 @@ let dungeon = {
         return this._val;
     }
 };
+let fighttimer = {
+    _val : 0,
+    set val(value) {
+        this._val = value;
+    },
+    get val() {
+        return this._val;
+    }
+};
+
 let goblin = new Foe("Generic Goblin", 1, 1, 1, [playerbronze,1,1000],0,1,"","Genericgoblin1.png");
 let imp = new Foe("Generic Imp", 5, 2, 1, [playerbronze,2,1000],0,2,"","Genericimp1.png");
 let snake = new Foe("Generic Snake",30,5,7,[playerbronze,40,1000],3,20,"","Genericsnake1.png");
@@ -1579,14 +1635,25 @@ let blueimp = new Foe("Blue Imp",700,21,5,[playerbronze,5000,1000],4,1500,"","bl
 let Witch = new Foe("Regular Witch",500,44,4,[playerbronze,14000,1000],0,4700,"","regularwitch.png");
 let Poisonoussnake = new Foe("Poisonous Snake",1000,19,10,[playerbronze,50000,1000],6,9000,"","poisonoussnake.png",[["Poison",0.1,10000]]);
 let murdererreaver = new Foe("Murderer Reaver",3000,50,12,[playerbronze,1,1000],13,15000,"","murdererreaver1.png",[["Lifesteal"]]);
-let treasurechest1 = new Foe("Treasure Chest (Basic)",5000,0,0,[playersilver,1,1000],10,0,"","treasurechest1.png");
-let Flamewitch1 = new Foe("Flame Witch",2000,100,3,[playersilver,5,1000,playerbronze,400000],0,99999,"","flamewitch.png",[["Flame","all",4,50000]]);
+let treasurechest1 = new Foe("Treasure Chest (Basic)",5000,0,0,[playersilver,1,100,playerbronze,100000,1000],10,0,"","treasurechest1.png");
+let Flamewitch1 = new Foe("Flame Witch",2000,100,3,[playerbronze,200000,1000],0,99999,"","flamewitch.png",[["Flame","all",4,50000]]);
+let Dreadshroom = new Foe("Dreadshroom",1500,70,7,[playerbronze,20000,1000],10,30000,"","dreadshroom.png",[["Poison",0.2,20000]]);
+let Fungalmancer = new Foe("Fungalmancer",3000,50,3,[playerbronze,400000,1000],2,120000,"","fungalmancer.png",[["Poison",0.4,5000],["Spawn",Dreadshroom,1,3,10]]);
+let Witch1 = new Foe("Novice Witch",4000,500,3,[playerbronze,500000,1000],4,150000,"","novicewitch.png",[[]]);
+let chaoticflesh = new Foe("Chaotic Flesh",9000,100,3,[playerbronze,1000000,1000],25,300000,"","chaoticflesh.png",[[]],100);
+let deathspawn = new Foe("Regular Deathspawn",6000,75,10,[playerbronze,10000,1000],15,30000,"","regular deathspawn.png",[],100);
+let Deathknight = new Foe("Death Knight",30000,100,3,[playerbronze,1500000,1000],30,500000,"","deathknight.png",[["Lifesteal"],["Spawn",deathspawn,1,2,10]],200);
+let boss2 = new Foe("The Petty Essence of Unknown",100000,150,30,[playersilver,2,1000],30,3000000,"","boss2.png");
 
 let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,goblin1],[boss1],[blueimp,blueimp],[Witch],
-    [Poisonoussnake,Poisonoussnake,Poisonoussnake],[murdererreaver,Witch,Witch,Poisonoussnake,treasurechest1],[Flamewitch1]];
+    [Poisonoussnake,Poisonoussnake,Poisonoussnake],[murdererreaver,Witch,Witch,Poisonoussnake,treasurechest1],[Flamewitch1],
+    [Dreadshroom,Dreadshroom,Dreadshroom,Fungalmancer],[Witch1,Witch1,Witch1],[chaoticflesh,chaoticflesh],[deathspawn,deathspawn,Deathknight],[boss2]
+];
 let levelenemies = a2clone(ogenemies);
 
-let theenemies = [goblin,imp,snake,goblin1,boss1,blueimp,Witch,Poisonoussnake,murdererreaver,treasurechest1,Flamewitch1];
+let theenemies = [goblin,imp,snake,goblin1,boss1,blueimp,Witch,Poisonoussnake,murdererreaver,treasurechest1,Flamewitch1,Dreadshroom,Fungalmancer,
+    Witch1,chaoticflesh,deathspawn,Deathknight,boss2
+];
 
 let timertrap = new Array(levelenemies.length).fill([]);
 
