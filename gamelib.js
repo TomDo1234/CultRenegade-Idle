@@ -465,3 +465,16 @@ function flame(things,dam,dur) {
     }
     flaming();
 }
+
+function intangibility(target,A,dur,time = fighttimer.val) {
+    if (time % A === 0) {
+        target._intan = true;
+        target.Healthbartrack.style.backgroundColor = "lightpink";
+        MsgLog(target.name + " has turned intangible!");
+    }
+    else if (time % dur === 0){
+        target._intan = false;
+        target.Healthbartrack.style.backgroundColor = "springgreen";
+        MsgLog("Intangibility has worn off for " + target.name + ". Strike quickly!");
+    }
+}
