@@ -388,7 +388,7 @@ class Foe {
         this._img = img;
         this._MHea = this._health;
         this._spec = spec;
-        this._regen = regen;
+        this._regen = regen;this._intan = false;
         this.Healthbar = document.createElement("DIV");this.Healthbar.classList.add("Healthbar");
         this.Healthbartrack = document.createElement("DIV");this.Healthbartrack.classList.add("Healthtrack");
     }
@@ -490,6 +490,10 @@ class Foe {
                        }
                        showfoes();
                    }
+                   break;
+               case "Intangibility":
+                   intangibility(z,spec[1],spec[2]);
+                   break;
            }
         });
     }
@@ -627,30 +631,20 @@ function fight(attack,enemies,index,allies) {
     for (let x = 0; x < Order.length; x++) {
         switch(Order[x].constructor.name) {
             case "Player":
+                let attackdamage = enemies[0]._intan ? 0 : str + totalbonusattack - enemies[0].armor;
+                let msg = enemies[0]._intan ? "Normal stabbing does nothing to the intangible." : "You stabbed a " + enemies[0]._name + "<br>";
                 switch (attack) {
                     case "Stab":
-                        enemies[0].health -= (str + totalbonusattack - enemies[0].armor);
-                        MsgLog("You stabbed a " + enemies[0]._name + "<br>");
-                        wobble(enemypics[0].children[0].children[0],enemies[0].health);
-                        break;
-                    case "Slash":
-                        enemies[0].health -= (str + totalbonusattack - enemies[0].armor);
-                        wobble(enemypics[0].children[0].children[0],enemies[0].health);
-                        if (enemies.length === 1) {
-                            MsgLog("You slashed a " + enemies[0]._name + "<br>");
-                        }
-                        else if (enemies.length >= 2) {
-                            enemies[1].health -= (str + totalbonusattack - enemies[0].armor);
-                            MsgLog("<br>You slashed two " + enemies[1]._name + "s" + "<br>");
-                            wobble(enemypics[0].children[1].children[0],enemies[1].health);
-                        }
+                        enemies[0].health -= attackdamage;
+                        MsgLog(msg);
+                        if (attackdamage > 0) {wobble(enemypics[0].children[0].children[0],enemies[0].health)}
                         break;
                 }
-
                 break;
             case "Ally":
                 let whosattackingnum = Order[x].AQuantity;
-                enemies[0].health -= (Order[x].strength - enemies[0].armor) * whosattackingnum;
+                let attackdamage1 = enemies[0]._intan ? 0 : (Order[x].strength - enemies[0].armor) * whosattackingnum;
+                enemies[0].health -= attackdamage1;
                 break;
             case "Foe":
                 if (theallies.length > 0) {
@@ -1173,7 +1167,12 @@ function portal() {
                 button.classList.add("portal");
                 button.onclick = function () {
                     if (isdead === false) {
-                        dungeon.val = x + 1;
+                        levelenemies[dungeon.val - 1] = [];
+                        for (let x = 0; x < ogenemies[dungeon.val - 1].length; x++) {
+                            let cope = clone(ogenemies[dungeon.val - 1][x]);
+                            levelenemies[dungeon.val - 1].push(cope);
+                        }
+                        dungeon.val = x + 1;fighttimer.val = 0;
                         MsgLog("You have travelled to Dungeon " + (x + 1));
                     }
                 };
@@ -1289,7 +1288,7 @@ function build(x,y = "b") {
     for (let x = 0; x < resources.length; x++) {
         resources[x].val -= thecost[x];
     }
-    x.Quantity += 1; if (x.firstbought === false) {x.firstbought = true};
+    x.Quantity += 1; if (x.firstbought === false) {x.firstbought = true}
     switch(x) {
         case MercenaryGuild:
             levelMercs();
@@ -1643,7 +1642,7 @@ let Witch1 = new Foe("Novice Witch",4000,500,3,[playerbronze,500000,1000],4,1500
 let chaoticflesh = new Foe("Chaotic Flesh",9000,100,3,[playerbronze,1000000,1000],25,300000,"","chaoticflesh.png",[[]],100);
 let deathspawn = new Foe("Regular Deathspawn",6000,75,10,[playerbronze,10000,1000],15,30000,"","regular deathspawn.png",[],100);
 let Deathknight = new Foe("Death Knight",30000,100,3,[playerbronze,1500000,1000],30,500000,"","deathknight.png",[["Lifesteal"],["Spawn",deathspawn,1,2,10]],200);
-let boss2 = new Foe("The Petty Essence of Unknown",100000,150,30,[playersilver,2,1000],30,3000000,"","boss2.png");
+let boss2 = new Foe("The Petty Essence of Unknown",100000,500,40,[playersilver,2,1000],30,3000000,"","boss2.png",[["Intangibility",20,10]],400);
 
 let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,goblin1],[boss1],[blueimp,blueimp],[Witch],
     [Poisonoussnake,Poisonoussnake,Poisonoussnake],[murdererreaver,Witch,Witch,Poisonoussnake,treasurechest1],[Flamewitch1],
