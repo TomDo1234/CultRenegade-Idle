@@ -1596,7 +1596,7 @@ let playerbronze = {
                 this.milestone += 1;
             }
             else if (this._val === 15 && this.milestone < 3) {
-                $('#Playerpic').src = "player1.png";
+                $('#Playerpic')[0].src = "player1.png";
                 $('#Pdescription')[0].innerHTML = "You have grown more powerful, you are becoming less generic as you become more powerful in the arcane" +
                     ". The blue ring that borders you is abundance of mana you can control.";
                 MsgLog("Something is happening to you! You feel a weird sensation as you progress further...");
