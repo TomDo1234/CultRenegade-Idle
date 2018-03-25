@@ -300,7 +300,7 @@ class Ally {
             val = this.MHea;
         }
         this._health = val;
-        showidle();
+        load(this);
     }
     get health() {
         return this._health;
@@ -739,7 +739,7 @@ function showidle() {
             holder.appendChild(ally.Healthbar);holder.appendChild(thetext);
             list[0].insertBefore(holder, list.firstChild);
             let slider = document.createElement('input');
-            slider.type = "range";
+            slider.type = "range";slider.style.marginLeft = "46%";
             slider.min = "0";
             slider.max = (a + b).toString();
             slider.value = b.toString();
