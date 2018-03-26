@@ -645,6 +645,13 @@ function fight(attack,enemies,index,allies) {
                 let whosattackingnum = Order[x].AQuantity;
                 let attackdamage1 = enemies[0]._intan ? 0 : (Order[x].strength - enemies[0].armor) * whosattackingnum;
                 enemies[0].health -= attackdamage1;
+                let retaldamage1 = 0;
+                enemies[0]._spec.forEach(function(spec) {
+                   if (spec[0] === "Retaliation") {
+                       retaldamage1 = attackdamage1 * spec[1];
+                   }
+                });
+                Order[x].health -= retaldamage1;
                 break;
             case "Foe":
                 if (theallies.length > 0) {
@@ -1594,11 +1601,11 @@ let playerbronze = {
                     $('#eventinfo').toggle();$(infobut).remove();
                     $('#theactualinfo')[0].innerHTML = "You are now above level 5, Enemies in dungeons higher than 5 are no longer passive..."
                         + "They WILL fight you whether you like it or not. DO NOT enter dungeons above 5 without being prepared. However, it is safe"
-                        + "To place spell traps in dungeons 5 and higher and then leave to another dungeon. It is unlikely that the magic of a level 6"
-                        + "can cause remote harm to enemies with high Magic Resistance (Which is more common the higher the dungeon)." + "<br><br>"
+                        + " to place spell traps in dungeons 5 and higher and then leave to another dungeon. It is unlikely that the magic of a level 6"
+                        + " can cause remote harm to enemies with high Magic Resistance (Which is more common the higher the dungeon)." + "<br><br>"
                         + "If you die, don't worry. You will be teleported back to dungeon 1! Also... Enemies from here on out may have special" +
-                        "abilities like the ability to spawn other enemies and poison. To know if an enemy has such abilities mouse over their" +
-                        "image and the green words on the tooltip will tell you what special abilities they will have.";
+                        " abilities like the ability to spawn other enemies and poison. To know if an enemy has such abilities mouse over their" +
+                        " image and the green words on the tooltip will tell you what special abilities they will have.";
                 };
                 this.milestone += 1;
             }
@@ -1644,7 +1651,7 @@ let snake = new Foe("Generic Snake",30,5,7,[playerbronze,40,1000],3,20,"","Gener
 let goblin1 = new Foe("Killer Goblin Novice",100,10,3,[playerbronze,200,1000],7,120,"","goblin1.png");
 let boss1 = new Foe("Frosty Abomination Fourth Class",800,50,12,[plainuselesslocket,1,1000,playerbronze,2000,1000],0,2000
     ,"","boss1.png");
-let blueimp = new Foe("Blue Imp",700,21,5,[playerbronze,5000,1000],4,1500,"","blueimp1.png");
+let blueimp = new Foe("Blue Imp",700,21,5,[playerbronze,5000,1000],4,1500,"","blueimp1.png",[["Retaliation",0.5]]);
 let Witch = new Foe("Regular Witch",500,44,4,[playerbronze,14000,1000],0,4700,"","regularwitch.png");
 let Poisonoussnake = new Foe("Poisonous Snake",1000,19,10,[playerbronze,50000,1000],6,9000,"","poisonoussnake.png",[["Poison",0.1,10000]]);
 let murdererreaver = new Foe("Murderer Reaver",3000,50,12,[playerbronze,1,1000],13,15000,"","murdererreaver1.png",[["Lifesteal"]]);
