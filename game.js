@@ -654,17 +654,21 @@ function fight(attack,enemies,index,allies) {
                 Order[x].health -= retaldamage1;
                 break;
             case "Foe":
+                let pierce = Order[x]._spec.some(function(x) {
+                   return x[0] === "Armor Pierce";
+                });
                 if (theallies.length > 0) {
                     Order[x].activatespecial(Order[x].strength - theallies[0].armor,theallies[0],theallies);
-                    if (!(Order[x].strength  - theallies[0].armor <= 0)) {
-                        theallies[0].health -= Order[x].strength  - theallies[0].armor;
+                    let resultdam = pierce ? Order[x].strength : Order[x].strength - theallies[0].armor;
+                    if (!(resultdam <= 0)) {
+                        theallies[0].health -= resultdam;
                     }
                 }
                 else {
                     Order[x].activatespecial(Order[x].strength - player.armor - totalbonusdefense,player,theallies);
-                    if (!(Order[x].strength  - player.armor - totalbonusdefense <= 0)) {
-                        player.health -= Order[x].strength - player.armor - totalbonusdefense;
-
+                    let resultdam = pierce ? Order[x].strength : Order[x].strength - player.armor - totalbonusdefense;
+                    if (!(resultdam <= 0)) {
+                        player.health -= resultdam;
                         wobble($("#Playerpic")[0],player.health);
                     }
                     if (player.health <= 0) {
@@ -1652,20 +1656,20 @@ let goblin1 = new Foe("Killer Goblin Novice",100,10,3,[playerbronze,200,1000],7,
 let boss1 = new Foe("Frosty Abomination Fourth Class",800,50,12,[plainuselesslocket,1,1000,playerbronze,2000,1000],0,2000
     ,"","boss1.png");
 let blueimp = new Foe("Blue Imp",700,21,5,[playerbronze,5000,1000],4,1500,"","blueimp1.png",[["Retaliation",0.5]]);
-let Witch = new Foe("Regular Witch",500,44,4,[playerbronze,14000,1000],0,4700,"","regularwitch.png");
-let Poisonoussnake = new Foe("Poisonous Snake",1000,19,10,[playerbronze,50000,1000],6,9000,"","poisonoussnake.png",[["Poison",0.1,10000]]);
+let Witch = new Foe("Regular Witch",500,100,4,[playerbronze,14000,1000],0,4700,"","regularwitch.png",[["Armor Pierce"]]);
+let Poisonoussnake = new Foe("Poisonous Snake",1000,19,10,[playerbronze,50000,1000],6,9000,"","poisonoussnake.png",[["Poison",0.2,15000]]);
 let murdererreaver = new Foe("Murderer Reaver",3000,50,12,[playerbronze,1,1000],13,15000,"","murdererreaver1.png",[["Lifesteal"]]);
 let treasurechest1 = new Foe("Treasure Chest (Basic)",5000,0,0,[playersilver,1,100,playerbronze,100000,1000],10,0,"","treasurechest1.png");
 let Flamewitch1 = new Foe("Flame Witch",2000,100,3,[playerbronze,200000,1000],0,99999,"","flamewitch.png",[["Flame","all",4,50000]]);
 let Dreadshroom = new Foe("Dreadshroom",1500,70,7,[playerbronze,20000,1000],10,30000,"","dreadshroom.png",[["Poison",0.2,20000]]);
 let Fungalmancer = new Foe("Fungalmancer",3000,50,3,[playerbronze,400000,1000],2,120000,"","fungalmancer.png",[["Poison",0.4,5000],["Spawn",Dreadshroom,1,3,8]]);
-let Witch1 = new Foe("Novice Witch",4000,500,3,[playerbronze,500000,1000],4,150000,"","novicewitch.png",[[]]);
+let Witch1 = new Foe("Novice Witch",4000,500,3,[playerbronze,500000,1000],4,150000,"","novicewitch.png",[["Armor Pierce"]]);
 let chaoticflesh = new Foe("Chaotic Flesh",9000,100,3,[playerbronze,1000000,1000],25,300000,"","chaoticflesh.png",[[]],100);
 let deathspawn = new Foe("Regular Deathspawn",6000,75,10,[playerbronze,10000,1000],15,30000,"","regular deathspawn.png",[],100);
 let Deathknight = new Foe("Death Knight",30000,100,3,[playerbronze,1500000,1000],30,500000,"","deathknight.png",[["Lifesteal"],["Spawn",deathspawn,1,2,8]],200);
 let boss2 = new Foe("The Petty Essence of Unknown",100000,500,40,[playersilver,2,1000],30,3000000,"","boss2.png",[["Intangibility",20,10]],400);
 
-let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,goblin1],[boss1],[blueimp,blueimp],[Witch],
+let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,goblin1],[boss1],[blueimp,blueimp],[Witch,Witch,Witch],
     [Poisonoussnake,Poisonoussnake,Poisonoussnake],[murdererreaver,Witch,Witch,Poisonoussnake,treasurechest1],[Flamewitch1],
     [Dreadshroom,Dreadshroom,Dreadshroom,Fungalmancer],[Witch1,Witch1,Witch1],[chaoticflesh,chaoticflesh],[deathspawn,deathspawn,Deathknight],[boss2]
 ];
