@@ -70,7 +70,7 @@ class Player {
                 count -= 1;
                 setTimeout(revival,1000);
             }
-            if (isdead === false) {MsgLog("YOU DIED");revival()}
+            if (isdead === false) {$(function() {MsgLog("YOU DIED");revival()})}
             isdead = true;
         }
     }
@@ -714,7 +714,12 @@ function showfoes() {
         image.classList.add("Entity");
         image.onmouseenter = function() {
             tooltip[0].innerHTML = enemy._name + "<br><br>" + "Attack: " + enemy.strength + "<br>" + "Armor: " + enemy.armor +
-                "<br>" + "Speed: " + enemy.speed + "<br><br>" + enemy.flavor;
+                "<br>" + "Speed: " + enemy.speed + "<br><br>" + enemy.flavor + "<br>";
+            let spectooltip = document.createElement("DIV");spectooltip.classList.add("enemyspec");
+            enemy._spec.forEach(function (thespec) {
+               spectooltip.innerHTML += "<br>" + thespec[0];
+            });
+            tooltip.append(spectooltip);
             tooltip.show();
         };
         image.onmouseout = function() { if (!tooltip.is(':hover')) {tooltip.hide()}};
@@ -1591,7 +1596,9 @@ let playerbronze = {
                         + "They WILL fight you whether you like it or not. DO NOT enter dungeons above 5 without being prepared. However, it is safe"
                         + "To place spell traps in dungeons 5 and higher and then leave to another dungeon. It is unlikely that the magic of a level 6"
                         + "can cause remote harm to enemies with high Magic Resistance (Which is more common the higher the dungeon)." + "<br><br>"
-                        + "If you die, don't worry. You will be teleported back to dungeon 1!"
+                        + "If you die, don't worry. You will be teleported back to dungeon 1! Also... Enemies from here on out may have special" +
+                        "abilities like the ability to spawn other enemies and poison. To know if an enemy has such abilities mouse over their" +
+                        "image and the green words on the tooltip will tell you what special abilities they will have.";
                 };
                 this.milestone += 1;
             }
@@ -1644,11 +1651,11 @@ let murdererreaver = new Foe("Murderer Reaver",3000,50,12,[playerbronze,1,1000],
 let treasurechest1 = new Foe("Treasure Chest (Basic)",5000,0,0,[playersilver,1,100,playerbronze,100000,1000],10,0,"","treasurechest1.png");
 let Flamewitch1 = new Foe("Flame Witch",2000,100,3,[playerbronze,200000,1000],0,99999,"","flamewitch.png",[["Flame","all",4,50000]]);
 let Dreadshroom = new Foe("Dreadshroom",1500,70,7,[playerbronze,20000,1000],10,30000,"","dreadshroom.png",[["Poison",0.2,20000]]);
-let Fungalmancer = new Foe("Fungalmancer",3000,50,3,[playerbronze,400000,1000],2,120000,"","fungalmancer.png",[["Poison",0.4,5000],["Spawn",Dreadshroom,1,3,10]]);
+let Fungalmancer = new Foe("Fungalmancer",3000,50,3,[playerbronze,400000,1000],2,120000,"","fungalmancer.png",[["Poison",0.4,5000],["Spawn",Dreadshroom,1,3,8]]);
 let Witch1 = new Foe("Novice Witch",4000,500,3,[playerbronze,500000,1000],4,150000,"","novicewitch.png",[[]]);
 let chaoticflesh = new Foe("Chaotic Flesh",9000,100,3,[playerbronze,1000000,1000],25,300000,"","chaoticflesh.png",[[]],100);
 let deathspawn = new Foe("Regular Deathspawn",6000,75,10,[playerbronze,10000,1000],15,30000,"","regular deathspawn.png",[],100);
-let Deathknight = new Foe("Death Knight",30000,100,3,[playerbronze,1500000,1000],30,500000,"","deathknight.png",[["Lifesteal"],["Spawn",deathspawn,1,2,10]],200);
+let Deathknight = new Foe("Death Knight",30000,100,3,[playerbronze,1500000,1000],30,500000,"","deathknight.png",[["Lifesteal"],["Spawn",deathspawn,1,2,8]],200);
 let boss2 = new Foe("The Petty Essence of Unknown",100000,500,40,[playersilver,2,1000],30,3000000,"","boss2.png",[["Intangibility",20,10]],400);
 
 let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,goblin1],[boss1],[blueimp,blueimp],[Witch],
