@@ -105,6 +105,9 @@ ul.allies {
     -ms-user-select: none;
     user-select: none;
 }
+div.enemyspec {
+    color: limegreen;
+}
 ul.Msg {
     width:100%;
     margin:0;
