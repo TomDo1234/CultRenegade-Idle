@@ -4,7 +4,7 @@
 <script src="game.js"></script>
         <html lang="en">
         <head>
-	    	<!-- Global Site Tag (gtag.js) - Google Analytics -->
+            <!-- Global Site Tag (gtag.js) - Google Analytics -->
             <script async src="https://www.googletagmanager.com/gtag/js?id=GA_TRACKING_ID"></script>
             <script>
                 window.dataLayer = window.dataLayer || [];
@@ -70,7 +70,7 @@
         </div><br><br>
         <div id = "buildingfuncs" style = "position:absolute;right:0.6%;width:25%;">
             <div id = "MercenaryGuild" style = "display:none;">
-                <button id = "togmerc" onclick = "$('#merc1').toggle();toggleplusminus(this);buildingselection();" class = "class1" style = "float:right;width:60%;">Mercenary Guild -</button>
+                <button id = "togmerc" onclick = "$('#merc1').toggle();toggleplusminus(this);buildingselection();" class = "class1" style = "float:right;width:70%;">Mercenary Guild -</button>
                 <div id = "merc1" style = "width:80%;float:right;">
                     <div id = "merc" style = "float:right;"></div>
                     <div id = "unittooltip" class = "tooltip units"></div>
@@ -94,7 +94,7 @@
             <div style = "float:right;margin-top: 8%;">
                 <button class = "class1" id = "Alliesbut" style = "float:right;display:none;" onclick = "$('#allies1').toggle();toggleplusminus(this);$('#allyinfobut').toggle()">Allies -</button>
                 <div id = "allies1" style = "margin-top:20%;display:none;">
-                    <ul id = "allies" class = "allies" style = "float:right">
+                    <ul id = "allies" class = "allies" style = "float:right;">
                     </ul>
                 </div>
                 <button class = "class1" style = "float:right;margin-top:10%;display:none;" id = "allyinfobut" onclick = "$('#allyinfo').toggle()">Info</button>
@@ -157,7 +157,8 @@
         submit to load the save:" rows = "5" cols = "40"></textarea>
                     <button onclick = "importsave($('#entersave').val());$('#importthesave').toggle();" class = "class1">Submit</button>
                 </div><br>
-                <button onclick = "toggleonoff(this);wobbleon = !wobbleon" class = "Options">Animations ON</button>
+                <button onclick = "toggleonoff(this);wobbleon = !wobbleon" class = "Options">Animations ON</button><br><br>
+                <button onclick = "toggleonoff(this);scidig = !scidig;playerbronze.val -= 0;playersilver.val -= 0;playergold.val -= 0" class = "Options">Short Numbers ON</button>
                 </div>
             </div>
             <div id = "Abilitytab" style = "float:left;width:20%;height:20%;margin-left: 15.5%;display:none">
@@ -182,11 +183,12 @@
                         <li>23/03/2018 - Removed bug where multiple countdowns appear when you die</li>
                         <li>23/03/2018 - Added 5 more dungeons, introducing enemies that can spawn other enemies.
                             Introduced enemies that have high regen rate. Reanimated corpses now have a higher regen rate </li>
-			<li>24/03/2018 - Boss in dungeon 15 actually goes intangible now... be careful</li>
+                        <li>24/03/2018 - Boss in dungeon 15 actually goes intangible now... be careful</li>
                         <li>26/03/2018 - Text no longer highlightable, Sliders repositioned. All to prevent bugs.</li>
                         <li>26/03/2018 - Added special ability keywords on enemy tooltips. Blue Imps now have Retaliation ability, which means
                         they automatically deal damage to attacker proportional to damage dealt by attackers. Non-elemental witches now have
                         armor pierce which bypasses armor.</li>
+                        <li>28/03/2018 - Added a Short Number function. Short numbers are now default.</li>
                     </ul>
                 </div>
             </div>
