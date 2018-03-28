@@ -451,7 +451,7 @@ class Foe {
                     this.loot[x].UEQuantity += 1;
                 }
                 else  {
-                    this.loot[x].val += this.loot[x+1];
+                    this.loot[x].val += this.loot[x+1] + this.loot[x].mod;
                 }
             }
         }
@@ -525,6 +525,7 @@ class Ability {
         this.level = lvl;
         this.type = type;
         Ability.trapdamagebonus = 0;
+        Ability.trapdamagexbonus = 1;
     }
     toJSON() {
         return {name: this.name};
@@ -572,7 +573,7 @@ class Ability {
                 else {
                     MsgLog("You intensify the Basic Arcane Trap in this dungeon");
                 }
-                spelltrap(3600000,this.damage,15,dungeon.val - 1,Basicarcanetrap);
+                spelltrap(3600000,(this.damage + Ability.trapdamagebonus) * Ability.trapdamagexbonus,15,dungeon.val - 1,Basicarcanetrap);
                 break;
             case Removetrap:
                 if (Basicarcanetrap.trapnum[dungeon.val - 1] !== 0) {
@@ -781,9 +782,28 @@ function checkpersec() {
         let g = a.IQuantity * a.farm[2];
         bps += b; sps += s; gps += g;
     });
-    $("#bps")[0].innerText = parseFloat(bps.toFixed(4)).toString() + "/s";
-    $("#sps")[0].innerText = parseFloat(sps.toFixed(4)).toString() + "/s";
-    $("#gps")[0].innerText = parseFloat(gps.toFixed(4)).toString() + "/s";
+    if (scidig) {
+        let array = [bps,sps,gps];
+        let unit = ["","K","M","B","T","KT","MT","BT","TT"];
+        let unitused = [];
+        let count = 0;
+        for (let index = 0;index < array.length;index ++) {
+            count = 0;
+            while (array[index] > 1000) {
+                array[index] /= 1000;
+                count += 1;
+            }
+            unitused.push(unit[count]);
+        }
+        $("#bps")[0].innerText = parseFloat(array[0].toFixed(3)).toString() + unitused[0] + " /s";
+        $("#sps")[0].innerText = parseFloat(array[1].toFixed(3)).toString() + unitused[1] + " /s";
+        $("#gps")[0].innerText = parseFloat(array[2].toFixed(3)).toString() + unitused[2] + " /s";
+    }
+    else {
+        $("#bps")[0].innerText = parseFloat(bps.toFixed(3)).toString() + " /s";
+        $("#sps")[0].innerText = parseFloat(sps.toFixed(3)).toString() + " /s";
+        $("#gps")[0].innerText = parseFloat(gps.toFixed(3)).toString() + " /s";
+    }
 }
 
 function idlestuff() {
@@ -794,7 +814,7 @@ function idlestuff() {
         let b = a.IQuantity * a.farm[0];
         let s = a.IQuantity * a.farm[1];
         let g = a.IQuantity * a.farm[2];
-        resources[0].val += b - resources[0].mod;
+        resources[0].val += b;
         resources[1].val += s;
         resources[2].val += g;
         bps += b; sps += s; gps += g;
@@ -910,12 +930,12 @@ function abilities() {
     $('#abilitiesbut').show();
     playerabilities.forEach(function (x) {
         let thebutton = document.createElement("BUTTON");
-        let damagebonus = x.type === "trap" && Ability.trapdamagebonus > 0 ? " (+ " + Ability.trapdamagebonus + ")" : "";
+        let damagebonus = x.type === "trap" && Ability.trapdamagebonus > 0 ? " (+ " + Ability.trapdamagebonus * Ability.trapdamagexbonus + ")" : "";
         thebutton.id = x.name;
         thebutton.classList.add("ability");
         thebutton.style.backgroundImage = "url(" + x.img + ")";
         thebutton.onmouseenter = function () {
-            tooltip.innerHTML = x.name + "<br><br>" + "Damage: " + x.damage + damagebonus + "<br><br>" +
+            tooltip.innerHTML = x.name + "<br><br>" + "Damage: " + x.damage * Ability.trapdamagexbonus + damagebonus + "<br><br>" +
                 "Mana Cost: " + x.mcost + " mana" + "<br><br>" +  x.flavor.italics();
             tooltip.style.display = "block";
         };
@@ -1209,36 +1229,7 @@ function buyupgrade(x,type = "normal") {
     for (let x = 0; x < resources.length; x++) {
         resources[x].val -= thecost[x];
     }
-    switch(x) {
-        case up1:
-            playerbronze.mod += 1;
-            break;
-        case up2:
-            GenericSpearman.Ibonus *= 2;
-            canupgrade.push(up4);
-            break;
-        case up3:
-            attackmod.val += 1;
-            break;
-        case up4:
-            GenericSpearman.Ibonus *= 2;
-            break;
-        case up5:
-            GenericSwordsman.Ibonus *= 2;
-            break;
-        case up6:
-            GenericKnight.Ibonus *= 2;
-            break;
-        case up7:
-            Ally.armorbonus += 1;
-            break;
-        case up8:
-            Ability.trapdamagebonus += 1;
-            break;
-        case bup1:
-            playersilver.val += 1;
-            break;
-    }
+    upgradeeffect(x);
     switch(type) {
         case "normal":
             canupgrade.splice(canupgrade.indexOf(x),1);
@@ -1269,7 +1260,7 @@ function buyitem(x) {
     MsgLog(x._name + " was purchased");
 }
 
-function bank() {
+function bank() {/*
     let thebank = $("#Bank");
     thebank.empty();
     let tooltip = document.createElement("DIV");tooltip.classList.add("tooltip");tooltip.classList.add("upgrades");
@@ -1290,7 +1281,7 @@ function bank() {
         thebank.append(tooltip);
     });
     let foo = bankcanupgrade.length > 5 ? 5 : bankcanupgrade.length;
-    tooltip.style.right = foo * 16 + "%";
+    tooltip.style.right = foo * 16 + "%";*/
 }
 
 function build(x,y = "b") {
@@ -1337,7 +1328,7 @@ function build(x,y = "b") {
 
 function sell(x) {
     for (let y = 0; y < 3; y++) {
-        resources[y].val += Math.ceil(x.Value[y]/4) - resources[y].mod;
+        resources[y].val += Math.ceil(x.Value[y]/4);
     }
     if (x.EQuantity === 0) {
         x.UEQuantity -= 1;
@@ -1476,13 +1467,17 @@ let up5 = new Upgrade("Swordsman Tracking",[4000,0,0],"img/swordsmantracking1.pn
 let up6 = new Upgrade("Early Desensitization",[12000,0,0],"img/desensitization1.png");
 let up7 = new Upgrade("Goblin Metallurgy",[10000,0,0],"img/goblinmetallurgy1.png");
 let up8 = new Upgrade("Arcane Static Dampening",[10000,0,0],"img/ArcaneSD1.png");
+let up9 = new Upgrade("Heightened Smell",[60000,0,0],"img/heightenedsmell.png");
+let up10 = new Upgrade("Bait Lotion",[360000,0,0],"img/baitlotion.png");
+let up11 = new Upgrade("Giant Net",[8000000,0,0],"img/giantnet.png");
+let up12 = new Upgrade("Arcane Alpha Condensation",[20000,0,0],"img/ArcaneC1.png");
 
 let bup1 = new Upgrade("A Welcome Bundle",[0,0,0],"img/whetfishichthyology1.png","A One-only gift for first time visitors to the Bank! (Click to " +
     "recieve gift of one silver");
 
 let canupgrade = [up1];
 let upgraded = [];
-let upgrades = [up1,up2,up3,up4,up5,up6,up7,up8];
+let upgrades = [up1,up2,up3,up4,up5,up6,up7,up8,up9,up10,up11,up12];
 
 let bankcanupgrade = [bup1];
 let bankupgraded = [];
@@ -1503,8 +1498,7 @@ let trainedbear = new Ally ("Trained Bear",1000,30,5,13,[15000,0,0],1000,0,0,[10
 let reanimatedcorpse = new Ally ("Reanimated Corpse",2000,45,9,0,[90000,0,0],2000,0,0,[800,0,0],"A corpse reanimated by a novice necromancer," +
     "It has high speed regeneration and due to dark magic has increased strength to the point where it can destroy concrete castle walls in one hit.",50);
 
-let giant = new Ally ("Giant",10000,88,1,25,[2000000,0,0],10000,0,0,[7700,0,0],"Knights, elite killers among the common men. " +
-    "Trained to kill,raised to kill, pretty much born to kill.");
+let giant = new Ally ("Giant",10000,88,1,25,[2000000,0,0],10000,0,0,[7700,0,0],"");
 
 let allies = [GenericSpearman,GenericSwordsman,GenericKnight,trainedbear,reanimatedcorpse,giant];
 
@@ -1513,6 +1507,7 @@ let cantrain = [GenericSpearman,GenericSwordsman,GenericKnight];
 let player = new Player("PoopHead!",5,1,1,1,0,5,50);
 let isdead = false;
 let wobbleon = true;
+let scidig = true;
 let maxlevel = 15;
 let autofightenabled = true;
 
@@ -1525,8 +1520,19 @@ let playerbronze = {
         _val : 0,
         _mod : 0,
         set val(value) {
-            this._val = value + this.mod;
-            $('#Bronze')[0].innerText = "Bronze: " + Math.floor(this._val);
+            this._val = value;
+            if (scidig) {
+                let unit = ["","K","M","B","T","KT","MT","BT","TT"];
+                let foo = this._val,count = 0;
+                while (foo > 1000) {
+                    foo /= 1000;
+                    count += 1;
+                }
+                $('#Bronze')[0].innerText = "Bronze: " + parseFloat(foo.toFixed(3).toString()) + unit[count];
+            }
+            else {
+                $('#Bronze')[0].innerText = "Bronze: " + Math.floor(this._val);
+            }
         },
         get val() {
             return this._val;
@@ -1543,7 +1549,18 @@ let playerbronze = {
         _mod : 0,
         set val(value) {
             this._val = value;
-            $('#Silver')[0].innerText = "Silver: " + Math.floor(this._val);
+            if (scidig) {
+                let unit = ["","K","M","B","T","KT","MT","BT","TT"];
+                let foo = this._val,count = 0;
+                while (foo > 1000) {
+                    foo /= 1000;
+                    count += 1;
+                }
+                $('#Silver')[0].innerText = "Bronze: " + parseFloat(foo.toFixed(3).toString()) + unit[count];
+            }
+            else {
+                $('#Silver')[0].innerText = "Bronze: " + Math.floor(this._val);
+            }
         },
         get val() {
             return this._val;
@@ -1560,7 +1577,18 @@ let playerbronze = {
         _mod : 0,
         set val(value) {
             this._val = value;
-            $('#Gold')[0].innerText = "Gold: " + Math.floor(this._val);
+            if (scidig) {
+                let unit = ["","K","M","B","T","KT","MT","BT","TT"];
+                let foo = this._val,count = 0;
+                while (foo > 1000) {
+                    foo /= 1000;
+                    count += 1;
+                }
+                $('#Gold')[0].innerText = "Bronze: " + parseFloat(foo.toFixed(3).toString()) + unit[count];
+            }
+            else {
+                $('#Gold')[0].innerText = "Bronze: " + Math.floor(this._val);
+            }
         },
         get val() {
             return this._val;
