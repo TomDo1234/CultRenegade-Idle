@@ -46,6 +46,51 @@ function flavoradd() {
     });
 }
 
+function upgradeeffect(x) {
+    switch(x) {
+        case up1:
+            playerbronze.mod += 1;
+            break;
+        case up2:
+            GenericSpearman.Ibonus *= 2;
+            canupgrade.push(up4);
+            break;
+        case up3:
+            attackmod.val += 1;
+            break;
+        case up4:
+            GenericSpearman.Ibonus *= 2;
+            break;
+        case up5:
+            GenericSwordsman.Ibonus *= 2;
+            break;
+        case up6:
+            GenericKnight.Ibonus *= 2;
+            break;
+        case up7:
+            Ally.armorbonus += 1;
+            break;
+        case up8:
+            Ability.trapdamagexbonus *= 2;
+            break;
+        case up9:
+            trainedbear.Ibonus *= 2;
+            break;
+        case up10:
+            reanimatedcorpse.Ibonus *= 2;
+            break;
+        case up11:
+            giant.Ibonus *= 2;
+            break;
+        case up12:
+            Ability.trapdamagexbonus *= 4;
+            break;
+        case bup1:
+            playersilver.val += 1;
+            break;
+    }
+}
+
 function load(x) {
     let healthtrack = x.Healthbartrack;
     x.Healthbar.appendChild(healthtrack);
@@ -242,7 +287,7 @@ function levelupgrades() {
             x = [up1,up2,up3,up5,up6,up7];
             break;
         case 6:
-            x = [up1,up2,up3,up5,up6,up7,up8];
+            x = [up1,up2,up3,up5,up6,up7,up8,up9,up10,up11,up12];
             break;
         default:
             x = canupgrade;
