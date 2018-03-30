@@ -53,7 +53,7 @@ function upgradeeffect(x) {
             break;
         case up2:
             GenericSpearman.Ibonus *= 2;
-            canupgrade.push(up4);
+            up4.ul = true;
             break;
         case up3:
             attackmod.val += 1;
@@ -63,9 +63,11 @@ function upgradeeffect(x) {
             break;
         case up5:
             GenericSwordsman.Ibonus *= 2;
+            up13.ul = true;
             break;
         case up6:
             GenericKnight.Ibonus *= 2;
+            up14.ul = true;
             break;
         case up7:
             Ally.armorbonus += 1;
@@ -75,15 +77,33 @@ function upgradeeffect(x) {
             break;
         case up9:
             trainedbear.Ibonus *= 2;
+            up15.ul = true;
             break;
         case up10:
             reanimatedcorpse.Ibonus *= 2;
+            up16.ul = true;
             break;
         case up11:
             giant.Ibonus *= 2;
+            up17.ul = true;
             break;
         case up12:
             Ability.trapdamagexbonus *= 4;
+            break;
+        case up13:
+            GenericSwordsman.Ibonus *= 2;
+            break;
+        case up14:
+            GenericKnight.Ibonus *= 2;
+            break;
+        case up15:
+            trainedbear.Ibonus *= 2;
+            break;
+        case up16:
+            reanimatedcorpse.Ibonus *= 2;
+            break;
+        case up17:
+            giant.Ibonus *= 2;
             break;
         case bup1:
             playersilver.val += 1;
