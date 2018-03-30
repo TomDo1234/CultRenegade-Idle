@@ -6,7 +6,7 @@
         <flavor>
             The skin of any organism can be transmuted into bronze by soaking it with water and then wringing it in a 41-43 degrees celcius
             enviromnent for 399 seconds.<![CDATA[<br/>]]><![CDATA[<br/>]]>
-            +1 Bronze for every kill, even the idle kills
+            +1 Bronze for every kill
         </flavor>
     </Upgrade>
     <Upgrade>
@@ -66,6 +66,70 @@
             I am gonna spare you the technical jargon. Basically "static" refers to how a trap is stationary, "Arcane" means it is an Arcane Trap
             in question. (You don't have to know what Dampening is, just knows that it makes the spell more potent). <![CDATA[<br/>]]><![CDATA[<br/>]]>
             Doubles Arcane Trap damage
+        </flavor>
+    </Upgrade>
+    <Upgrade>
+        <name>Heightened Smell</name>
+        <flavor>
+            Improving Smell will provide these bears with more hunting ability. And reduce sinus infections. <![CDATA[<br/>]]><![CDATA[<br/>]]>
+            Doubles Trained Bear Idle Revenue
+        </flavor>
+    </Upgrade>
+    <Upgrade>
+        <name>Bait Lotion</name>
+        <flavor>
+            They will put the lotion on the skin, or else they get the hose again. <![CDATA[<br/>]]><![CDATA[<br/>]]>
+            Doubles Reanimated Corpse Idle Revenue
+        </flavor>
+    </Upgrade>
+    <Upgrade>
+        <name>Giant Net</name>
+        <flavor>
+            Giant Nets will help in capturing giant animals. <![CDATA[<br/>]]><![CDATA[<br/>]]>
+            Doubles Giant Idle Revenue
+        </flavor>
+    </Upgrade>
+    <Upgrade>
+        <name>Arcane Alpha Condensation</name>
+        <flavor>
+            The first step towards 100% trap perfection  <![CDATA[<br/>]]><![CDATA[<br/>]]>
+            Doubles Arcane Trap Damage
+        </flavor>
+    </Upgrade>
+    <Upgrade>
+        <name>Educated Swordsmen</name>
+        <flavor>
+            Education is always good, especially for the ones who lack it. <![CDATA[<br/>]]><![CDATA[<br/>]]>
+            Doubles Swordsmen Idle Revenue
+        </flavor>
+    </Upgrade>
+    <Upgrade>
+        <name>Medium Desensitization</name>
+        <flavor>
+            Getting Closer... <![CDATA[<br/>]]><![CDATA[<br/>]]>
+            Doubles Knight Idle Revenue
+        </flavor>
+    </Upgrade>
+    <Upgrade>
+        <name>Heightened Smell II</name>
+        <flavor>
+            I can smell my house from here! <![CDATA[<br/>]]><![CDATA[<br/>]]>
+            Doubles Trained Bear Idle Revenue
+        </flavor>
+    </Upgrade>
+    <Upgrade>
+        <name>Compound Bait</name>
+        <flavor>
+            A mixture of bait on the lotion will result in a mixture of prey being attracted <![CDATA[<br/>]]><![CDATA[<br/>]]>
+            Doubles Reanimated Corpse Idle Revenue
+        </flavor>
+    </Upgrade>
+    <Upgrade>
+        <name>Spider Maps</name>
+        <flavor>
+            Maps made up of willowsilk spider silk are flexible enough for a giant not to accidentally rip it, Giants would benefit well
+            from maps. As they can now traverse areas with higher-yielding creatures to rake in more dough. <![CDATA[<br/>]]><![CDATA[<br/>]]>
+            Doubles Giant Idle Revenue
         </flavor>
     </Upgrade>
 </Upgrades>
