@@ -501,14 +501,22 @@ class Foe {
 }
 
 class Upgrade {
-    constructor(Nam,Cost,iurl,flavor = "") {
+    constructor(Nam,Cost,iurl,flavor = "",ul = true) {
         this.name = Nam;
         this.Cost = Cost;
         this.iurl = iurl;
         this.flavor = flavor;
+        this._ul = ul;
     }
     toJSON() {
         return {name: this.name};
+    }
+    set ul(val) {
+        this._ul = val;
+        showupgrades();
+    }
+    get ul() {
+        return this._ul;
     }
 
 }
@@ -1361,20 +1369,22 @@ function showupgrades() {
     let tooltip = document.createElement("DIV");tooltip.classList.add("tooltip");tooltip.classList.add("upgrades");
     u.empty();
     canupgrade.forEach(function(x) {
-        let thebutton = document.createElement("BUTTON");
-        thebutton.id = x.name;thebutton.className += " Upgrade";
-        thebutton.style.backgroundImage = "url(" + x.iurl + ")";
-        thebutton.onmouseenter = function() {
-            tooltip.innerHTML = x.name + "<br><br>" + x.flavor.italics() + "<br><br>" +
-                "Cost: " + x.Cost[0] + "/" + x.Cost[1] + "/" + x.Cost[2];
-            tooltip.style.display = "block";
-        };
-        thebutton.onmouseout = function() {tooltip.style.display = "none"};
-        thebutton.onclick = function () {
-            buyupgrade(x); // REMEMBER partial from python?
-        };
-        u.append(thebutton);
-        u.append(tooltip);
+        if (x._ul) {
+            let thebutton = document.createElement("BUTTON");
+            thebutton.id = x.name;thebutton.className += " Upgrade";
+            thebutton.style.backgroundImage = "url(" + x.iurl + ")";
+            thebutton.onmouseenter = function() {
+                tooltip.innerHTML = x.name + "<br><br>" + x.flavor.italics() + "<br><br>" +
+                    "Cost: " + x.Cost[0] + "/" + x.Cost[1] + "/" + x.Cost[2];
+                tooltip.style.display = "block";
+            };
+            thebutton.onmouseout = function() {tooltip.style.display = "none"};
+            thebutton.onclick = function () {
+                buyupgrade(x); // REMEMBER partial from python?
+            };
+            u.append(thebutton);
+            u.append(tooltip);
+        }
     });
     let foo = canupgrade.length > 6 ? 6 : canupgrade.length;
     tooltip.style.right = foo * 16 + "%";
@@ -1458,26 +1468,30 @@ let buildings = [MercenaryGuild,Portal,Blacksmith,Spellshop,Market,Bank];
 let canbuild = [MercenaryGuild];
 let theblacksmith = [ReavingDecapitator,TheSafe];
 
-
 let up1 = new Upgrade("Fundamental Skin Science",[75,0,0],"img/skinscience1.png");
 let up2 = new Upgrade("Blood Spear Fishing",[300,0,0],"img/bloodspearfishing1.png");
 let up3 = new Upgrade("Whetfish Ichthyology",[2000,0,0],"img/whetfishichthyology1.png");
-let up4 = new Upgrade("Blood Spear Fishing II",[1500,0,0],"img/bloodspearfishing2.png");
+let up4 = new Upgrade("Blood Spear Fishing II",[1500,0,0],"img/bloodspearfishing2.png",false);
 let up5 = new Upgrade("Swordsman Tracking",[4000,0,0],"img/swordsmantracking1.png");
 let up6 = new Upgrade("Early Desensitization",[12000,0,0],"img/desensitization1.png");
 let up7 = new Upgrade("Goblin Metallurgy",[10000,0,0],"img/goblinmetallurgy1.png");
 let up8 = new Upgrade("Arcane Static Dampening",[10000,0,0],"img/ArcaneSD1.png");
-let up9 = new Upgrade("Heightened Smell",[60000,0,0],"img/heightenedsmell.png");
-let up10 = new Upgrade("Bait Lotion",[360000,0,0],"img/baitlotion.png");
-let up11 = new Upgrade("Giant Net",[8000000,0,0],"img/giantnet.png");
-let up12 = new Upgrade("Arcane Alpha Condensation",[20000,0,0],"img/ArcaneC1.png");
+let up9 = new Upgrade("Heightened Smell",[60000,0,0],"img/heightenedsmell1.png");
+let up10 = new Upgrade("Bait Lotion",[360000,0,0],"img/baitlotion1.png");
+let up11 = new Upgrade("Giant Net",[8000000,0,0],"img/giantnet1.png");
+let up12 = new Upgrade("Arcane Alpha Condensation",[20000,0,0],"img/ArcaneAC1.png");
+let up13 = new Upgrade("Educated Swordsmen",[20000,0,0],"img/educatedswordsman1.png","",false);
+let up14 = new Upgrade("Medium Desensitization",[60000,0,0],"img/desensitization2.png","",false);
+let up15 = new Upgrade("Heightened Smell II",[300000,0,0],"img/heightenedsmell2.png","",false);
+let up16 = new Upgrade("Compound Bait",[1800000,0,0],"img/baitlotion2.png","",false);
+let up17 = new Upgrade("Spider Maps",[40000000,0,0],"img/spidermaps1.png","",false);
 
 let bup1 = new Upgrade("A Welcome Bundle",[0,0,0],"img/whetfishichthyology1.png","A One-only gift for first time visitors to the Bank! (Click to " +
     "recieve gift of one silver");
 
-let canupgrade = [up1];
+let canupgrade = [up1,up13,up14,up15,up16,up17];
 let upgraded = [];
-let upgrades = [up1,up2,up3,up4,up5,up6,up7,up8,up9,up10,up11,up12];
+let upgrades = [up1,up2,up3,up4,up5,up6,up7,up8,up9,up10,up11,up12,up13,up14,up15,up16,up17];
 
 let bankcanupgrade = [bup1];
 let bankupgraded = [];
