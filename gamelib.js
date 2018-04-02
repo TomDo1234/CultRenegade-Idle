@@ -305,13 +305,13 @@ function levelupgrades() {
             x = [up1,up2,up3];
             break;
         case 4:
-            x = [up1,up2,up3,up5,up6,up7];
+            x = [up1,up2,up3,up4,up5,up6,up7];
             break;
         case 6:
-            x = [up1,up2,up3,up5,up6,up7,up8,up9,up10,up11,up12];
+            x = [up1,up2,up3,up4,up5,up6,up7,up8,up9,up10,up11,up12];
             break;
         case 13:
-            x = [up1,up2,up3,up5,up6,up7,up8,up9,up10,up11,up12,up18];
+            x = [up1,up2,up3,up4,up5,up6,up7,up8,up9,up10,up11,up12,up18];
             break;
         default:
             x = canupgrade;
