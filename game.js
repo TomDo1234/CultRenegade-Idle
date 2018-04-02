@@ -71,7 +71,7 @@ class Player {
                 setTimeout(revival,1000);
             }
             if (isdead === false) {$(function() {MsgLog("YOU DIED");revival()})}
-            isdead = true;
+            isdead = true;fighttimer.val = 0;
         }
     }
     get health() {
@@ -281,6 +281,8 @@ class Ally {
         this.Healthbar = document.createElement("DIV");this.Healthbar.classList.add("Healthbar");this.Healthbar.classList.add("ally");
         this.Healthbartrack = document.createElement("DIV");this.Healthbartrack.classList.add("Healthtrack");
         Ally.armorbonus = 0; // static variables, implemented perhaps inelegantly (cannot be accessed through instances
+        Ally.xhealthbonus = 1;
+        Ally.xattackbonus = 1;
     }
 
     set name(val) {
@@ -309,7 +311,7 @@ class Ally {
         this._strength = val;
     }
     get strength() {
-        return this._strength;
+        return this._strength * Ally.xattackbonus;
     }
     set speed(val) {
         this._speed = val;
@@ -334,7 +336,7 @@ class Ally {
         this._MHea = val;
     }
     get MHea() {
-        return this._MHea;
+        return this._MHea * Ally.xhealthbonus;
     }
     set IQuantity(val) {
         this._IQuantity = val;
@@ -371,11 +373,9 @@ class Ally {
     get Ibonus() {
         return this._Ibonus;
     }
-
 }
 
 class Foe {
-
     constructor(Nam,Hea,Str,Spe,Loo,Arm,xpr,flav = "",img = "Genericgoblin1.png",spec = [],regen = 0) {
         this._name = Nam;
         this._health = Hea;
@@ -388,7 +388,10 @@ class Foe {
         this._img = img;
         this._MHea = this._health;
         this._spec = spec;
-        this._regen = regen;this._intan = false;
+        this._regen = regen;this._intan = false;this._summons = 0;this._summoner = null;this._repgen = 0;
+        this._pierce = this._spec.some(function(x) {
+            return x[0] === "Armor Pierce";
+        });
         this.Healthbar = document.createElement("DIV");this.Healthbar.classList.add("Healthbar");
         this.Healthbartrack = document.createElement("DIV");this.Healthbartrack.classList.add("Healthtrack");
     }
@@ -410,6 +413,9 @@ class Foe {
         }
         if (val <= 0) {
             val = 0;
+            if (this._summoner !== null) {
+                this._summoner._summons -= 1;
+            }
         }
         this._health = val;
         load(this);
@@ -480,12 +486,12 @@ class Foe {
                    break;
                case "Spawn":
                    if (time % spec[4] === 0) {
-                       let numofsummons = countindungeon(spec[1].name);
-                       let numofsummoners = countindungeon(z.name);
                        for (let x = 0; x < spec[2]; x++) {
-                           if (numofsummons * numofsummoners < spec[3] * numofsummoners) {
-                               thedungeon.unshift(clone(spec[1]));
-                               MsgLog("A" + spec[1].name + "Has been summoned!");
+                           if (z._summons < spec[3]) {
+                               let thesummon = clone(spec[1]);thesummon._summoner = z;
+                               thedungeon.unshift(thesummon);
+                               z._summons += 1;
+                               MsgLog("A " + spec[1].name + " Has been summoned!");
                            }
                        }
                        showfoes();
@@ -493,6 +499,33 @@ class Foe {
                    break;
                case "Intangibility":
                    intangibility(z,spec[1],spec[2]);
+                   break;
+               case "Heal":
+                   if (fighttimer.val % spec[3] === 0) {
+                       thedungeon[spec[1]].health += spec[2];
+                   }
+                   break;
+               case "Random Spawn":
+                   if (fighttimer.val % spec[4] === 0) {
+                       for (let x = 0; x < spec[2]; x++ ) {
+                           if (z._summons < spec[3]) {
+                               let theindex = spec[1][Math.floor(Math.random() * spec[1].length)];
+                               let thesummon = clone(theenemies[theindex]);thesummon._summoner = z;
+                               thedungeon.unshift(thesummon);
+                               z._summons += 1;
+                               MsgLog("A " + thesummon.name + " Has been summoned!");
+                           }
+                       }
+                       showfoes();
+                   }
+                   break;
+               case "Replication":
+                   if (fighttimer.val % spec[2] === 0 && z._repgen < spec[1]) {
+                        let therep = clone(z);therep._repgen += 1;z._repgen += 1;
+                        therep.Healthbar = document.createElement("DIV");therep.Healthbar.classList.add("Healthbar");
+                        thedungeon.unshift(therep);
+                        showfoes();
+                   }
                    break;
            }
         });
@@ -663,9 +696,7 @@ function fight(attack,enemies,index,allies) {
                 Order[x].health -= retaldamage1;
                 break;
             case "Foe":
-                let pierce = Order[x]._spec.some(function(x) {
-                   return x[0] === "Armor Pierce";
-                });
+                let pierce = Order[x]._pierce;
                 if (theallies.length > 0) {
                     Order[x].activatespecial(Order[x].strength - theallies[0].armor,theallies[0],theallies);
                     let resultdam = pierce ? Order[x].strength : Order[x].strength - theallies[0].armor;
@@ -702,7 +733,7 @@ function fight(attack,enemies,index,allies) {
                 let cope = clone(ogenemies[index][x]);
                 enemies.push(cope);
             }
-            fighttimer.val = 0;
+            fighttimer.val = -1; // -1 so that when +1 at the end it becomes 0
             break;
         }
     }
@@ -1148,7 +1179,7 @@ function showMercenaries() {
             let tooltip = $('#unittooltip')[0];
             thebutton.id = unit._name;
             thebutton.onmouseenter = function() {
-                tooltip.innerHTML = unit._name + "<br><br>" + "Attack: " + unit._strength + "<br>" + "Health: " + unit._MHea +
+                tooltip.innerHTML = unit._name + "<br><br>" + "Attack: " + unit.strength + "<br>" + "Health: " + unit.MHea +
                     "<br>" + "Armor: " + unit.armor + "<br>" + "Speed: " + unit._speed
                     + "<br><br>" + unit.flavor.italics() + "<br><br>" +
                     "Cost: " + unit.Cost[0] + "/" + unit.Cost[1] + "/" + unit.Cost[2];
@@ -1485,13 +1516,14 @@ let up14 = new Upgrade("Medium Desensitization",[60000,0,0],"img/desensitization
 let up15 = new Upgrade("Heightened Smell II",[300000,0,0],"img/heightenedsmell2.png","",false);
 let up16 = new Upgrade("Compound Bait",[1800000,0,0],"img/baitlotion2.png","",false);
 let up17 = new Upgrade("Spider Maps",[40000000,0,0],"img/spidermaps1.png","",false);
+let up18 = new Upgrade("Arcane Army Amplification",[10000000,0,0],"img/spidermaps1.png","");
 
 let bup1 = new Upgrade("A Welcome Bundle",[0,0,0],"img/whetfishichthyology1.png","A One-only gift for first time visitors to the Bank! (Click to " +
     "recieve gift of one silver");
 
 let canupgrade = [up1,up13,up14,up15,up16,up17];
 let upgraded = [];
-let upgrades = [up1,up2,up3,up4,up5,up6,up7,up8,up9,up10,up11,up12,up13,up14,up15,up16,up17];
+let upgrades = [up1,up2,up3,up4,up5,up6,up7,up8,up9,up10,up11,up12,up13,up14,up15,up16,up17,up18];
 
 let bankcanupgrade = [bup1];
 let bankupgraded = [];
@@ -1512,7 +1544,8 @@ let trainedbear = new Ally ("Trained Bear",1000,30,5,13,[15000,0,0],1000,0,0,[10
 let reanimatedcorpse = new Ally ("Reanimated Corpse",2000,45,9,0,[90000,0,0],2000,0,0,[800,0,0],"A corpse reanimated by a novice necromancer," +
     "It has high speed regeneration and due to dark magic has increased strength to the point where it can destroy concrete castle walls in one hit.",50);
 
-let giant = new Ally ("Giant",10000,88,1,25,[2000000,0,0],10000,0,0,[7700,0,0],"");
+let giant = new Ally ("Giant",10000,88,1,25,[2000000,0,0],10000,0,0,[7700,0,0],"Measuring 130 metres tall on average, these giants who were originally" +
+    " enslaved to kill for nobles are now enslaved to kill for you.");
 
 let allies = [GenericSpearman,GenericSwordsman,GenericKnight,trainedbear,reanimatedcorpse,giant];
 
@@ -1522,7 +1555,7 @@ let player = new Player("PoopHead!",5,1,1,1,0,5,50);
 let isdead = false;
 let wobbleon = true;
 let scidig = true;
-let maxlevel = 15;
+let maxlevel = 20;
 let autofightenabled = true;
 
 let title = "RPG IDLE OF DOOM";
@@ -1570,10 +1603,10 @@ let playerbronze = {
                     foo /= 1000;
                     count += 1;
                 }
-                $('#Silver')[0].innerText = "Bronze: " + parseFloat(foo.toFixed(3).toString()) + unit[count];
+                $('#Silver')[0].innerText = "Silver: " + parseFloat(foo.toFixed(3).toString()) + unit[count];
             }
             else {
-                $('#Silver')[0].innerText = "Bronze: " + Math.floor(this._val);
+                $('#Silver')[0].innerText = "Silver: " + Math.floor(this._val);
             }
         },
         get val() {
@@ -1598,10 +1631,10 @@ let playerbronze = {
                     foo /= 1000;
                     count += 1;
                 }
-                $('#Gold')[0].innerText = "Bronze: " + parseFloat(foo.toFixed(3).toString()) + unit[count];
+                $('#Gold')[0].innerText = "Gold: " + parseFloat(foo.toFixed(3).toString()) + unit[count];
             }
             else {
-                $('#Gold')[0].innerText = "Bronze: " + Math.floor(this._val);
+                $('#Gold')[0].innerText = "Gold: " + Math.floor(this._val);
             }
         },
         get val() {
@@ -1706,19 +1739,27 @@ let Flamewitch1 = new Foe("Flame Witch",2000,100,3,[playerbronze,200000,1000],0,
 let Dreadshroom = new Foe("Dreadshroom",1500,70,7,[playerbronze,20000,1000],10,30000,"","dreadshroom.png",[["Poison",0.2,20000]]);
 let Fungalmancer = new Foe("Fungalmancer",3000,50,3,[playerbronze,400000,1000],2,120000,"","fungalmancer.png",[["Poison",0.4,5000],["Spawn",Dreadshroom,1,3,8]]);
 let Witch1 = new Foe("Novice Witch",4000,500,3,[playerbronze,500000,1000],4,150000,"","novicewitch.png",[["Armor Pierce"]]);
-let chaoticflesh = new Foe("Chaotic Flesh",9000,100,3,[playerbronze,1000000,1000],25,300000,"","chaoticflesh.png",[[]],100);
-let deathspawn = new Foe("Regular Deathspawn",6000,75,10,[playerbronze,10000,1000],15,30000,"","regular deathspawn.png",[],100);
+let chaoticflesh = new Foe("Chaotic Flesh",9000,100,3,[playerbronze,1000000,1000],25,300000,"","chaoticflesh.png",[["Replication",3,10]],100);
+let deathspawn = new Foe("Regular Deathspawn",6000,75,10,[playerbronze,200000,1000],15,30000,"","regular deathspawn.png",[],100);
 let Deathknight = new Foe("Death Knight",30000,100,3,[playerbronze,1500000,1000],30,500000,"","deathknight.png",[["Lifesteal"],["Spawn",deathspawn,1,2,8]],200);
 let boss2 = new Foe("The Petty Essence of Unknown",100000,500,40,[playersilver,2,1000],30,3000000,"","boss2.png",[["Intangibility",20,10]],400);
+let paladin = new Foe("Novice Paladin",50000,100,8,[playerbronze,1800000,1000],30,1500000,"","novicewitch.png",[["Armor Pierce"]]);
+let healer1 = new Foe("Novice Healer",4000,0,3,[playerbronze,1000000,1000],4,150000,"","novicewitch.png",[["Heal",0,1500,5]]);
+let summoner1 = new Foe("Summoner Alpha Class",4000,500,3,[playerbronze,12000000,1000],4,150000,"","novicewitch.png",[["Random Spawn",[12,13,14,15,16],1,2,10]]);
+let cryomancer1 = new Foe("Minor Cryomancer",4000,500,3,[playerbronze,2400000,1000],4,150000,"","novicewitch.png",[["Freeze"]]);
+let ninja1 = new Foe("Ninja of Shade",4000,500,3,[playerbronze,20000000,1000],4,150000,"","novicewitch.png",[["Stealth"]]);
+let necromancer = new Foe("Petty Necromancer",4000,500,3,[playerbronze,8000000,1000],4,150000,"","novicewitch.png",[["Armor Pierce"],["Spawn",Deathknight,1,2,8]]);
+let chrono1 = new Foe("Chronomancer of Nanoseconds",4000,500,3,[playersilver,80,1000],4,150000,"","novicewitch.png",[["Time Stop",5]]);
 
 let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,goblin1],[boss1],[blueimp,blueimp],[Witch,Witch,Witch],
     [Poisonoussnake,Poisonoussnake,Poisonoussnake],[murdererreaver,Witch,Witch,Poisonoussnake,treasurechest1],[Flamewitch1],
-    [Dreadshroom,Dreadshroom,Dreadshroom,Fungalmancer],[Witch1,Witch1,Witch1],[chaoticflesh,chaoticflesh],[deathspawn,deathspawn,Deathknight],[boss2]
+    [Dreadshroom,Dreadshroom,Fungalmancer],[Witch1,Witch1,Witch1],[chaoticflesh],[deathspawn,Deathknight],[boss2],
+    [paladin,paladin,healer1],[cryomancer1,summoner1],[ninja1,ninja1,ninja1],[Deathknight,necromancer],[chrono1]
 ];
 let levelenemies = a2clone(ogenemies);
 
 let theenemies = [goblin,imp,snake,goblin1,boss1,blueimp,Witch,Poisonoussnake,murdererreaver,treasurechest1,Flamewitch1,Dreadshroom,Fungalmancer,
-    Witch1,chaoticflesh,deathspawn,Deathknight,boss2
+    Witch1,chaoticflesh,deathspawn,Deathknight,boss2,paladin,healer1,summoner1,cryomancer1,ninja1,necromancer,chrono1
 ];
 
 let timertrap = new Array(levelenemies.length).fill([]);
@@ -1744,6 +1785,10 @@ function savegame() {
     localStorage.setItem("buildings",JSON.stringify(buildings));
     localStorage.setItem("playerinventory",JSON.stringify(playerinventory));
     localStorage.setItem("player",JSON.stringify(player));
+    let OA = Object.getOwnPropertyNames(Ally);
+    for (let x = 2;x < OA.length; x++ ) {
+        localStorage.setItem(OA[x],JSON.stringify(Ally[OA[x]]));
+    }
     console.log("Game Saved! (game autosaves every 20 seconds)");
 }
 
@@ -1763,6 +1808,10 @@ function loadgame() {
             }
             count += 1;
         });
+        let OA = Object.getOwnPropertyNames(Ally);
+        for (let x = 2;x < OA.length; x++ ) {
+            Ally[OA[x]] = JSON.parse(localStorage.getItem(OA[x]));
+        }
         canupgrade = [];playerinventory = [];
         upgraded = [];playerabilities = [];canabilities = [];
         let thearrays = ["canupgrade",canupgrade,upgrades,"upgraded",upgraded,upgrades,"canabilities",canabilities,theabilities,
