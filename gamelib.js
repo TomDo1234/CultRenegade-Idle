@@ -28,15 +28,9 @@ function flavoradd() {
         success: function (xml){
             let thearray = ["Upgrade",upgrades,"Foe",theenemies];
             for (let index = 0;index < thearray.length; index += 2) {
-                $(xml).find(thearray[index]).each(function () {
-                    let name = $(this).find('name').text();
-                    let flavor = $(this).find('flavor').text();
-                    thearray[index + 1].forEach(function (obj) {
-                        if (obj.name === name) {
-                            obj.flavor = flavor;
-                        }
-                    });
-                });
+                for (let index1 = 0;index1 < thearray[index + 1].length;index1 ++) {
+                    thearray[index + 1][index1].flavor = $(xml).find(thearray[index]).eq(index1).find('flavor').text();
+                }
             }
         }
     });
@@ -104,6 +98,13 @@ function upgradeeffect(x) {
             break;
         case up17:
             giant.Ibonus *= 2;
+            break;
+        case up18:
+            Ally.xattackbonus *= 2;
+            Ally.xhealthbonus *= 2;
+            allies.forEach(function(ally) {
+               ally.health *= 2;
+            });
             break;
         case bup1:
             playersilver.val += 1;
@@ -309,6 +310,9 @@ function levelupgrades() {
         case 6:
             x = [up1,up2,up3,up5,up6,up7,up8,up9,up10,up11,up12];
             break;
+        case 13:
+            x = [up1,up2,up3,up5,up6,up7,up8,up9,up10,up11,up12,up18];
+            break;
         default:
             x = canupgrade;
     }
@@ -406,7 +410,17 @@ function levelup(x) {
         case 14:
             return [90,22,1,150];
         case 15:
-            return [120,22,0,200];
+            return [120,15,1,200];
+        case 16:
+            return [140,20,1,300];
+        case 17:
+            return [200,30,2,500];
+        case 18:
+            return [220,42,2,550];
+        case 19:
+            return [250,57,3,600];
+        case 20:
+            return [300,73,0,800];
         default:
             return [2,2,0,0];
     }
@@ -438,9 +452,29 @@ function xptolevelup(x) {
         case 8:
             return 500002;
         case 9:
-            return 1999999;
+            return 1299999;
         case 10:
-            return 4444444;
+            return 2444444;
+        case 11:
+            return 4000000;
+        case 12:
+            return 7000001;
+        case 13:
+            return 13333321;
+        case 14:
+            return 30000000;
+        case 15:
+            return 80000001;
+        case 16:
+            return 142222222;
+        case 17:
+            return 210000001;
+        case 18:
+            return 432132111;
+        case 19:
+            return 700000000;
+        case 20:
+            return 1261234900;
         default:
             return 42;
     }
@@ -499,7 +533,7 @@ function removetrap(spell,costminus) {
 function poison(thing,dam,dur) {
     let count = 0;
     function poisoning() {
-        if (count <= dur/100) {
+        if (count <= dur/100 && player.health > 0) {
             count += 1;
             thing.health -= dam;
             if (player.health <= 0) {
@@ -514,7 +548,7 @@ function poison(thing,dam,dur) {
 function flame(things,dam,dur) {
     let count = 0;
     function flaming() {
-        if (count <= dur/500) {
+        if (count <= dur/500 && player.health > 0) {
             count += 1;
             things.forEach(function(thing) {
                 thing.health -= dam;
