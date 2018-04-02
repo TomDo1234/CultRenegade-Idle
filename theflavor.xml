@@ -258,49 +258,45 @@
     <Foe>
         <name>Novice Paladin</name>
         <flavor>
-
+            Servants of the Light, this one is a mere novice. Not blessed by holy magic yet.
         </flavor>
     </Foe>
     <Foe>
         <name>Novice Healer</name>
         <flavor>
-            The first Essence of the unknown, weak but deadly. It can become intangible and has enough power to destroy a large island with ease.
-            Be careful when approaching this being.
+            Defenseless in combat, but still useful nonetheless. Healers work to... (Insert Self-Explanatory clause here).
         </flavor>
     </Foe>
     <Foe>
         <name>Summoner Alpha Class</name>
         <flavor>
-            The first Essence of the unknown, weak but deadly. It can become intangible and has enough power to destroy a large island with ease.
-            Be careful when approaching this being.
+            These foes summon random minions. Make sure to kill them quickly before they get good RNG and summon something dangerous.
         </flavor>
     </Foe>
     <Foe>
         <name>Minor Cryomancer</name>
         <flavor>
-            The first Essence of the unknown, weak but deadly. It can become intangible and has enough power to destroy a large island with ease.
-            Be careful when approaching this being.
+            Cryomancers - Serious students of Ice Magic, these Minor Cryomancers have Undergraduate degrees in Cryomancy. They can dish out a lot
+            of damage and apply a freezing effect on you and your army.
         </flavor>
     </Foe>
     <Foe>
         <name>Ninja of Shade</name>
         <flavor>
-            The first Essence of the unknown, weak but deadly. It can become intangible and has enough power to destroy a large island with ease.
-            Be careful when approaching this being.
+            Contrary to popular culture, Ninjas started out as discount assassins... Lower class warriors of irregular warfare originating in a
+            country where the honorable culture made shady tactics like espionage and sabotage was frowned upon.
         </flavor>
     </Foe>
     <Foe>
         <name>Petty Necromancer</name>
         <flavor>
-            The first Essence of the unknown, weak but deadly. It can become intangible and has enough power to destroy a large island with ease.
-            Be careful when approaching this being.
+            Speakers for the Dead, able to raise servants in the form of Death Knights.
         </flavor>
     </Foe>
     <Foe>
         <name>Chronomancer of Nanoseconds</name>
         <flavor>
-            The first Essence of the unknown, weak but deadly. It can become intangible and has enough power to destroy a large island with ease.
-            Be careful when approaching this being.
+            Chronomancy - Magic of time. To learn Chronomancy at any magic school you have to get an A+ in General and Special Relativity.
         </flavor>
     </Foe>
 </Foes>
