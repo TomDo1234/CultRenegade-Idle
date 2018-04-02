@@ -1502,7 +1502,7 @@ let theblacksmith = [ReavingDecapitator,TheSafe];
 let up1 = new Upgrade("Fundamental Skin Science",[75,0,0],"img/skinscience1.png");
 let up2 = new Upgrade("Blood Spear Fishing",[300,0,0],"img/bloodspearfishing1.png");
 let up3 = new Upgrade("Whetfish Ichthyology",[2000,0,0],"img/whetfishichthyology1.png");
-let up4 = new Upgrade("Blood Spear Fishing II",[1500,0,0],"img/bloodspearfishing2.png",false);
+let up4 = new Upgrade("Blood Spear Fishing II",[1500,0,0],"img/bloodspearfishing2.png","",false);
 let up5 = new Upgrade("Swordsman Tracking",[4000,0,0],"img/swordsmantracking1.png");
 let up6 = new Upgrade("Early Desensitization",[12000,0,0],"img/desensitization1.png");
 let up7 = new Upgrade("Goblin Metallurgy",[10000,0,0],"img/goblinmetallurgy1.png");
@@ -1744,12 +1744,12 @@ let deathspawn = new Foe("Regular Deathspawn",6000,75,10,[playerbronze,200000,10
 let Deathknight = new Foe("Death Knight",30000,100,3,[playerbronze,1500000,1000],30,500000,"","deathknight.png",[["Lifesteal"],["Spawn",deathspawn,1,2,8]],200);
 let boss2 = new Foe("The Petty Essence of Unknown",100000,500,40,[playersilver,2,1000],30,3000000,"","boss2.png",[["Intangibility",20,10]],400);
 let paladin = new Foe("Novice Paladin",50000,100,8,[playerbronze,1800000,1000],30,1500000,"","novicewitch.png",[["Armor Pierce"]]);
-let healer1 = new Foe("Novice Healer",4000,0,3,[playerbronze,1000000,1000],4,150000,"","novicewitch.png",[["Heal",0,1500,5]]);
-let summoner1 = new Foe("Summoner Alpha Class",4000,500,3,[playerbronze,12000000,1000],4,150000,"","novicewitch.png",[["Random Spawn",[12,13,14,15,16],1,2,10]]);
-let cryomancer1 = new Foe("Minor Cryomancer",4000,500,3,[playerbronze,2400000,1000],4,150000,"","novicewitch.png",[["Freeze"]]);
-let ninja1 = new Foe("Ninja of Shade",4000,500,3,[playerbronze,20000000,1000],4,150000,"","novicewitch.png",[["Stealth"]]);
-let necromancer = new Foe("Petty Necromancer",4000,500,3,[playerbronze,8000000,1000],4,150000,"","novicewitch.png",[["Armor Pierce"],["Spawn",Deathknight,1,2,8]]);
-let chrono1 = new Foe("Chronomancer of Nanoseconds",4000,500,3,[playersilver,80,1000],4,150000,"","novicewitch.png",[["Time Stop",5]]);
+let healer1 = new Foe("Novice Healer",4000,0,3,[playerbronze,1000000,1000],4,1000000,"","novicewitch.png",[["Heal",0,1500,5]]);
+let summoner1 = new Foe("Summoner Alpha Class",10000,100,3,[playerbronze,12000000,1000],22,6000000,"","novicewitch.png",[["Random Spawn",[12,13,14,15,16],1,2,10]]);
+let cryomancer1 = new Foe("Minor Cryomancer",5000,700,3,[playerbronze,10000000,1000],20,5500000,"","novicewitch.png",[["Freeze"],["Armor Pierce"]]);
+let ninja1 = new Foe("Ninja of Shade",20000,500,20,[playerbronze,20000000,1000],12,10000000,"","novicewitch.png",[["Stealth"],["Armor Pierce"]]);
+let necromancer = new Foe("Petty Necromancer",20000,650,1,[playerbronze,80000000,1000],50,15000000,"","novicewitch.png",[["Lifesteal"],["Spawn",Deathknight,1,2,8]]);
+let chrono1 = new Foe("Chronomancer of Nanoseconds",12000,3000,3,[playersilver,80,1000],45,50050000,"","novicewitch.png",[["Time Stop",5],["Armor Pierce"]]);
 
 let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,goblin1],[boss1],[blueimp,blueimp],[Witch,Witch,Witch],
     [Poisonoussnake,Poisonoussnake,Poisonoussnake],[murdererreaver,Witch,Witch,Poisonoussnake,treasurechest1],[Flamewitch1],
