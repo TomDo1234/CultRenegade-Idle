@@ -132,6 +132,13 @@
             Doubles Giant Idle Revenue
         </flavor>
     </Upgrade>
+    <Upgrade>
+        <name>Arcane Army Amplification</name>
+        <flavor>
+            <![CDATA[<br/>]]><![CDATA[<br/>]]>
+            Doubles Attack and Health of all Mercenaries
+        </flavor>
+    </Upgrade>
 </Upgrades>
 <Foes>
     <Foe>
@@ -243,6 +250,54 @@
     </Foe>
     <Foe>
         <name>The Petty Essence of Unknown</name>
+        <flavor>
+            The first Essence of the unknown, weak but deadly. It can become intangible and has enough power to destroy a large island with ease.
+            Be careful when approaching this being.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Novice Paladin</name>
+        <flavor>
+
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Novice Healer</name>
+        <flavor>
+            The first Essence of the unknown, weak but deadly. It can become intangible and has enough power to destroy a large island with ease.
+            Be careful when approaching this being.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Summoner Alpha Class</name>
+        <flavor>
+            The first Essence of the unknown, weak but deadly. It can become intangible and has enough power to destroy a large island with ease.
+            Be careful when approaching this being.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Minor Cryomancer</name>
+        <flavor>
+            The first Essence of the unknown, weak but deadly. It can become intangible and has enough power to destroy a large island with ease.
+            Be careful when approaching this being.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Ninja of Shade</name>
+        <flavor>
+            The first Essence of the unknown, weak but deadly. It can become intangible and has enough power to destroy a large island with ease.
+            Be careful when approaching this being.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Petty Necromancer</name>
+        <flavor>
+            The first Essence of the unknown, weak but deadly. It can become intangible and has enough power to destroy a large island with ease.
+            Be careful when approaching this being.
+        </flavor>
+    </Foe>
+    <Foe>
+        <name>Chronomancer of Nanoseconds</name>
         <flavor>
             The first Essence of the unknown, weak but deadly. It can become intangible and has enough power to destroy a large island with ease.
             Be careful when approaching this being.
