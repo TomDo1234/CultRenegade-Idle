@@ -490,17 +490,16 @@ function debuff(type,x,duration,y) {
 
 function spelltrap(duration,damage,costadd,number,spell) {
     function thedamage() {
-        let finaldamage = damage + Ability.trapdamagebonus;
         let enemies = levelenemies[number];
+        let finaldamage = enemies[0]._intan ? 0 : damage;
         enemies[0].health -= finaldamage * spell.trapnum[number];
-        let enemypics = $("#Enemy");
-        if (dungeon.val - 1 === number) {wobble(enemypics[0].children[0].children[0],enemies[0].health)}
+        if (dungeon.val - 1 === number && finaldamage > 0) {wobble(enemies[0]._image,enemies[0].health)}
         enemies.forEach(function(e) {
             if (e.health <= 0) {
                 e.Loot();
                 player.xp += e.xpr;
                 MsgLog("1 " + e._name + " died");
-                if (dungeon.val - 1 === number) {wobble(enemypics[0].children[enemies.indexOf(e)].children[0],e.health)}
+                if (dungeon.val - 1 === number) {wobble(enemies[0]._image,e.health)}
                 enemies.splice(enemies.indexOf(e),enemies.indexOf(e)+1);
                 setTimeout(showfoes,500);
             }
@@ -517,14 +516,14 @@ function spelltrap(duration,damage,costadd,number,spell) {
     }
     spell.mcost += costadd;
     spell.trapnum[number] += 1;
-    if (spell.trapnum[number] - 1 === 0) {
+    if (spell.trapnum[number] === 1) {
         thedamage();
     }
     timertrap[number].push(setTimeout(function() {spell._mcost -= costadd;spell.trapnum[number] -= 1},duration));
 }
 
 function removetrap(spell,costminus) {
-    spell._mcost -= costminus;
+    spell.mcost -= costminus;
     spell.trapnum[dungeon.val - 1] -= 1;
     clearTimeout(timertrap[dungeon.val - 1].pop());
     //line above is interesting... this removes last element of timertrap and clears the timer there at the same time!
@@ -565,15 +564,3 @@ function flame(things,dam,dur) {
     flaming();
 }
 
-function intangibility(target,A,dur,time = fighttimer.val) {
-    if (time % A === 0) {
-        target._intan = true;
-        target.Healthbartrack.style.backgroundColor = "lightpink";
-        MsgLog(target.name + " has turned intangible!");
-    }
-    else if (time % dur === 0){
-        target._intan = false;
-        target.Healthbartrack.style.backgroundColor = "springgreen";
-        MsgLog("Intangibility has worn off for " + target.name + ". Strike quickly!");
-    }
-}
