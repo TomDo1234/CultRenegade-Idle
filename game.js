@@ -388,10 +388,14 @@ class Foe {
         this._img = img;
         this._MHea = this._health;
         this._spec = spec;
-        this._regen = regen;this._intan = false;this._summons = 0;this._summoner = null;this._repgen = 0;
+        this._regen = regen;this._intan = false;this._summons = 0;this._summoner = null;this._repgen = 0;this._stealth = false;
         this._pierce = this._spec.some(function(x) {
             return x[0] === "Armor Pierce";
         });
+        let theimage = new Image();
+        theimage.src = this.img;
+        theimage.classList.add("Entity");
+        this._image = theimage;
         this.Healthbar = document.createElement("DIV");this.Healthbar.classList.add("Healthbar");
         this.Healthbartrack = document.createElement("DIV");this.Healthbartrack.classList.add("Healthtrack");
     }
@@ -498,7 +502,16 @@ class Foe {
                    }
                    break;
                case "Intangibility":
-                   intangibility(z,spec[1],spec[2]);
+                   if (fighttimer.val % spec[1] === 0) {
+                       z._intan = true;
+                       z.Healthbartrack.style.backgroundColor = "lightpink";
+                       MsgLog(z.name + " has turned intangible!");
+                   }
+                   else if (fighttimer.val % spec[1] === spec[2]){
+                       z._intan = false;
+                       z.Healthbartrack.style.backgroundColor = "springgreen";
+                       MsgLog("Intangibility has worn off for " + z.name + ". Strike quickly!");
+                   }
                    break;
                case "Heal":
                    if (fighttimer.val % spec[3] === 0) {
@@ -524,6 +537,18 @@ class Foe {
                         let therep = clone(z);therep._repgen += 1;z._repgen += 1;
                         therep.Healthbar = document.createElement("DIV");therep.Healthbar.classList.add("Healthbar");
                         thedungeon.unshift(therep);
+                        showfoes();
+                   }
+                   break;
+               case "Stealth":
+                   if (fighttimer.val % spec[1] === 0) {
+                        z._stealth = true;
+                        MsgLog(z.name + " has undergone stealth");
+                        showfoes();
+                   }
+                   else if (fighttimer.val % spec[1] === spec[2]) {
+                        z._stealth = false;
+                        MsgLog("Stealth has worn off for " + z.name);
                         showfoes();
                    }
                    break;
@@ -562,9 +587,10 @@ class Ability {
         this._damage = dam;
         this.flavor = flavor;
         this.img = img;
-        this.trapnum = [0,0,0,0,0];
+        this.trapnum = [];
         this.level = lvl;
         this.type = type;
+        if (this.type === "trap") { this.trapnum.length = 20;this.trapnum.fill(0);}
         Ability.trapdamagebonus = 0;
         Ability.trapdamagexbonus = 1;
     }
@@ -586,7 +612,7 @@ class Ability {
         this._cost = val;
     }
     get damage() {
-        return this._damage;
+        return this.type === "trap" ? (this._damage + Ability.trapdamagebonus) * Ability.trapdamagexbonus : this._damage;
     }
     set damage(val) {
         abilities();
@@ -594,30 +620,24 @@ class Ability {
     }
     activateability() {
         let enemies = levelenemies[dungeon.val - 1];
-        let enemypics = $("#Enemy");
         switch(this) {
             case NormalFireball:
                 enemies[0].health -= this.damage;
                 MsgLog("You threw a Normal Fireball at a" + enemies[0]._name + "<br>");
-                wobble(enemypics[0].children[0].children[0],enemies[0].health);
+                wobble(enemies[0]._image,enemies[0].health);
                 break;
             case NormalFrost:
                 enemies[0].health -= this.damage;
                 debuff("speed",enemies[0],3000,this.damage);
                 MsgLog("You cast Normal Frost on a" + enemies[0]._name + "<br>");
-                wobble(enemypics[0].children[0].children[0],enemies[0].health);
+                wobble(enemies[0]._image,enemies[0].health);
                 break;
             case Basicarcanetrap:
-                if (this.trapnum[dungeon.val - 1] === 0) {
-                    MsgLog("You set a Basic Arcane Trap in this Dungeon (lasts for 1 hour)");
-                }
-                else {
-                    MsgLog("You intensify the Basic Arcane Trap in this dungeon");
-                }
-                spelltrap(3600000,(this.damage + Ability.trapdamagebonus) * Ability.trapdamagexbonus,15,dungeon.val - 1,Basicarcanetrap);
+                MsgLog("You set a Basic Arcane Trap in this Dungeon (lasts for 1 hour)");
+                spelltrap(3600000,this.damage,15,dungeon.val - 1,Basicarcanetrap);
                 break;
             case Removetrap:
-                if (Basicarcanetrap.trapnum[dungeon.val - 1] !== 0) {
+                if (Basicarcanetrap.trapnum[dungeon.val - 1] > 0) {
                     removetrap(Basicarcanetrap, 15);
                     MsgLog("Trap Removed");
                 }
@@ -631,7 +651,7 @@ class Ability {
                 e.Loot();
                 player.xp += e.xpr;
                 MsgLog("1 " + e._name + " died");
-                wobble(enemypics[0].children[enemies.indexOf(e)].children[0],e.health);
+                wobble(e._image,e.health);
                 enemies.splice(enemies.indexOf(e),enemies.indexOf(e)+1);
                 setTimeout(showfoes,500);
             }
@@ -669,23 +689,26 @@ function fight(attack,enemies,index,allies) {
     Order.sort(function(a, b) {
         return b._speed - a._speed;
     });
-    let enemypics = $("#Enemy");
     for (let x = 0; x < Order.length; x++) {
         switch(Order[x].constructor.name) {
             case "Player":
-                let attackdamage = enemies[0]._intan ? 0 : str + totalbonusattack - enemies[0].armor;
+                let attackdamage = enemies[0]._intan || enemies[0]._stealth ? 0 : str + totalbonusattack - enemies[0].armor;
                 let msg = enemies[0]._intan ? "Normal stabbing does nothing to the intangible." : "You stabbed a " + enemies[0]._name + "<br>";
                 switch (attack) {
                     case "Stab":
-                        enemies[0].health -= attackdamage;
-                        MsgLog(msg);
-                        if (attackdamage > 0) {wobble(enemypics[0].children[0].children[0],enemies[0].health)}
+                        if (!enemies[0]._stealth) {
+                            MsgLog(msg);
+                        }
+                        if (attackdamage > 0) {
+                            enemies[0].health -= attackdamage;
+                            wobble(enemies[0]._image,enemies[0].health)
+                        }
                         break;
                 }
                 break;
             case "Ally":
                 let whosattackingnum = Order[x].AQuantity;
-                let attackdamage1 = enemies[0]._intan ? 0 : (Order[x].strength - enemies[0].armor) * whosattackingnum;
+                let attackdamage1 = enemies[0]._intan || enemies[0]._stealth ? 0 : (Order[x].strength - enemies[0].armor) * whosattackingnum;
                 enemies[0].health -= attackdamage1;
                 let retaldamage1 = 0;
                 enemies[0]._spec.forEach(function(spec) {
@@ -722,7 +745,7 @@ function fight(attack,enemies,index,allies) {
                 e.Loot();
                 player.xp += e.xpr;
                 MsgLog("1 " + e._name + " died");
-                wobble(enemypics[0].children[enemies.indexOf(e)].children[0],e.health);
+                wobble(e._image,e.health);
                 enemies.splice(enemies.indexOf(e),enemies.indexOf(e)+1);
                 Order.splice(Order.indexOf(e),Order.indexOf(e)+1);
                 setTimeout(showfoes,500);
@@ -756,28 +779,28 @@ function showfoes() {
     let enemypanel = $("#Enemy");
     enemypanel.empty();
     levelenemies[dungeon.val-1].forEach(function(enemy) {
-        let image = new Image();
-        let holder = document.createElement("DIV");
-        let tooltip = $('#Enemytooltip');
-        holder.classList.add("Eholder");
-        enemypanel[0].appendChild(holder);
-        image.src = enemy.img;
-        image.classList.add("Entity");
-        image.onmouseenter = function() {
-            tooltip[0].innerHTML = enemy._name + "<br><br>" + "Attack: " + enemy.strength + "<br>" + "Armor: " + enemy.armor +
-                "<br>" + "Speed: " + enemy.speed + "<br><br>" + enemy.flavor + "<br>";
-            let spectooltip = document.createElement("DIV");spectooltip.classList.add("enemyspec");
-            enemy._spec.forEach(function (thespec) {
-               spectooltip.innerHTML += "<br>" + thespec[0];
-            });
-            tooltip.append(spectooltip);
-            tooltip.show();
-        };
-        image.onmouseout = function() { if (!tooltip.is(':hover')) {tooltip.hide()}};
-        tooltip[0].onmouseout = function() { if (!tooltip.is(':hover')) {tooltip.hide()}};
-        holder.appendChild(image);
-        holder.appendChild(enemy.Healthbar);
-        load(enemy);
+        if (!enemy._stealth) {
+            let holder = document.createElement("DIV");
+            let tooltip = $('#Enemytooltip');
+            holder.classList.add("Eholder");
+            enemypanel[0].appendChild(holder);
+            let image = enemy._image;
+            image.onmouseenter = function() {
+                tooltip[0].innerHTML = enemy._name + "<br><br>" + "Attack: " + enemy.strength + "<br>" + "Armor: " + enemy.armor +
+                    "<br>" + "Speed: " + enemy.speed + "<br><br>" + enemy.flavor + "<br>";
+                let spectooltip = document.createElement("DIV");spectooltip.classList.add("enemyspec");
+                enemy._spec.forEach(function (thespec) {
+                    spectooltip.innerHTML += "<br>" + thespec[0];
+                });
+                tooltip.append(spectooltip);
+                tooltip.show();
+            };
+            image.onmouseout = function() { if (!tooltip.is(':hover')) {tooltip.hide()}};
+            tooltip[0].onmouseout = function() { if (!tooltip.is(':hover')) {tooltip.hide()}};
+            holder.appendChild(image);
+            holder.appendChild(enemy.Healthbar);
+            load(enemy);
+        }
     });
 }
 
@@ -974,7 +997,7 @@ function abilities() {
         thebutton.classList.add("ability");
         thebutton.style.backgroundImage = "url(" + x.img + ")";
         thebutton.onmouseenter = function () {
-            tooltip.innerHTML = x.name + "<br><br>" + "Damage: " + x.damage * Ability.trapdamagexbonus + damagebonus + "<br><br>" +
+            tooltip.innerHTML = x.name + "<br><br>" + "Damage: " + x.damage + damagebonus + "<br><br>" +
                 "Mana Cost: " + x.mcost + " mana" + "<br><br>" +  x.flavor.italics();
             tooltip.style.display = "block";
         };
@@ -989,7 +1012,7 @@ function abilities() {
                 player.mana -= x.mcost;
                 x.activateability(); // REMEMBER partial from python?
             }
-            tooltip.innerHTML = x.name + "<br><br>" + "Damage: " + x.damage + "<br><br>" +
+            tooltip.innerHTML = x.name + "<br><br>" + "Damage: " + x.damage + damagebonus + "<br><br>" +
                 "Mana Cost: " + x.mcost + " mana" + "<br><br>" +  x.flavor.italics(); //updates mcost for traps
         };
         u.append(thebutton);
@@ -1747,7 +1770,7 @@ let paladin = new Foe("Novice Paladin",50000,100,8,[playerbronze,1800000,1000],3
 let healer1 = new Foe("Novice Healer",4000,0,3,[playerbronze,1000000,1000],4,1000000,"","novicewitch.png",[["Heal",0,1500,5]]);
 let summoner1 = new Foe("Summoner Alpha Class",10000,100,3,[playerbronze,12000000,1000],22,6000000,"","novicewitch.png",[["Random Spawn",[12,13,14,15,16],1,2,10]]);
 let cryomancer1 = new Foe("Minor Cryomancer",5000,700,3,[playerbronze,10000000,1000],20,5500000,"","novicewitch.png",[["Freeze"],["Armor Pierce"]]);
-let ninja1 = new Foe("Ninja of Shade",20000,500,20,[playerbronze,20000000,1000],12,10000000,"","novicewitch.png",[["Stealth"],["Armor Pierce"]]);
+let ninja1 = new Foe("Ninja of Shade",20000,500,20,[playerbronze,20000000,1000],12,10000000,"","novicewitch.png",[["Stealth",10,5],["Armor Pierce"]]);
 let necromancer = new Foe("Petty Necromancer",20000,650,1,[playerbronze,80000000,1000],50,15000000,"","novicewitch.png",[["Lifesteal"],["Spawn",Deathknight,1,2,8]]);
 let chrono1 = new Foe("Chronomancer of Nanoseconds",12000,3000,3,[playersilver,80,1000],45,50050000,"","novicewitch.png",[["Time Stop",5],["Armor Pierce"]]);
 
