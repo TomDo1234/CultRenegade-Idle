@@ -250,7 +250,7 @@ class Item {
         }
         this._EQuantity = val;
         if (val + this.UEQuantity <= 0) {
-            playerinventory.splice(playerinventory.indexOf(this),playerinventory.indexOf(this) + 1);
+            playerinventory.splice(playerinventory.indexOf(this),1);
         }
         inventory();
         if (Market.Quantity > 0) {
@@ -652,7 +652,7 @@ class Ability {
                 player.xp += e.xpr;
                 MsgLog("1 " + e._name + " died");
                 wobble(e._image,e.health);
-                enemies.splice(enemies.indexOf(e),enemies.indexOf(e)+1);
+                enemies.splice(enemies.indexOf(e),1);
                 setTimeout(showfoes,500);
             }
         });
@@ -682,9 +682,10 @@ function fight(attack,enemies,index,allies) {
             theallies.push(x);
         }
     });
-    Order.push(player);
+    Order.push(player);let tenemies = [];
     enemies.forEach(function(x) {
         Order.push(x);
+        if (!x._stealth) {tenemies.push(x)}
     });
     Order.sort(function(a, b) {
         return b._speed - a._speed;
@@ -692,26 +693,26 @@ function fight(attack,enemies,index,allies) {
     for (let x = 0; x < Order.length; x++) {
         switch(Order[x].constructor.name) {
             case "Player":
-                let attackdamage = enemies[0]._intan || enemies[0]._stealth ? 0 : str + totalbonusattack - enemies[0].armor;
-                let msg = enemies[0]._intan ? "Normal stabbing does nothing to the intangible." : "You stabbed a " + enemies[0]._name + "<br>";
+                if (tenemies.length === 0) {break;}
+                let attackdamage = tenemies[0]._intan ? 0 : str + totalbonusattack - tenemies[0].armor;
+                let msg = tenemies[0]._intan ? "Normal stabbing does nothing to the intangible." : "You stabbed a " + tenemies[0]._name + "<br>";
                 switch (attack) {
                     case "Stab":
-                        if (!enemies[0]._stealth) {
-                            MsgLog(msg);
-                        }
+                        MsgLog(msg);
                         if (attackdamage > 0) {
-                            enemies[0].health -= attackdamage;
-                            wobble(enemies[0]._image,enemies[0].health)
+                            tenemies[0].health -= attackdamage;
+                            wobble(tenemies[0]._image,tenemies[0].health)
                         }
                         break;
                 }
                 break;
             case "Ally":
+                if (tenemies.length === 0) {break;}
                 let whosattackingnum = Order[x].AQuantity;
-                let attackdamage1 = enemies[0]._intan || enemies[0]._stealth ? 0 : (Order[x].strength - enemies[0].armor) * whosattackingnum;
-                enemies[0].health -= attackdamage1;
+                let attackdamage1 = tenemies[0]._intan ? 0 : (Order[x].strength - tenemies[0].armor) * whosattackingnum;
+                tenemies[0].health -= attackdamage1;
                 let retaldamage1 = 0;
-                enemies[0]._spec.forEach(function(spec) {
+                tenemies[0]._spec.forEach(function(spec) {
                    if (spec[0] === "Retaliation") {
                        retaldamage1 = attackdamage1 * spec[1];
                    }
@@ -746,8 +747,8 @@ function fight(attack,enemies,index,allies) {
                 player.xp += e.xpr;
                 MsgLog("1 " + e._name + " died");
                 wobble(e._image,e.health);
-                enemies.splice(enemies.indexOf(e),enemies.indexOf(e)+1);
-                Order.splice(Order.indexOf(e),Order.indexOf(e)+1);
+                enemies.splice(enemies.indexOf(e),1);
+                Order.splice(Order.indexOf(e),1);
                 setTimeout(showfoes,500);
             }
         });
@@ -1809,8 +1810,12 @@ function savegame() {
     localStorage.setItem("playerinventory",JSON.stringify(playerinventory));
     localStorage.setItem("player",JSON.stringify(player));
     let OA = Object.getOwnPropertyNames(Ally);
+    let OAb = Object.getOwnPropertyNames(Ability);
     for (let x = 2;x < OA.length; x++ ) {
         localStorage.setItem(OA[x],JSON.stringify(Ally[OA[x]]));
+    }
+    for (let x = 2;x < OAb.length; x++ ) {
+        localStorage.setItem(OAb[x],JSON.stringify(Ability[OAb[x]]));
     }
     console.log("Game Saved! (game autosaves every 20 seconds)");
 }
@@ -1832,8 +1837,12 @@ function loadgame() {
             count += 1;
         });
         let OA = Object.getOwnPropertyNames(Ally);
+        let OAb = Object.getOwnPropertyNames(Ability);
         for (let x = 2;x < OA.length; x++ ) {
             Ally[OA[x]] = JSON.parse(localStorage.getItem(OA[x]));
+        }
+        for (let x = 2;x < OAb.length; x++ ) {
+            Ability[OAb[x]] = JSON.parse(localStorage.getItem(OAb[x]));
         }
         canupgrade = [];playerinventory = [];
         upgraded = [];playerabilities = [];canabilities = [];
