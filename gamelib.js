@@ -500,7 +500,7 @@ function spelltrap(duration,damage,costadd,number,spell) {
                 player.xp += e.xpr;
                 MsgLog("1 " + e._name + " died");
                 if (dungeon.val - 1 === number) {wobble(enemies[0]._image,e.health)}
-                enemies.splice(enemies.indexOf(e),enemies.indexOf(e)+1);
+                enemies.splice(enemies.indexOf(e),1);
                 setTimeout(showfoes,500);
             }
         });
