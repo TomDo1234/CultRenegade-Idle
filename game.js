@@ -852,7 +852,7 @@ function checkpersec() {
         let count = 0;
         for (let index = 0;index < array.length;index ++) {
             count = 0;
-            while (array[index] > 1000) {
+            while (array[index] >= 1000) {
                 array[index] /= 1000;
                 count += 1;
             }
@@ -1595,7 +1595,7 @@ let playerbronze = {
             if (scidig) {
                 let unit = ["","K","M","B","T","KT","MT","BT","TT"];
                 let foo = this._val,count = 0;
-                while (foo > 1000) {
+                while (foo >= 1000) {
                     foo /= 1000;
                     count += 1;
                 }
@@ -1623,7 +1623,7 @@ let playerbronze = {
             if (scidig) {
                 let unit = ["","K","M","B","T","KT","MT","BT","TT"];
                 let foo = this._val,count = 0;
-                while (foo > 1000) {
+                while (foo >= 1000) {
                     foo /= 1000;
                     count += 1;
                 }
@@ -1651,7 +1651,7 @@ let playerbronze = {
             if (scidig) {
                 let unit = ["","K","M","B","T","KT","MT","BT","TT"];
                 let foo = this._val,count = 0;
-                while (foo > 1000) {
+                while (foo >= 1000) {
                     foo /= 1000;
                     count += 1;
                 }
@@ -1769,9 +1769,9 @@ let Deathknight = new Foe("Death Knight",30000,100,3,[playerbronze,1500000,1000]
 let boss2 = new Foe("The Petty Essence of Unknown",100000,500,40,[playersilver,2,1000],30,3000000,"","boss2.png",[["Intangibility",20,10]],400);
 let paladin = new Foe("Novice Paladin",50000,100,8,[playerbronze,1800000,1000],30,1500000,"","paladin.png",[["Armor Pierce"]]);
 let healer1 = new Foe("Novice Healer",4000,0,3,[playerbronze,1000000,1000],4,1000000,"","healer1.png",[["Heal",0,1500,5]]);
-let summoner1 = new Foe("Summoner Alpha Class",10000,100,3,[playerbronze,12000000,1000],22,6000000,"","novicewitch.png",[["Random Spawn",[12,13,14,15,16],1,2,10]]);
-let cryomancer1 = new Foe("Minor Cryomancer",5000,700,3,[playerbronze,10000000,1000],20,5500000,"","novicewitch.png",[["Freeze"],["Armor Pierce"]]);
-let ninja1 = new Foe("Ninja of Shade",20000,500,20,[playerbronze,20000000,1000],12,10000000,"","novicewitch.png",[["Stealth",10,5],["Armor Pierce"]]);
+let summoner1 = new Foe("Summoner Alpha Class",10000,100,3,[playerbronze,12000000,1000],22,6000000,"","summoner1.png",[["Random Spawn",[12,13,14,15,16],1,2,10]]);
+let cryomancer1 = new Foe("Minor Cryomancer",5000,700,3,[playerbronze,10000000,1000],20,5500000,"","icewitch.png",[["Freeze"],["Armor Pierce"]]);
+let ninja1 = new Foe("Ninja of Shade",20000,500,20,[playerbronze,20000000,1000],12,10000000,"","ninja1.png",[["Stealth",10,5],["Armor Pierce"]]);
 let necromancer = new Foe("Petty Necromancer",20000,650,1,[playerbronze,80000000,1000],50,15000000,"","novicewitch.png",[["Lifesteal"],["Spawn",Deathknight,1,2,8]]);
 let chrono1 = new Foe("Chronomancer of Nanoseconds",12000,3000,3,[playersilver,80,1000],45,50050000,"","novicewitch.png",[["Time Stop",5],["Armor Pierce"]]);
 
@@ -1780,6 +1780,7 @@ let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,gobli
     [Dreadshroom,Dreadshroom,Fungalmancer],[Witch1,Witch1,Witch1],[chaoticflesh],[deathspawn,Deathknight],[boss2],
     [paladin,paladin,healer1],[cryomancer1,summoner1],[ninja1,ninja1,ninja1],[Deathknight,necromancer],[chrono1]
 ];
+
 let levelenemies = a2clone(ogenemies);
 
 let theenemies = [goblin,imp,snake,goblin1,boss1,blueimp,Witch,Poisonoussnake,murdererreaver,treasurechest1,Flamewitch1,Dreadshroom,Fungalmancer,
