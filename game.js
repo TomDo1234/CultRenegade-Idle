@@ -1772,8 +1772,8 @@ let healer1 = new Foe("Novice Healer",4000,0,3,[playerbronze,1000000,1000],4,100
 let summoner1 = new Foe("Summoner Alpha Class",10000,100,3,[playerbronze,12000000,1000],22,6000000,"","summoner1.png",[["Random Spawn",[12,13,14,15,16],1,2,10]]);
 let cryomancer1 = new Foe("Minor Cryomancer",5000,700,3,[playerbronze,10000000,1000],20,5500000,"","icewitch.png",[["Freeze"],["Armor Pierce"]]);
 let ninja1 = new Foe("Ninja of Shade",20000,500,20,[playerbronze,20000000,1000],12,10000000,"","ninja1.png",[["Stealth",10,5],["Armor Pierce"]]);
-let necromancer = new Foe("Petty Necromancer",20000,650,1,[playerbronze,80000000,1000],50,15000000,"","novicewitch.png",[["Lifesteal"],["Spawn",Deathknight,1,2,8]]);
-let chrono1 = new Foe("Chronomancer of Nanoseconds",12000,3000,3,[playersilver,80,1000],45,50050000,"","novicewitch.png",[["Time Stop",5],["Armor Pierce"]]);
+let necromancer = new Foe("Petty Necromancer",20000,650,1,[playerbronze,80000000,1000],50,15000000,"","necromancer1.png",[["Lifesteal"],["Spawn",Deathknight,1,2,8]]);
+let chrono1 = new Foe("Chronomancer of Nanoseconds",12000,3000,3,[playersilver,80,1000],45,50050000,"","chrono1.png",[["Time Stop",5],["Armor Pierce"]]);
 
 let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,goblin1],[boss1],[blueimp,blueimp],[Witch,Witch,Witch],
     [Poisonoussnake,Poisonoussnake,Poisonoussnake],[murdererreaver,Witch,Witch,Poisonoussnake,treasurechest1],[Flamewitch1],
