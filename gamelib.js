@@ -564,3 +564,196 @@ function flame(things,dam,dur) {
     flaming();
 }
 
+function keysofvalue(object,value) {
+    let a = [];
+    Object.keys(object).forEach(function(key) {
+       if(object[key] === value) {
+            a.push(key);
+       }
+    });
+    return a;
+}
+
+function gendungeon(columns,pseed) {
+    let cpoints = [0,columns * 8 - 1]; // 0 sets spawn point
+    let dict = {};dict[0] = 0;dict[columns * 8 - 1] = 0;
+    let i = 0;
+    pseed.forEach(function(block) {
+        while (i < block[1]) {
+            let coord = Math.floor(Math.random() * columns * 8);
+            if (cpoints.indexOf(coord) === -1) {
+                cpoints.push(coord);
+                dict[coord] = block[0];
+                i += 1;
+            }
+        }
+        i = 0;
+    });
+    //let borderblocks = [];
+    for (let y = 0;y < 8;y++) {
+        for (let x = 0;x < columns;x++) {
+            let min = -1;
+            let decide = 0;
+            cpoints.forEach(function (point) {
+                let distance = (x+1 - point % columns) ** 2 + (y - Math.floor(point / columns)) ** 2;
+                if (distance < min || min === -1) {  // || min === -1 is there so I don't have to make the initial min infinite
+                    min = distance;
+                    decide = point;
+                }
+            });
+            currentdungeon[y][x] = dict[decide];
+            /*if (cpoints.indexOf(y * columns + x) !== -1) {
+                currentdungeon[y][x] = 2;
+            }*/
+        }
+    }
+    let a = keysofvalue(dict,0); // this area heurstically creates corridors to connect rooms
+    for (let i = 0;i < a.length - 1;i++) {
+        let b = parseInt(a[i + 1]) % columns - parseInt(a[i]) % columns;
+        for (let x = 0;Math.abs(x) < Math.abs(b);x += Math.sign(b)) {
+            currentdungeon[Math.floor(a[i]/columns)][a[i] % columns + x] = 0;
+        }
+    }
+    for (let i = 0;i < a.length - 1;i++) {
+        let b = Math.floor(parseInt(a[i + 1]) / columns) - Math.floor(parseInt(a[i]) / columns);
+        for (let x = 0;Math.abs(x) < Math.abs(b);x += Math.sign(b)) {
+            currentdungeon[Math.floor(a[i]/columns) + x][a[i] % columns] = 0;
+        }
+    }
+    player.xcpos = 0;
+    player.ycpos = 0;
+    currentdungeon[0][0] = 'P';
+    currentdungeon[7][columns - 1] = 'EX';
+    setTimeout(function() {
+        generatetable(8,columns);
+        graphictiles();
+    },1); // for some reason it fucks up if there is no delay
+}
+
+function generatetable(row,columns) {
+    let dungeon = $("#dungeon");
+    dungeon.empty();let td2;
+    for (let y = 0;y < 8;y++) {
+        let tr = document.createElement("TR");
+        for (let x = 0;x < columns;x++) {
+            let td = document.createElement("TD");
+            td.innerText = currentdungeon[y][x];
+            tr.appendChild(td);
+            if (y===0&&x===0) {
+                td2 = td;
+            }
+        }
+        dungeon.append(tr);
+    }
+}
+
+let dungeondict = {};
+
+dungeondict[0] = [12,[[0,3],[1,3]]];
+dungeondict[1] = [12,[[0,3],[1,3]]];
+
+let tiledict = {};
+
+$(function() {
+    tiledict['P'] = $('#Playerpic')[0].src;
+    tiledict[0] = "img/tiles/0blackroad.jpg";
+    tiledict[1] = "img/tiles/1dirtwall.jpg";
+    tiledict['EX'] = "img/tiles/EXexit.png";
+});
+
+function graphictiles() {
+    let dungeon = $("#dungeon");
+    for (let y = 0;y < 8;y++) {
+        for (let x = 0;x < currentdungeon[0].length;x++) {
+            let i = dungeon[0].rows[y].cells[x];
+            let pic = document.createElement("IMG");
+            pic.src = tiledict[i.innerText];
+            pic.classList.add("tileimg");
+            $(i).empty();
+            i.appendChild(pic);
+        }
+    }
+}
+/*
+$(document).on('keydown', function(e) {
+    let tag = e.target.tagName.toLowerCase();
+    if (tag !== 'input' && tag !== 'textarea') {
+        let event = e.which;
+        if(event === 65 || event === 37 && player.xcpos > 0) { // <-
+            if (currentdungeon[player.ycpos][player.xcpos - 1] !== 1) {
+                player.xcpos -= 1;
+            }
+        }
+        if(event === 83 || event === 40 && player.ycpos < 7) { // v
+            if (currentdungeon[player.ycpos + 1][player.xcpos] !== 1) {
+                player.ycpos += 1;
+            }
+        }
+        if(event === 68 || event === 39 && player.xcpos < currentdungeon[0].length - 1) { // ->
+            if (currentdungeon[player.ycpos][player.xcpos + 1] !== 1) {
+                player.xcpos += 1;
+            }
+        }
+        if(event === 87 || event === 38 && player.ycpos > 0) { // ^
+            if (currentdungeon[player.ycpos - 1][player.xcpos] !== 1) {
+                player.ycpos -= 1;
+            }
+        }
+        //console.log([player.xcpos,player.ycpos]);
+    }
+});*/
+
+function astar() {
+    let dlength = currentdungeon[0].length;
+    let min = -1;
+    let coords = [];
+    let x = player.xcpos,y = player.ycpos;
+    while (currentdungeon[y][x + 1] !== 1 && x < currentdungeon[0].length - 1) {
+        x += 1;
+    }
+    coords.push([x,y]);
+    x = player.xcpos;
+    while (currentdungeon[y][x - 1] !== 1 && x > 0) {
+        x -= 1;
+    }
+    coords.push([x,y]);
+    x = player.xcpos;
+    while (currentdungeon[y + 1][x] !== 1 && y < currentdungeon.length - 1) {
+        y += 1;
+    }
+    coords.push([x,y]);
+    y = player.ycpos;
+    while (currentdungeon[y - 1][x] !== 1 && y > 0) {
+        y += 1;
+    }
+    coords.push([x,y]);
+}
+
+function dungeoncrawl() {
+    if (typeof player._xcpos === 'undefined' || typeof player._ycpos === 'undefined') {
+        return;
+    }
+    let cpos = [player._xcpos,player._ycpos];
+    let pos = [];
+    let enemies = [];
+    if (cpos[0] > 0) {
+        pos.push(currentdungeon[cpos[1]][cpos[0] - 1]);
+    }
+    if (cpos[0] < currentdungeon[0].length - 1) {
+        pos.push(currentdungeon[cpos[1]][cpos[0] + 1]);
+    }
+    if (cpos[1] > 0) {
+        pos.push(currentdungeon[cpos[1] - 1][cpos[0]]);
+    }
+    if (cpos[1] < 7) {
+        pos.push(currentdungeon[cpos[1] + 1][cpos[0]]);
+    }
+    pos.forEach(function(entity) {
+        if (isNaN(entity) && typeof entity !== 'undefined') { //check if it is an integer or not or else construct.name don't work
+            if (entity.constructor.name === "Foe") {
+                enemies.push(entity);
+            }
+        }
+    });
+    fight(setattack,enemies,dungeon.val - 1,allies);
+}

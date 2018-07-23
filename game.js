@@ -10,6 +10,50 @@ class Player {
         this._Mxp = Mxp;
         this._mana = 10;
         this._Mmana = 10;
+        this._xcpos = 0;
+        this._ycpos = 0;
+    }
+    set xcpos(val) {
+        let dungeon = $("#dungeon");
+        let oxcpos = this._xcpos;
+        currentdungeon[this._ycpos][this._xcpos] = 0;
+        this._xcpos = val;
+        dungeoncrawl();
+        currentdungeon[this._ycpos][val] = 'P';
+        $(function () {
+            if (typeof dungeon[0] !== 'undefined') {
+                if (player._ycpos < dungeon[0].children.length && player._xcpos < dungeon[0].rows[0].children.length) {
+                    if (dungeon[0].rows[player._ycpos].cells[player._xcpos].children.length > 0) {
+                        dungeon[0].rows[player._ycpos].cells[player._xcpos].children[0].src = tiledict['P'];
+                        dungeon[0].rows[player._ycpos].cells[oxcpos].children[0].src = tiledict[0];
+                    }
+                }
+            }
+        });
+    }
+    get xcpos() {
+        return this._xcpos;
+    }
+    set ycpos(val) {
+        let dungeon = $("#dungeon");
+        let oycpos = this._ycpos;
+        currentdungeon[this._ycpos][this._xcpos] = 0;
+        this._ycpos = val;
+        dungeoncrawl();
+        currentdungeon[val][this._xcpos] = 'P';
+        $(function () {
+            if (typeof dungeon[0] !== 'undefined') {
+                if (player._ycpos < dungeon[0].children.length && player._xcpos < dungeon[0].rows[0].children.length) {
+                    if (dungeon[0].rows[player._ycpos].cells[player._xcpos].children.length > 0) {
+                        dungeon[0].rows[player._ycpos].cells[player._xcpos].children[0].src = tiledict['P'];
+                        dungeon[0].rows[oycpos].cells[player._xcpos].children[0].src = tiledict[0];
+                    }
+                }
+            }
+        });
+    }
+    get ycpos() {
+        return this._ycpos;
     }
     set Mmana(val) {
         this._Mmana = val;
@@ -456,7 +500,7 @@ class Foe {
 
     Loot() {
         for (let x = 0;x < this.loot.length;x += 3) {
-            if (Math.floor(Math.random() * 1000) <= this.loot[x+2]) {
+            if (Math.floor(Math.random() * 1000) + 1 <= this.loot[x+2]) {
                 if (this.loot[x].constructor.name === "Item") {
                     this.loot[x].UEQuantity += 1;
                 }
@@ -550,6 +594,11 @@ class Foe {
                         z._stealth = false;
                         MsgLog("Stealth has worn off for " + z.name);
                         showfoes();
+                   }
+                   break;
+               case "Time Stop":
+                   if (fighttimer.val % spec[2] === 0) {
+                       fighttimer.flow = false;
                    }
                    break;
            }
@@ -1228,8 +1277,10 @@ function blacksmith() {
             let thebutton = document.createElement("BUTTON");
             thebutton.id = x._name;
             thebutton.classList.add("blacksmith");
-            thebutton.style.backgroundImage = "url(" + x.img + ")";
-            thebutton.onmouseenter = function () {
+            let theimg = new Image();
+            theimg.src = x.img;theimg.classList.add("blacksmith");
+            thebutton.appendChild(theimg);
+            theimg.onmouseenter = function () {
                 tooltip.innerHTML = x._name + "<br><br>" + "Attack: " + x.attack + "<br>"
                     + "Defense: " + x.defense + "<br>"
                     + "Speed: " + x.speed +
@@ -1237,7 +1288,7 @@ function blacksmith() {
                     "Cost: " + x.Value[0] + "/" + x.Value[1] + "/" + x.Value[2];
                 tooltip.style.display = "block";
             };
-            thebutton.onmouseout = function () {
+            theimg.onmouseout = function () {
                 tooltip.style.display = "none"
             };
             thebutton.onclick = function () {
@@ -1265,7 +1316,7 @@ function portal() {
                 button.classList.add("class1");
                 button.classList.add("portal");
                 button.onclick = function () {
-                    if (isdead === false) {
+                    if (!isdead) {
                         levelenemies[dungeon.val - 1] = [];
                         for (let x = 0; x < ogenemies[dungeon.val - 1].length; x++) {
                             let cope = clone(ogenemies[dungeon.val - 1][x]);
@@ -1713,7 +1764,9 @@ let playerbronze = {
                 this.milestone += 1;
             }
             else if (this._val === 15 && this.milestone < 3) {
-                $('#Playerpic')[0].src = "player1.png";
+                let playerpic = $('#Playerpic')[0];
+                playerpic.src = "player1.png";
+                tiledict['P'] = playerpic.src;
                 $('#Pdescription')[0].innerHTML = "You have grown more powerful, you are becoming less generic as you become more powerful in the arcane" +
                     ". The blue ring that borders you is abundance of mana you can control.";
                 MsgLog("Something is happening to you! You feel a weird sensation as you progress further...");
@@ -1731,8 +1784,12 @@ let resources = [playerbronze,playersilver,playergold];
 let dungeon = {
     _val : 1,
     set val(value) {
+        if (value !== this._val) {
+            gendungeon(dungeondict[this._val - 1][0],dungeondict[this._val - 1][1]);
+        }
         this._val = value;
         showfoes();
+
     },
     get val() {
         return this._val;
@@ -1740,11 +1797,18 @@ let dungeon = {
 };
 let fighttimer = {
     _val : 0,
+    _flow : true,
     set val(value) {
         this._val = value;
     },
     get val() {
         return this._val;
+    },
+    set flow(value) {
+        this._flow = value;
+    },
+    get flow() {
+        return this._flow;
     }
 };
 
@@ -1773,7 +1837,7 @@ let summoner1 = new Foe("Summoner Alpha Class",10000,100,3,[playerbronze,1200000
 let cryomancer1 = new Foe("Minor Cryomancer",5000,700,3,[playerbronze,10000000,1000],20,5500000,"","icewitch.png",[["Freeze"],["Armor Pierce"]]);
 let ninja1 = new Foe("Ninja of Shade",20000,500,20,[playerbronze,20000000,1000],12,10000000,"","ninja1.png",[["Stealth",10,5],["Armor Pierce"]]);
 let necromancer = new Foe("Petty Necromancer",20000,650,1,[playerbronze,80000000,1000],50,15000000,"","necromancer1.png",[["Lifesteal"],["Spawn",Deathknight,1,2,8]]);
-let chrono1 = new Foe("Chronomancer of Nanoseconds",12000,3000,3,[playersilver,80,1000],45,50050000,"","chrono1.png",[["Time Stop",5],["Armor Pierce"]]);
+let chrono1 = new Foe("Chronomancer of Nanoseconds",12000,3000,3,[playersilver,80,1000],45,50050000,"","chrono1.png",[["Time Stop",5,10],["Armor Pierce"]]);
 
 let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,goblin1],[boss1],[blueimp,blueimp],[Witch,Witch,Witch],
     [Poisonoussnake,Poisonoussnake,Poisonoussnake],[murdererreaver,Witch,Witch,Poisonoussnake,treasurechest1],[Flamewitch1],
@@ -1782,6 +1846,8 @@ let ogenemies = [[goblin],[imp],[snake,snake,snake,snake],[goblin1,goblin1,gobli
 ];
 
 let levelenemies = a2clone(ogenemies);
+
+let currentdungeon = [[],[],[],[],[],[],[],[]];
 
 let theenemies = [goblin,imp,snake,goblin1,boss1,blueimp,Witch,Poisonoussnake,murdererreaver,treasurechest1,Flamewitch1,Dreadshroom,Fungalmancer,
     Witch1,chaoticflesh,deathspawn,Deathknight,boss2,paladin,healer1,summoner1,cryomancer1,ninja1,necromancer,chrono1
@@ -1909,9 +1975,15 @@ function loadgame() {
             showupgrades();
             flavoradd(); //showfoes() is in flavoradd();
             setTimeout(flavoradd,50); //for some reason it has to be used twice \(-_-)/
+            if (Portal.Quantity > 0) {
+                gendungeon(dungeondict[dungeon.val - 1][0],dungeondict[dungeon.val - 1][1]);
+            }
         });
         if (currentlevel.val >= 4) {
             $('#pmana').show();
+            if (currentlevel.val >= 15) {
+                $("#Playerpic")[0].src = "player1.png";
+            }
         }
     }
 }
