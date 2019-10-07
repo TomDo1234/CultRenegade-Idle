@@ -1765,7 +1765,7 @@ let playerbronze = {
             }
             else if (this._val === 15 && this.milestone < 3) {
                 let playerpic = $('#Playerpic')[0];
-                playerpic.src = "player1.png";
+                playerpic.src = "img/player1.png";
                 tiledict['P'] = playerpic.src;
                 $('#Pdescription')[0].innerHTML = "You have grown more powerful, you are becoming less generic as you become more powerful in the arcane" +
                     ". The blue ring that borders you is abundance of mana you can control.";
@@ -1982,7 +1982,7 @@ function loadgame() {
         if (currentlevel.val >= 4) {
             $('#pmana').show();
             if (currentlevel.val >= 15) {
-                $("#Playerpic")[0].src = "player1.png";
+                $("#Playerpic")[0].src = "img/player1.png";
             }
         }
     }
