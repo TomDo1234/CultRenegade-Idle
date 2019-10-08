@@ -1976,9 +1976,9 @@ function loadgame() {
             showupgrades();
             flavoradd(); //showfoes() is in flavoradd();
             setTimeout(flavoradd,50); //for some reason it has to be used twice \(-_-)/
-            if (Portal.Quantity > 0) {
+            /*if (Portal.Quantity > 0) {
                 gendungeon(dungeondict[dungeon.val - 1][0],dungeondict[dungeon.val - 1][1]);
-            }
+            } // this if statement is from scrapped idea of generating map of dungeon */
         });
         if (currentlevel.val >= 4) {
             $('#pmana').show();
