@@ -23,8 +23,9 @@
             <body onbeforeunload="//savegame()">
             <input type = "text" name = "Name" size = "20" id ="namegetter2" placeholder="Enter Name:" onKeyDown="if(event.keyCode === 13) {game()}"><br/>
             <div id = "everything" style = "display: none">
-            <div style = "position:absolute;top:1.4%;left:36%;width:35%;">
+            <div class = "Main_Entity_Holder">
                 <button class = "class1" onclick = "$('#playerpanel').toggle();toggleplusminus(this)" style = "width:100%;">Your Description -</button>
+                <br>
                 <div id ="playerpanel">
                     <header id = "Playername" class = "Playername"></header><br>
                     <div id = "Player" style = "width:43%;height:43%;float:left;"><img class = "Entity" id = "Playerpic" style = "height:100%;width:100%" src="player.png"/></div>
@@ -41,8 +42,8 @@
                 </div>
                 <button class = "class1" onclick = "$('#enemypanel').toggle();toggleplusminus(this)" style = "position:absolute;width:100%;">Enemy Description -</button>
                 <br>
-                <div id = "enemypanel" style = "width:140%;">
-                    <div id = "Enemy" style = "width:100%;margin-top: 1%"></div>
+                <div id = "enemypanel" style = "width:140%;height:50%;">
+                    <div id = "Enemy" style = "width:100%;margin-top: 1%;height:100%;"></div>
                     <div id = "Enemytooltip" style = "margin-top:1%;float:right;" class = "tooltip Enemy">
                     </div><br>
                 </div>

@@ -1,0 +1,6 @@
+1.  When traps (Arcane trap for example) are set in a dungeon, then you change to another dungeon the dungeon monsters
+from which you change from are fully healed on purpose. This is because when you exit a dungeon that dungeon's
+monsters with heal fully in general. However the trap will stil ldo DOT to the monsters even when you are in other
+dungeons and change dungeon from other dungeons.
+
+

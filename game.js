@@ -102,19 +102,7 @@ class Player {
             levelenemies[dungeon.val-1].forEach(function(enemy) {
                 enemy.health = enemy.MHea;
             });
-            let z = this;
-            function revival() {
-                if (count === 0) {
-                    MsgLog("You are alive... again");
-                    isdead = false;
-                    z.health = 1;
-                    return;
-                }
-                MsgLog("Reviving in " + count + "...");
-                count -= 1;
-                setTimeout(revival,1000);
-            }
-            if (isdead === false) {$(function() {MsgLog("YOU DIED");revival()})}
+            if (isdead === false) {$(function() {MsgLog("YOU DIED");revival(this,count)})}
             isdead = true;fighttimer.val = 0;
         }
     }
@@ -244,8 +232,8 @@ class Item {
     constructor(Nam,Val,UQua,discovered,type,img = "goblin1.png",flavor = "",attack=null,defense=null,speed=null) {
         this._name = Nam;
         this._Value = Val;
-        this._UEQuantity = UQua;
-        this._EQuantity = 0;
+        this._UEQuantity = UQua;  // Unequipped quantity
+        this._EQuantity = 0;  //Equipped quantity
         this.discovered = discovered;
         this.flavor = flavor;
         this._attack = attack;
@@ -715,6 +703,18 @@ class Ability {
     }
 }
 
+function revival(z,count) {
+    if (count === 0) {
+        MsgLog("You are alive... again");
+        isdead = false;
+        z.health = 1;
+        return;
+    }
+    MsgLog("Reviving in " + count + "...");
+    count -= 1;
+    setTimeout(revival,1000);
+}
+
 function fight(attack,enemies,index,allies) {
     let str = player._strength;
     let Order = [];
@@ -834,8 +834,11 @@ function showfoes() {
             let tooltip = $('#Enemytooltip');
             holder.classList.add("Eholder");
             enemypanel[0].appendChild(holder);
-            let image = enemy._image;
-            image.onmouseenter = function() {
+            let imgholder = document.createElement("DIV");
+            imgholder.classList.add("EImgholder");
+            imgholder.style.backgroundImage = "url(" + enemy.img +")";
+            holder.appendChild(imgholder);
+            imgholder.onmouseenter = function() {
                 tooltip[0].innerHTML = enemy._name + "<br><br>" + "Attack: " + enemy.strength + "<br>" + "Armor: " + enemy.armor +
                     "<br>" + "Speed: " + enemy.speed + "<br><br>" + enemy.flavor + "<br>";
                 let spectooltip = document.createElement("DIV");spectooltip.classList.add("enemyspec");
@@ -845,9 +848,8 @@ function showfoes() {
                 tooltip.append(spectooltip);
                 tooltip.show();
             };
-            image.onmouseout = function() { if (!tooltip.is(':hover')) {tooltip.hide()}};
+            imgholder.onmouseout = function() { if (!tooltip.is(':hover')) {tooltip.hide()}};
             tooltip[0].onmouseout = function() { if (!tooltip.is(':hover')) {tooltip.hide()}};
-            holder.appendChild(image);
             holder.appendChild(enemy.Healthbar);
             load(enemy);
         }
@@ -1277,10 +1279,8 @@ function blacksmith() {
             let thebutton = document.createElement("BUTTON");
             thebutton.id = x._name;
             thebutton.classList.add("blacksmith");
-            let theimg = new Image();
-            theimg.src = x.img;theimg.classList.add("blacksmith");
-            thebutton.appendChild(theimg);
-            theimg.onmouseenter = function () {
+            thebutton.style.backgroundImage = "url(" + x.img + ")";
+            thebutton.onmouseenter = function () {
                 tooltip.innerHTML = x._name + "<br><br>" + "Attack: " + x.attack + "<br>"
                     + "Defense: " + x.defense + "<br>"
                     + "Speed: " + x.speed +
@@ -1288,7 +1288,7 @@ function blacksmith() {
                     "Cost: " + x.Value[0] + "/" + x.Value[1] + "/" + x.Value[2];
                 tooltip.style.display = "block";
             };
-            theimg.onmouseout = function () {
+            thebutton.onmouseout = function () {
                 tooltip.style.display = "none"
             };
             thebutton.onclick = function () {
@@ -1823,7 +1823,7 @@ let blueimp = new Foe("Blue Imp",700,21,5,[playerbronze,5000,1000],4,1500,"","bl
 let Witch = new Foe("Regular Witch",500,100,4,[playerbronze,14000,1000],0,4700,"","regularwitch.png",[["Armor Pierce"]]);
 let Poisonoussnake = new Foe("Poisonous Snake",1000,19,10,[playerbronze,50000,1000],6,9000,"","poisonoussnake.png",[["Poison",0.2,15000]]);
 let murdererreaver = new Foe("Murderer Reaver",3000,50,12,[playerbronze,1,1000],13,15000,"","murdererreaver1.png",[["Lifesteal"]]);
-let treasurechest1 = new Foe("Treasure Chest (Basic)",5000,0,0,[playersilver,1,100,playerbronze,100000,1000],10,0,"","treasurechest1.png");
+let treasurechest1 = new Foe("Treasure Chest (Basic)",5000,0,0,[playersilver,1,1000,playerbronze,100000,1000],10,0,"","treasurechest1.png");
 let Flamewitch1 = new Foe("Flame Witch",2000,100,3,[playerbronze,200000,1000],0,99999,"","flamewitch.png",[["Flame","all",4,50000]]);
 let Dreadshroom = new Foe("Dreadshroom",1500,70,7,[playerbronze,20000,1000],10,30000,"","dreadshroom.png",[["Poison",0.2,20000]]);
 let Fungalmancer = new Foe("Fungalmancer",3000,50,3,[playerbronze,400000,1000],2,120000,"","fungalmancer.png",[["Poison",0.4,5000],["Spawn",Dreadshroom,1,3,8]]);
