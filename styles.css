@@ -87,9 +87,24 @@ button.Options {
     background-color: black;
     color:white;
 }
-div.Eholder {
+div.Eholder1 {
     display:inline-block;
     margin-right: 1.5%;
+    width: 15%;
+    height:30%;
+}
+div.Eholder2 {
+    display:inline-block;
+    margin-right: 1.5%;
+    width: 30%;
+    height:45%;
+}
+div.EImgholder {
+    display:inline-block;
+    height: 100%;
+    width:100%;
+    background-repeat: no-repeat;
+    background-size: contain;
 }
 ul.allies {
     font-family: "tight pixel",serif;
@@ -148,13 +163,20 @@ button.Upgrade {
     background-repeat: no-repeat;
     border: solid darkkhaki;
 }
+div.Main_Entity_Holder {
+    position:absolute;
+    top:1.4%;
+    left:36%;
+    width:30%;
+    height:100%;
+}
 div.inventoryicon {
     width: 14%;
     height: 100%;
     z-index:1;
     display:inline-block;
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: contain;
     border: solid darkred;
 }
 button.class1.buildselection {
@@ -278,8 +300,8 @@ button.blacksmith {
     width: 20%;
     float:right;
     border-color: saddlebrown;
-    background: no-repeat darkgrey;
-    background-size: 100%;
+    background: no-repeat black;
+    background-size: contain;
 }
 button.spellshop {
     height: 100%;
