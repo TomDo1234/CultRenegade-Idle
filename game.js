@@ -408,7 +408,7 @@ class Ally {
 }
 
 class Foe {
-    constructor(Nam,Hea,Str,Spe,Loo,Arm,xpr,flav = "",img = "Genericgoblin1.png",spec = [],regen = 0) {
+    constructor(Nam,Hea,Str,Spe,Loo,Arm,xpr,flav = "",img = "Genericgoblin1.png",spec = [],regen = 0,size = 1) {
         this._name = Nam;
         this._health = Hea;
         this._strength = Str;
@@ -430,6 +430,7 @@ class Foe {
         this._image = theimage;
         this.Healthbar = document.createElement("DIV");this.Healthbar.classList.add("Healthbar");
         this.Healthbartrack = document.createElement("DIV");this.Healthbartrack.classList.add("Healthtrack");
+        this._size = size;
     }
 
     toJSON() {
@@ -832,7 +833,7 @@ function showfoes() {
         if (!enemy._stealth) {
             let holder = document.createElement("DIV");
             let tooltip = $('#Enemytooltip');
-            holder.classList.add("Eholder");
+            holder.classList.add("Eholder" + enemy._size);
             enemypanel[0].appendChild(holder);
             let imgholder = document.createElement("DIV");
             imgholder.classList.add("EImgholder");
@@ -1818,7 +1819,7 @@ let imp = new Foe("Generic Imp", 5, 2, 1, [playerbronze,2,1000],0,2,"","Generici
 let snake = new Foe("Generic Snake",30,5,7,[playerbronze,40,1000],3,20,"","genericsnake1.png");
 let goblin1 = new Foe("Killer Goblin Novice",100,10,3,[playerbronze,200,1000],7,120,"","goblin1.png");
 let boss1 = new Foe("Frosty Abomination Fourth Class",800,50,12,[plainuselesslocket,1,1000,playerbronze,2000,1000],0,2000
-    ,"","boss1.png");
+    ,"","boss1.png",[],0,2);
 let blueimp = new Foe("Blue Imp",700,21,5,[playerbronze,5000,1000],4,1500,"","blueimp1.png",[["Retaliation",0.5]]);
 let Witch = new Foe("Regular Witch",500,100,4,[playerbronze,14000,1000],0,4700,"","regularwitch.png",[["Armor Pierce"]]);
 let Poisonoussnake = new Foe("Poisonous Snake",1000,19,10,[playerbronze,50000,1000],6,9000,"","poisonoussnake.png",[["Poison",0.2,15000]]);
