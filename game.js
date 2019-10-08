@@ -1784,9 +1784,10 @@ let resources = [playerbronze,playersilver,playergold];
 let dungeon = {
     _val : 1,
     set val(value) {
+        /*
         if (value !== this._val) {
             gendungeon(dungeondict[this._val - 1][0],dungeondict[this._val - 1][1]);
-        }
+        }       //this if statement here is from a scrapped idea of generating a map of a dungeon   */   
         this._val = value;
         showfoes();
 
