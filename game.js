@@ -713,7 +713,7 @@ function revival(z,count) {
     }
     MsgLog("Reviving in " + count + "...");
     count -= 1;
-    setTimeout(revival,1000);
+    setTimeout(function(){ revival(z,count)},1000);
 }
 
 function fight(attack,enemies,index,allies) {
